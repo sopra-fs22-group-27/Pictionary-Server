@@ -50,23 +50,23 @@ public class UserGetDTO {
   public void setStatus(UserStatus status) {
     this.status = status;
   }
-
+    // get Date birthday
   public Date getBirthday() {return birthday;}
-
+    // set Date birthday
   public void setBirthday(String birthday) {
       try {
           Date convertedCurrentDate = new SimpleDateFormat("yyyy-MM-dd").parse(birthday);
 
           this.birthday = convertedCurrentDate;
       }
-      catch (ParseException e) {
+      catch (Exception e) {
           this.birthday = new Date(0);
       }
 
   }
-
+    // get Date Creation_date
   public Date getCreation_date(){return creation_date;}
-
+    // set Date Creation_date
   public void setCreation_date(String creation_date){
 
       try {
@@ -74,7 +74,7 @@ public class UserGetDTO {
 
           this.creation_date = convertedCurrentDate;
       }
-      catch (ParseException e) {
+      catch (Exception e) {
           this.creation_date = new Date(100);
       }
 //      String date = sdf.format(convertedCurrentDate);

@@ -42,9 +42,7 @@ public class UserService {
     return this.userRepository.findAll();
   }
 
-//  public User updateUser(String username){
-//      return userRepository.findByID(id);
-//  }
+// the functionality is declared as function name
 
   public User getUserById(Long id){
       return userRepository.findUserById(id);

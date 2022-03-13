@@ -59,24 +59,7 @@ public class UserControllerTest {
 
   @MockBean
   private UserService userService;
-
-//  private UserRepository userRepository;
-
-//  @BeforeEach
-//  public void setup(){
-//      MockitoAnnotations.openMocks(this);
-//      User user = new User();
-//      user.setId(1L);
-//      user.setPassword("Password");
-//      user.setUsername("Username");
-//      user.setStatus(UserStatus.ONLINE);
-//      user.setLogged_in(true);
-//      user.setToken(UUID.randomUUID().toString());
-//      user.setBirthday("Birthday");
-//      user.setCreation_date("creation_date");
-//
-//      when(userRepository.save(Mockito.any())).thenReturn(user);
-//  }
+  // the functionality is declared as the function name
 
   @Test
   public void givenUsers_whenGetUsers_thenReturnJsonArray() throws Exception {
