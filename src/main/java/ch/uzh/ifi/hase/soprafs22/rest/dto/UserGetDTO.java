@@ -3,6 +3,9 @@ package ch.uzh.ifi.hase.soprafs22.rest.dto;
 import ch.uzh.ifi.hase.soprafs22.constant.UserStatus;
 
 import javax.persistence.Column;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class UserGetDTO {
 
@@ -11,8 +14,9 @@ public class UserGetDTO {
   private String username;
   private String token;
   private UserStatus status;
-  private String birthday;
-  private String creation_date;
+  private Date birthday;
+  private Date creation_date;
+//  private String creation_date;
   private Boolean logged_in;
 
   public Long getId() {
@@ -47,13 +51,38 @@ public class UserGetDTO {
     this.status = status;
   }
 
-  public String getBirthday() {return birthday;}
+  public Date getBirthday() {return birthday;}
 
-  public void setBirthday(String birthday) {this.birthday = birthday;}
+  public void setBirthday(String birthday) {
+      try {
+          Date convertedCurrentDate = new SimpleDateFormat("yyyy-MM-dd").parse(birthday);
 
-  public String getCreation_date(){return creation_date;}
+          this.birthday = convertedCurrentDate;
+      }
+      catch (ParseException e) {
+          this.birthday = new Date(0);
+      }
 
-  public void setCreation_date(String creation_date){this.creation_date = creation_date;}
+  }
+
+  public Date getCreation_date(){return creation_date;}
+
+  public void setCreation_date(String creation_date){
+
+      try {
+          Date convertedCurrentDate = new SimpleDateFormat("dd/MM/yyyy").parse(creation_date);
+
+          this.creation_date = convertedCurrentDate;
+      }
+      catch (ParseException e) {
+          this.creation_date = new Date(100);
+      }
+//      String date = sdf.format(convertedCurrentDate);
+
+  }
+
+//  public String getCreation_date(){return creation_date;}
+//    public void setCreation_date(String creation_date){this.creation_date = creation_date;}
 
   public Boolean getLogged_in(){return logged_in;}
 

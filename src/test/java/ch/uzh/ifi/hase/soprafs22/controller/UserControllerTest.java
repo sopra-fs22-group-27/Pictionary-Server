@@ -24,9 +24,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.web.server.ResponseStatusException;
 import static org.mockito.Mockito.*;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.*;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -82,8 +87,8 @@ public class UserControllerTest {
     user.setStatus(UserStatus.ONLINE);
     user.setLogged_in(true);
     user.setToken(UUID.randomUUID().toString());
-    user.setBirthday("Birthday");
-    user.setCreation_date("creation_date");
+    user.setBirthday("1998-03-01");
+    user.setCreation_date("01/03/1998");
 
     List<User> allUsers = Collections.singletonList(user);
 
@@ -101,8 +106,8 @@ public class UserControllerTest {
         .andExpect(jsonPath("$[0].status", is(user.getStatus().toString())))
         .andExpect(jsonPath("$[0].logged_in", is(user.getLogged_in())))
         .andExpect(jsonPath("$[0].token", is(user.getToken())))
-        .andExpect(jsonPath("$[0].birthday", is(user.getBirthday())))
-        .andExpect(jsonPath("$[0].creation_date", is(user.getCreation_date())));
+        .andExpect(jsonPath("$[0].birthday", is("1998-02-28T23:00:00.000+00:00")))
+        .andExpect(jsonPath("$[0].creation_date", is("1998-02-28T23:00:00.000+00:00")));
   }
 
   @Test
@@ -115,8 +120,8 @@ public class UserControllerTest {
       user.setToken("1");
       user.setStatus(UserStatus.ONLINE);
       user.setLogged_in(true);
-      user.setBirthday("Test Birthday");
-      user.setCreation_date("Test Creation_date");
+      user.setBirthday("1998-03-01");
+      user.setCreation_date("01/03/2022");
 
       UserPostDTO userPostDTO = new UserPostDTO();
       userPostDTO.setPassword("Test User");
@@ -131,16 +136,19 @@ public class UserControllerTest {
           .contentType(MediaType.APPLICATION_JSON)
           .content(asJsonString(userPostDTO));
       // then
+//      LocalDateTime date = LocalDateTime.of(1998, 3, 1, 0, 0, 0, 0);
+//      ZonedDateTime cetTimeZoned = ZonedDateTime.of(date, ZoneId.of("CET"));
+//      LocalDateTime convertedCurrentDate = cetTimeZoned.withZoneSameInstant(ZoneId.of("UTC")).toLocalDateTime();
       mockMvc.perform(postRequest)
           .andExpect(status().isCreated())
           .andExpect(jsonPath("$.id", is(user.getId().intValue())))
           .andExpect(jsonPath("$.username", is(user.getUsername())))
           .andExpect(jsonPath("$.status", is(user.getStatus().toString())))
-          .andExpect(jsonPath("$.creation_date", is(user.getCreation_date())))
-          .andExpect(jsonPath("$.birthday", is(user.getBirthday())))
+          .andExpect(jsonPath("$.birthday", is("1998-02-28T23:00:00.000+00:00")))
           .andExpect(jsonPath("$.token", is(user.getToken())))
-          .andExpect(jsonPath("$.logged_in", is(user.getLogged_in())));
-      Mockito.verify(userService, Mockito.times(1)).createUser(Mockito.any());
+          .andExpect(jsonPath("$.logged_in", is(user.getLogged_in())))
+          .andExpect(jsonPath("$.creation_date", is("2022-02-28T23:00:00.000+00:00")));
+      verify(userService, times(1)).createUser(any());
   }
 
     @Test

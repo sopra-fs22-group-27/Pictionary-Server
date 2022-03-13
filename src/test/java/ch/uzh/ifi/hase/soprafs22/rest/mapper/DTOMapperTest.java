@@ -55,21 +55,22 @@ public class DTOMapperTest {
     user.setUsername("firstname@lastname");
     user.setStatus(UserStatus.OFFLINE);
     user.setId(1L);
-    user.setBirthday("3/3 1009");
-    user.setCreation_date("3/2 1009");
+    user.setBirthday("1998-03-01");
+    user.setCreation_date("01/03/1998");
     user.setLogged_in(true);
     user.setToken("1329242");
     // MAP -> Create UserGetDTO
     UserGetDTO userGetDTO = DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
-
+//    user.setBirthday("Sun Mar 01 00:00:00 CET 1998");
+//    user.setCreation_date("Thu Feb 03 00:00:00 CET 1009");
     // check content
     assertEquals(user.getId(), userGetDTO.getId());
 //    assertEquals(user.getPassword(), userGetDTO.getPassword());
     assertEquals(user.getUsername(), userGetDTO.getUsername());
     assertEquals(user.getStatus(), userGetDTO.getStatus());
-    assertEquals(user.getBirthday(), userGetDTO.getBirthday());
+    assertEquals("Sun Mar 01 00:00:00 CET 1998", userGetDTO.getBirthday().toString());
     assertEquals(user.getLogged_in(), userGetDTO.getLogged_in());
-    assertEquals(user.getCreation_date(), userGetDTO.getCreation_date());
+    assertEquals("Sun Mar 01 00:00:00 CET 1998", userGetDTO.getCreation_date().toString());
 //    assertEquals(user.getToken(), userGetDTO.getToken());
   }
 }
