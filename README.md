@@ -5,14 +5,9 @@ https://pictionary-server-22.herokuapp.com/
 
 
 ## Current project status
-
-[![Deploy Project](https://github.com/sopra-fs22-group-27/Pictionary-Server/actions/workflows/deploy.yml/badge.svg)](https://github.com/sopra-fs22-group-27/Pictionary-Server/actions/workflows/deploy.yml)
-
-[![Test Project](https://github.com/sopra-fs22-group-27/Pictionary-Server/actions/workflows/pr.yml/badge.svg)](https://github.com/sopra-fs22-group-27/Pictionary-Server/actions/workflows/pr.yml)
-
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=sopra-fs22-group-27_Pictionary-Server&metric=coverage)](https://sonarcloud.io/summary/new_code?id=sopra-fs22-group-27_Pictionary-Server)
-
-[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=sopra-fs22-group-27_Pictionary-Server&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=sopra-fs22-group-27_Pictionary-Server)
+| [![Deploy Project](https://github.com/sopra-fs22-group-27/Pictionary-Server/actions/workflows/deploy.yml/badge.svg)](https://github.com/sopra-fs22-group-27/Pictionary-Server/actions/workflows/deploy.yml)    | [![Test Project](https://github.com/sopra-fs22-group-27/Pictionary-Server/actions/workflows/pr.yml/badge.svg)](https://github.com/sopra-fs22-group-27/Pictionary-Server/actions/workflows/pr.yml)                |
+|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=sopra-fs22-group-27_Pictionary-Server&metric=coverage)](https://sonarcloud.io/summary/new_code?id=sopra-fs22-group-27_Pictionary-Server) | [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=sopra-fs22-group-27_Pictionary-Server&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=sopra-fs22-group-27_Pictionary-Server) |
 
 ## Introduction: 
 We decided that we would implement the drawing and guessing game Pictionary. The rules of this game are amazingly simple. A game consists of custom number of rounds where someone must draw an offered word and the others must guess it. If someone guesses the word correctly, the player gets one point. The player with the most points at the end wins the game.
