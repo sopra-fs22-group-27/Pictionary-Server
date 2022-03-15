@@ -1,39 +1,51 @@
-# SoPra RESTful Service Template FS22
+# Pictionary - Server
+## Information about the Project: 
 
-## Getting started with Spring Boot
+https://pictionary-server-22.herokuapp.com/
 
--   Documentation: https://docs.spring.io/spring-boot/docs/current/reference/html/index.html
--   Guides: http://spring.io/guides
-    -   Building a RESTful Web Service: http://spring.io/guides/gs/rest-service/
-    -   Building REST services with Spring: http://spring.io/guides/tutorials/bookmarks/
 
-## Setup this Template with your IDE of choice
+## Current project status
 
-Download your IDE of choice: (e.g., [Eclipse](http://www.eclipse.org/downloads/), [IntelliJ](https://www.jetbrains.com/idea/download/)), [Visual Studio Code](https://code.visualstudio.com/) and make sure Java 15 is installed on your system (for Windows-users, please make sure your JAVA_HOME environment variable is set to the correct version of Java).
+[![Deploy Project](https://github.com/sopra-fs22-group-27/Pictionary-Server/actions/workflows/deploy.yml/badge.svg)](https://github.com/sopra-fs22-group-27/Pictionary-Server/actions/workflows/deploy.yml)
 
-1. File -> Open... -> SoPra Server Template
-2. Accept to import the project as a `gradle project`
+[![Test Project](https://github.com/sopra-fs22-group-27/Pictionary-Server/actions/workflows/pr.yml/badge.svg)](https://github.com/sopra-fs22-group-27/Pictionary-Server/actions/workflows/pr.yml)
 
-To build right click the `build.gradle` file and choose `Run Build`
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=sopra-fs22-group-27_Pictionary-Server&metric=coverage)](https://sonarcloud.io/summary/new_code?id=sopra-fs22-group-27_Pictionary-Server)
 
-### VS Code
-The following extensions will help you to run it more easily:
--   `pivotal.vscode-spring-boot`
--   `vscjava.vscode-spring-initializr`
--   `vscjava.vscode-spring-boot-dashboard`
--   `vscjava.vscode-java-pack`
--   `richardwillis.vscode-gradle`
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=sopra-fs22-group-27_Pictionary-Server&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=sopra-fs22-group-27_Pictionary-Server)
 
-**Note:** You'll need to build the project first with Gradle, just click on the `build` command in the _Gradle Tasks_ extension. Then check the _Spring Boot Dashboard_ extension if it already shows `soprafs22` and hit the play button to start the server. If it doesn't show up, restart VS Code and check again.
+## Introduction: 
+We decided that we would implement the drawing and guessing game Pictionary. The rules of this game are amazingly simple. A game consists of custom number of rounds where someone must draw an offered word and the others must guess it. If someone guesses the word correctly, the player gets one point. The player with the most points at the end wins the game.
 
-## Building with Gradle
+## Technologies
+Cloudinary,
+Spring,
+SonarQube,
+React,
+npm,
+JSX,
+Java,
+Java Persistence,
+heroku,
+gradle,
+GitHub Projects,
+GitHub Actions
+
+## High-level components
+
+- 
+
+## Launch & Deployment
 
 You can use the local Gradle Wrapper to build the application.
--   macOS: `./gradlew`
+
+Plattform-Prefix:
+
+-   MAC OS X: `./gradlew`
 -   Linux: `./gradlew`
 -   Windows: `./gradlew.bat`
 
-More Information about [Gradle Wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html) and [Gradle](https://gradle.org/docs/).
+More Information about [Gradle Wrapper](https://docs.gradle.org/current/Userguide/gradle_wrapper.html) and [Gradle](https://gradle.org/docs/).
 
 ### Build
 
@@ -47,28 +59,6 @@ More Information about [Gradle Wrapper](https://docs.gradle.org/current/userguid
 ./gradlew bootRun
 ```
 
-### Test
-
-```bash
-./gradlew test
-```
-
-### Development Mode
-
-You can start the backend in development mode, this will automatically trigger a new build and reload the application
-once the content of a file has been changed and you save the file.
-
-Start two terminal windows and run:
-
-`./gradlew build --continuous`
-
-and in the other one:
-
-`./gradlew bootRun`
-
-If you want to avoid running all tests with every change, use the following command instead:
-
-`./gradlew build --continuous -xtest`
 
 ## API Endpoint Testing
 
@@ -76,21 +66,26 @@ If you want to avoid running all tests with every change, use the following comm
 
 -   We highly recommend to use [Postman](https://www.getpostman.com) in order to test your API Endpoints.
 
-## Debugging
+## Illustrations
 
-If something is not working and/or you don't know what is going on. We highly recommend that you use a debugger and step
-through the process step-by-step.
+-
 
-To configure a debugger for SpringBoot's Tomcat servlet (i.e. the process you start with `./gradlew bootRun` command),
-do the following:
+## Roadmap
 
-1. Open Tab: **Run**/Edit Configurations
-2. Add a new Remote Configuration and name it properly
-3. Start the Server in Debug mode: `./gradlew bootRun --debug-jvm`
-4. Press `Shift + F9` or the use **Run**/Debug"Name of your task"
-5. Set breakpoints in the application where you need it
-6. Step through the process one step at a time
+-
 
-## Testing
+## Acknowledgements
 
-Have a look here: https://www.baeldung.com/spring-boot-testing
+This project was started using this template -> [Server](https://github.com/HASEL-UZH/sopra-fs22-template-server)
+
+## Team Members
+
+- [Rafael Dubach](https://github.com/radubauzh)
+- [Raphael Wäspi](https://github.com/sumsumcity)
+- [Dylan Baumgartner](https://github.com/mrspacerobot)
+- [Beat Furrer](https://github.com/elBeato)
+- [Solveig Helland](https://github.com/hellasol)
+
+## License
+
+[MIT license](https://github.com/sopra-fs22-group-27/Pictionary-Server/blob/master/LICENSE)
