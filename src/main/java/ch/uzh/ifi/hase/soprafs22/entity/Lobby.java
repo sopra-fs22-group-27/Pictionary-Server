@@ -20,7 +20,6 @@ public class Lobby {
     private Boolean isInGame;
 
     @OneToOne
-    @Column(nullable = false, unique = true)
     private User host;
 
     @Column
