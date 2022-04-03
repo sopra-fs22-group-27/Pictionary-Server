@@ -26,7 +26,7 @@ public class User implements Serializable {
   private Long id;
 
   @Column(nullable = false)
-  private String name;
+  private String password;
 
   @Column(nullable = false, unique = true)
   private String username;
@@ -37,6 +37,16 @@ public class User implements Serializable {
   @Column(nullable = false)
   private UserStatus status;
 
+  @Column(nullable = false)
+  private String email;
+
+  @Column()
+  private String creation_date;
+
+  // @Column(nullable = false)
+  // private Boolean logged_in;
+
+
   public Long getId() {
     return id;
   }
@@ -45,12 +55,12 @@ public class User implements Serializable {
     this.id = id;
   }
 
-  public String getName() {
-    return name;
+  public String getPassword() {
+    return password;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setPassword(String name) {
+    this.password = name;
   }
 
   public String getUsername() {
@@ -76,4 +86,23 @@ public class User implements Serializable {
   public void setStatus(UserStatus status) {
     this.status = status;
   }
+
+  public String getEmail() {return email;}
+
+  public void setEmail(String email) {this.email = email;}
+
+  public String getCreation_date(){return creation_date;}
+
+  public void setCreation_date(String creation_date){this.creation_date = creation_date;}
+
+  // public Boolean getLogged_in(){return logged_in;}
+
+  // public void setLogged_in(Boolean logged_in){this.logged_in = logged_in;}
 }
+
+//User:
+//        id<long>,
+//        username<string>,
+//        creation_date<Date>,
+//        logged_in<boolean>,
+//        birthday<Date>

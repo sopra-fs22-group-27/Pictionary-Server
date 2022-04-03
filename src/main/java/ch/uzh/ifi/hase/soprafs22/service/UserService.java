@@ -3,6 +3,8 @@ package ch.uzh.ifi.hase.soprafs22.service;
 import ch.uzh.ifi.hase.soprafs22.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs22.entity.User;
 import ch.uzh.ifi.hase.soprafs22.repository.UserRepository;
+import ch.uzh.ifi.hase.soprafs22.rest.mapper.DTOMapper;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -39,10 +42,43 @@ public class UserService {
     return this.userRepository.findAll();
   }
 
+// the functionality is declared as function name
+
+  public User getUserById(Long id){
+      return userRepository.findUserById(id);
+  }
+
+  public User updateUserStatus(Long id, User newUser){
+      User oldUser = userRepository.findUserById(id);
+      oldUser.setStatus(UserStatus.OFFLINE);
+      // oldUser.setLogged_in(newUser.getLogged_in());
+      userRepository.flush();
+      return oldUser;
+
+  }
+  public User updateUser(Long id, User newUser){
+      User oldUser = userRepository.findUserById(id);
+      if(oldUser == null){
+          throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The resource is not found.");
+      }
+      String newUsername = newUser.getUsername();
+      // String newEmail = newUser.getEmail();
+      if(userRepository.findByUsername(newUsername) != null && !oldUser.getUsername().equals(newUsername)){
+          throw new ResponseStatusException(HttpStatus.CONFLICT, "The username has been taken. Try to change another");
+      }else{
+          // oldUser.setEmail(newEmail);
+          oldUser.setUsername(newUsername);
+          userRepository.flush();
+          return oldUser;
+      }
+
+  }
+
+
   public User createUser(User newUser) {
     newUser.setToken(UUID.randomUUID().toString());
-    newUser.setStatus(UserStatus.OFFLINE);
-
+    newUser.setStatus(UserStatus.ONLINE);
+    // newUser.setLogged_in(true);
     checkIfUserExists(newUser);
 
     // saves the given entity but data is only persisted in the database once
@@ -66,16 +102,40 @@ public class UserService {
    */
   private void checkIfUserExists(User userToBeCreated) {
     User userByUsername = userRepository.findByUsername(userToBeCreated.getUsername());
-    User userByName = userRepository.findByName(userToBeCreated.getName());
+//    User userByPassword = userRepository.findByPassword(userToBeCreated.getPassword());
 
-    String baseErrorMessage = "The %s provided %s not unique. Therefore, the user could not be created!";
-    if (userByUsername != null && userByName != null) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-          String.format(baseErrorMessage, "username and the name", "are"));
-    } else if (userByUsername != null) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(baseErrorMessage, "username", "is"));
-    } else if (userByName != null) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(baseErrorMessage, "name", "is"));
+    String baseErrorMessage = "The %s has already been used. Therefore, the user could not be created!";
+    if (userByUsername != null){
+      throw new ResponseStatusException(HttpStatus.CONFLICT,
+          String.format(baseErrorMessage, "username"));
     }
+
+//     else if (userByPassword != null) {
+//      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(baseErrorMessage, "password", "is"));
+//    }
   }
+  public User checkUserLogin(@NotNull User userToLogin){
+    List<User> users = getUsers();
+    String username = userToLogin.getUsername();
+    String password = userToLogin.getPassword();
+    if(users.isEmpty()){
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Database is empty since there is no user data stored.");
+    }
+    for (User user : users) {
+        if(user.getUsername().equals(username) && user.getPassword().equals(password)){
+            // user.setLogged_in(true);
+            user.setStatus(UserStatus.ONLINE);
+            return user;
+        }
+    }
+    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Username or password is wrong, so you can't login.");
+
+
+//    if (userByUsername != null && userByPassword != null) {
+//        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, baseErrorMessage);
+//    }else{
+//        throw new ResponseStatusException(HttpStatus.OK, "login successfully");
+//    }
+  }
+
 }
