@@ -62,11 +62,11 @@ public class UserService {
           throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The resource is not found.");
       }
       String newUsername = newUser.getUsername();
-      String newEmail = newUser.getEmail();
+      // String newEmail = newUser.getEmail();
       if(userRepository.findByUsername(newUsername) != null && !oldUser.getUsername().equals(newUsername)){
           throw new ResponseStatusException(HttpStatus.CONFLICT, "The username has been taken. Try to change another");
       }else{
-          oldUser.setEmail(newEmail);
+          // oldUser.setEmail(newEmail);
           oldUser.setUsername(newUsername);
           userRepository.flush();
           return oldUser;
