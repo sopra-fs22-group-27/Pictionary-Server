@@ -33,7 +33,6 @@ public interface DTOMapper {
 
     DTOMapper INSTANCE = Mappers.getMapper(DTOMapper.class);
 
-  
     @Mapping(source = "password", target = "password")
     @Mapping(source = "username", target = "username")
     @Mapping(source = "creation_date", target = "creation_date")
