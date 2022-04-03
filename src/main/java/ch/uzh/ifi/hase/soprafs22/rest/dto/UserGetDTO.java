@@ -14,10 +14,10 @@ public class UserGetDTO {
   private String username;
   private String token;
   private UserStatus status;
-  private Date birthday;
-  private Date creation_date;
+  private String email;
+  private String creation_date;
 //  private String creation_date;
-  private Boolean logged_in;
+  // private Boolean logged_in;
 
   public Long getId() {
     return id;
@@ -50,43 +50,21 @@ public class UserGetDTO {
   public void setStatus(UserStatus status) {
     this.status = status;
   }
-    // get Date birthday
-  public Date getBirthday() {return birthday;}
-    // set Date birthday
-  public void setBirthday(String birthday) {
-      try {
-          Date convertedCurrentDate = new SimpleDateFormat("yyyy-MM-dd").parse(birthday);
 
-          this.birthday = convertedCurrentDate;
-      }
-      catch (Exception e) {
-          this.birthday = new Date(0);
-      }
-
+  public String getEmail() {return email;}
+  public void setEmail(String email) {
+    this.email = email;
   }
     // get Date Creation_date
-  public Date getCreation_date(){return creation_date;}
+  public String getCreation_date(){return creation_date;}
     // set Date Creation_date
   public void setCreation_date(String creation_date){
-
-      try {
-          Date convertedCurrentDate = new SimpleDateFormat("dd/MM/yyyy").parse(creation_date);
-
-          this.creation_date = convertedCurrentDate;
-      }
-      catch (Exception e) {
-          this.creation_date = new Date(100);
-      }
-//      String date = sdf.format(convertedCurrentDate);
-
+    this.creation_date = creation_date;
   }
 
-//  public String getCreation_date(){return creation_date;}
-//    public void setCreation_date(String creation_date){this.creation_date = creation_date;}
+  // public Boolean getLogged_in(){return logged_in;}
 
-  public Boolean getLogged_in(){return logged_in;}
-
-  public void setLogged_in(Boolean logged_in){this.logged_in = logged_in;}
+  // public void setLogged_in(Boolean logged_in){this.logged_in = logged_in;}
 
   public String getToken(){return token;}
 

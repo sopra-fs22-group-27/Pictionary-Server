@@ -8,11 +8,11 @@ public class UserPostDTO {
 
   private String username;
 
-  private String birthday;
+  private String email;
 
   private String creation_date;
 
-  private Boolean logged_in;
+  // private Boolean logged_in;
 
 
   public String getPassword() {
@@ -31,17 +31,17 @@ public class UserPostDTO {
     this.username = username;
   }
 
-  public String getBirthday() {return birthday;}
+  public String getEmail() {return email;}
 
-  public void setBirthday(String birthday) {this.birthday = birthday;}
+  public void setEmail(String email) {this.email = email;}
 
   public String getCreation_date(){return creation_date;}
 
   public void setCreation_date(String creation_date){this.creation_date = creation_date;}
 
-  public Boolean getLogged_in() {return logged_in;}
+  // public Boolean getLogged_in() {return logged_in;}
 
-  public void setLogged_in(Boolean logged_in) {this.logged_in = logged_in;}
+  // public void setLogged_in(Boolean logged_in) {this.logged_in = logged_in;}
 
 //  public UserStatus get
 }

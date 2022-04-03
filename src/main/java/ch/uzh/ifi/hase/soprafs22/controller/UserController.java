@@ -45,16 +45,6 @@ public class UserController {
         return userGetDTOs;
     }
 
-    //  @GetMapping(path = "/users/{id}")
-//  public User findUserById(@PathVariable("id") Long id){
-//      List<User> users = userService.getUsers();
-//      return users.stream().filter(user -> user.getId().equals(id)).findFirst().orElse(null);
-//  }
-//    @GetMapping(path = "/users/{id}/**")
-//    public void unauthorizedGet(@PathVariable("id") Long id) {
-//        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are unauthorized to get the resource.");
-//    }
-
     @GetMapping(path = "/users/{id}")
     public User findUserById(@PathVariable("id") Long id){
         User user = userService.getUserById(id);
@@ -77,12 +67,6 @@ public class UserController {
 
 //        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(updatedUser);
     }
-
-//    @PutMapping(path = "/users/{id}/**")
-//    @ResponseBody
-//    public void unauthorizedPut(@PathVariable("id") Long id, @RequestBody UserPostDTO userPostDTO) {
-//        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are unauthorized to get the resource.");
-//    }
 
     @PutMapping(path = "/status/{id}")
     @ResponseStatus(HttpStatus.OK)

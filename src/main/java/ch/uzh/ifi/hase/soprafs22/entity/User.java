@@ -37,14 +37,14 @@ public class User implements Serializable {
   @Column(nullable = false)
   private UserStatus status;
 
-  @Column()
-  private String birthday;
+  @Column(nullable = false)
+  private String email;
 
   @Column()
   private String creation_date;
 
-  @Column(nullable = false)
-  private Boolean logged_in;
+  // @Column(nullable = false)
+  // private Boolean logged_in;
 
 
   public Long getId() {
@@ -87,17 +87,17 @@ public class User implements Serializable {
     this.status = status;
   }
 
-  public String getBirthday() {return birthday;}
+  public String getEmail() {return email;}
 
-  public void setBirthday(String birthday) {this.birthday = birthday;}
+  public void setEmail(String email) {this.email = email;}
 
   public String getCreation_date(){return creation_date;}
 
   public void setCreation_date(String creation_date){this.creation_date = creation_date;}
 
-  public Boolean getLogged_in(){return logged_in;}
+  // public Boolean getLogged_in(){return logged_in;}
 
-  public void setLogged_in(Boolean logged_in){this.logged_in = logged_in;}
+  // public void setLogged_in(Boolean logged_in){this.logged_in = logged_in;}
 }
 
 //User:

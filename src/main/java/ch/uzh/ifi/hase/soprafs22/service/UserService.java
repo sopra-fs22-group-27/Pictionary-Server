@@ -51,7 +51,7 @@ public class UserService {
   public User updateUserStatus(Long id, User newUser){
       User oldUser = userRepository.findUserById(id);
       oldUser.setStatus(UserStatus.OFFLINE);
-      oldUser.setLogged_in(newUser.getLogged_in());
+      // oldUser.setLogged_in(newUser.getLogged_in());
       userRepository.flush();
       return oldUser;
 
@@ -62,11 +62,11 @@ public class UserService {
           throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The resource is not found.");
       }
       String newUsername = newUser.getUsername();
-      String newBirthday = newUser.getBirthday();
+      String newEmail = newUser.getEmail();
       if(userRepository.findByUsername(newUsername) != null && !oldUser.getUsername().equals(newUsername)){
           throw new ResponseStatusException(HttpStatus.CONFLICT, "The username has been taken. Try to change another");
       }else{
-          oldUser.setBirthday(newBirthday);
+          oldUser.setEmail(newEmail);
           oldUser.setUsername(newUsername);
           userRepository.flush();
           return oldUser;
@@ -78,7 +78,7 @@ public class UserService {
   public User createUser(User newUser) {
     newUser.setToken(UUID.randomUUID().toString());
     newUser.setStatus(UserStatus.ONLINE);
-    newUser.setLogged_in(true);
+    // newUser.setLogged_in(true);
     checkIfUserExists(newUser);
 
     // saves the given entity but data is only persisted in the database once
@@ -123,7 +123,7 @@ public class UserService {
     }
     for (User user : users) {
         if(user.getUsername().equals(username) && user.getPassword().equals(password)){
-            user.setLogged_in(true);
+            // user.setLogged_in(true);
             user.setStatus(UserStatus.ONLINE);
             return user;
         }
