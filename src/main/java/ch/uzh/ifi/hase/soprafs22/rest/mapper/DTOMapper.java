@@ -33,33 +33,24 @@ public interface DTOMapper {
 
     DTOMapper INSTANCE = Mappers.getMapper(DTOMapper.class);
 
-    @Mapping(source = "name", target = "name")
+
+
+    @Mapping(source = "password", target = "password")
     @Mapping(source = "username", target = "username")
+    @Mapping(source = "creation_date", target = "creation_date")
+    @Mapping(source = "email", target = "email")
     User convertUserPostDTOtoEntity(UserPostDTO userPostDTO);
 
     @Mapping(source = "id", target = "id")
-    @Mapping(source = "name", target = "name")
+  // do not map password
+  //  @Mapping(source = "password", target = "password")
     @Mapping(source = "username", target = "username")
     @Mapping(source = "status", target = "status")
+    @Mapping(source = "creation_date", target = "creation_date")
+    @Mapping(source = "email", target = "email")
+    // @Mapping(source = "logged_in", target = "logged_in")
+    @Mapping(source = "token", target = "token")
     UserGetDTO convertEntityToUserGetDTO(User user);
-
-
-  @Mapping(source = "password", target = "password")
-  @Mapping(source = "username", target = "username")
-  @Mapping(source = "creation_date", target = "creation_date")
-  @Mapping(source = "email", target = "email")
-  User convertUserPostDTOtoEntity(UserPostDTO userPostDTO);
-
-  @Mapping(source = "id", target = "id")
-// do not map password
-//  @Mapping(source = "password", target = "password")
-  @Mapping(source = "username", target = "username")
-  @Mapping(source = "status", target = "status")
-  @Mapping(source = "creation_date", target = "creation_date")
-  @Mapping(source = "email", target = "email")
-  // @Mapping(source = "logged_in", target = "logged_in")
-  @Mapping(source = "token", target = "token")
-  UserGetDTO convertEntityToUserGetDTO(User user);
 
 
 
