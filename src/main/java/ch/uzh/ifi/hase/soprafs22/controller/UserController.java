@@ -63,7 +63,7 @@ public class UserController {
 //        User user = userService.getUserById(id);
 
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
-        User updatedUser = userService.updateUser(id, userInput);
+        userService.updateUser(id, userInput);
 
 //        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(updatedUser);
     }
