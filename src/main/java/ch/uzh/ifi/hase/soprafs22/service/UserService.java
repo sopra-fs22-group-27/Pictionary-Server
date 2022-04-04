@@ -56,20 +56,38 @@ public class UserService {
       return oldUser;
 
   }
-  public User updateUser(Long id, User newUser){
+  public void updateUser(Long id, User newUser){
       User oldUser = userRepository.findUserById(id);
       if(oldUser == null){
           throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The resource is not found.");
       }
-      String newUsername = newUser.getUsername();
-      // String newEmail = newUser.getEmail();
-      if(userRepository.findByUsername(newUsername) != null && !oldUser.getUsername().equals(newUsername)){
-          throw new ResponseStatusException(HttpStatus.CONFLICT, "The username has been taken. Try to change another");
-      }else{
-          // oldUser.setEmail(newEmail);
-          oldUser.setUsername(newUsername);
+
+      //Change Username
+      if (newUser.getUsername()!=null && !newUser.getUsername().equals("")){
+          String newUsername = newUser.getUsername();
+          // String newEmail = newUser.getEmail();
+          if(userRepository.findByUsername(newUsername) != null && !oldUser.getUsername().equals(newUsername)){
+              throw new ResponseStatusException(HttpStatus.CONFLICT, "The username has been taken. Try to change another");
+          }
+          else{
+              // oldUser.setEmail(newEmail);
+              oldUser.setUsername(newUsername);
+              userRepository.flush();
+          }
+      }
+
+      //Change Email
+      if (newUser.getEmail()!=null && !newUser.getEmail().equals("")){
+          String newEmail = newUser.getEmail();
+          oldUser.setEmail(newEmail);
           userRepository.flush();
-          return oldUser;
+      }
+
+      //Change Password
+      if (newUser.getPassword()!=null && !newUser.getPassword().equals("")){
+          String newPassword = newUser.getPassword();
+          oldUser.setPassword(newPassword);
+          userRepository.flush();
       }
 
   }
