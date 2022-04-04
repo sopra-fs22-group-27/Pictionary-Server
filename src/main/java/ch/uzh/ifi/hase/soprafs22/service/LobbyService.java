@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -26,6 +28,10 @@ public class LobbyService {
     @Autowired
     public LobbyService(@Qualifier("lobbyRepository") LobbyRepository lobbyRepository) {
         this.lobbyRepository = lobbyRepository;
+    }
+
+    public List<Lobby> getLobbies() {
+        return this.lobbyRepository.findAll();
     }
 
     public Lobby createLobby(Lobby newLobby) throws ResponseStatusException {

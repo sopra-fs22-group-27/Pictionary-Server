@@ -1,6 +1,8 @@
 package ch.uzh.ifi.hase.soprafs22.entity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "LOBBY")
@@ -21,6 +23,9 @@ public class Lobby {
 
     @OneToOne
     private User host;
+
+    @OneToMany
+    private List<User> lobbyUserList;
 
     @Column
     private int gameLength;
@@ -63,6 +68,14 @@ public class Lobby {
 
     public void setHost(User host) {
         this.host = host;
+    }
+
+    public List<User> getLobbyUserList() {
+        return lobbyUserList;
+    }
+
+    public void setLobbyUserList(List<User> lobbyUserList) {
+        this.lobbyUserList = lobbyUserList;
     }
 
     public int getGameLength() {

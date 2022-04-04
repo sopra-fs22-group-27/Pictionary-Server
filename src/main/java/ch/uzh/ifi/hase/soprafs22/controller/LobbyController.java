@@ -33,4 +33,21 @@ public class LobbyController {
         // convert internal representation of user back to API
         return DTOMapper.INSTANCE.convertEntityToLobbyGetDTO(createdLobby);
     }
+
+    /**
+     * Returns list of lobbies
+     */
+    @GetMapping("/lobbies")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public List<LobbyGetDTO> getLobbies(){
+
+        List<Lobby> lobbiesList = lobbyService.getLobbies();
+        List<LobbyGetDTO> lobbyGetDTOs = new ArrayList<>();
+        // convert each user to the API representation
+        for (Lobby lobby : lobbiesList) {
+            lobbyGetDTOs.add(DTOMapper.INSTANCE.convertEntityToLobbyGetDTO(lobby));
+        }
+        return lobbyGetDTOs;
+    }
 }
