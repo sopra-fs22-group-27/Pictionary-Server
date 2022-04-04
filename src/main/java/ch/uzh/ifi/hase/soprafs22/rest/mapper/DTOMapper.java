@@ -45,7 +45,6 @@ public interface DTOMapper {
 
 
     @Mapping(source = "lobbyName", target = "lobbyName")
-    @Mapping(source = "host", target = "host")
     @Mapping(source = "gameLength", target = "gameLength")
     @Mapping(source = "isPublic", target = "isPublic")
     Lobby convertLobbyPostDTOtoEntity(LobbyPostDTO lobbyPostDTO);

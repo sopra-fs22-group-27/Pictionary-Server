@@ -7,7 +7,6 @@ public class LobbyPostDTO {
     private String lobbyName;
     private Boolean isPublic;
     private Boolean isInGame;
-    private User host;
     private int gameLength;
 
     public String getLobbyName() {
@@ -32,14 +31,6 @@ public class LobbyPostDTO {
 
     public void setIsInGame(Boolean isInGame) {
         this.isInGame = isInGame;
-    }
-
-    public User getHost() {
-        return host;
-    }
-
-    public void setHost(User host) {
-        this.host = host;
     }
 
     public int getGameLength() {

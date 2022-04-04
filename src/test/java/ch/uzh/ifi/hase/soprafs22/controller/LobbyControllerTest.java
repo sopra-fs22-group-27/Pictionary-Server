@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collections;
@@ -24,7 +25,9 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.http.RequestEntity.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -94,12 +97,11 @@ public class LobbyControllerTest {
         LobbyPostDTO lobbyPostDTO = new LobbyPostDTO();
         lobbyPostDTO.setLobbyName("testLobby");
         lobbyPostDTO.setIsPublic(true);
-        lobbyPostDTO.setHost(user);
 
-        given(lobbyService.createLobby(Mockito.any())).willReturn(lobby);
+        given(lobbyService.createLobby(Mockito.any(), Mockito.any())).willReturn(lobby);
 
         // when/then -> do the request + validate the result
-        MockHttpServletRequestBuilder postRequest = post("/lobby/create")
+        MockHttpServletRequestBuilder postRequest = post("/lobby/create/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(lobbyPostDTO));
 
@@ -111,6 +113,51 @@ public class LobbyControllerTest {
                 .andExpect(jsonPath("$.host.username", is(user.getUsername())))
                 .andExpect(jsonPath("$.isPublic", is(true)));
     }
+
+    /*
+    @Test
+    public void updateLobby_addUserToLobby() throws Exception{
+        // given
+        User user = new User();
+        user.setId(1L);
+        user.setPassword("Test Password");
+        user.setUsername("testUsername");
+        user.setToken("1");
+        user.setStatus(UserStatus.ONLINE);
+
+        // given
+        User user1 = new User();
+        user1.setId(2L);
+        user1.setPassword("Test Password");
+        user1.setUsername("testUsername1");
+        user1.setToken("2");
+        user1.setStatus(UserStatus.ONLINE);
+
+        Lobby lobby = new Lobby();
+        lobby.setLobbyName("testLobby");
+        lobby.setId(1L);
+        lobby.setHost(user);
+        lobby.setIsPublic(true);
+
+        LobbyPostDTO lobbyPostDTO = new LobbyPostDTO();
+        lobbyPostDTO.setLobbyName("testLobby");
+
+        lobbyPostDTO.setIsPublic(true);
+        lobbyPostDTO.setHost(user);
+
+        given(lobbyService.addUserToLobby(2L, "2")).willReturn(lobby);
+
+        // when
+        MockHttpServletRequestBuilder putRequest = MockMvcRequestBuilders.put("/lobby/1L/adduser/2L");
+
+        // then
+        mockMvc.perform(putRequest)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isPublic", is(lobby.getLobbyName())))
+                // .andExpect(jsonPath("$.password", is(user.getPassword())))
+                .andExpect(jsonPath("$.host.username", is(user.getUsername())))
+                .andExpect(jsonPath("$.isPublic", is(true)));
+    }*/
 
     /**
      * Helper Method to convert userPostDTO into a JSON string such that the input

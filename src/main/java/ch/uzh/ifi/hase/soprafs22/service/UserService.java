@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs22.service;
 
 import ch.uzh.ifi.hase.soprafs22.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs22.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs22.entity.User;
 import ch.uzh.ifi.hase.soprafs22.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs22.rest.mapper.DTOMapper;
@@ -47,6 +48,16 @@ public class UserService {
   public User getUserById(Long id){
       return userRepository.findUserById(id);
   }
+
+    public User getUserByToken(String userToken){
+        Optional<User> user = Optional.ofNullable(this.userRepository.findByToken(userToken));
+        if(user.isPresent()){
+            return user.get();
+        }
+        else{
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User cannot be found.");
+        }
+    }
 
   public User updateUserStatus(Long id, User newUser){
       User oldUser = userRepository.findUserById(id);

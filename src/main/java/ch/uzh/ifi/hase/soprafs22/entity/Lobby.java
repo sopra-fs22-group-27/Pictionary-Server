@@ -3,6 +3,7 @@ package ch.uzh.ifi.hase.soprafs22.entity;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Table(name = "LOBBY")
@@ -76,6 +77,12 @@ public class Lobby {
 
     public void setLobbyUserList(List<User> lobbyUserList) {
         this.lobbyUserList = lobbyUserList;
+    }
+
+    public void addUserToLobbyUserList(User user) {
+        List<User> lobbyUserListCopy = this.lobbyUserList;
+        lobbyUserListCopy.add(user);
+        this.lobbyUserList = lobbyUserListCopy;
     }
 
     public int getGameLength() {
