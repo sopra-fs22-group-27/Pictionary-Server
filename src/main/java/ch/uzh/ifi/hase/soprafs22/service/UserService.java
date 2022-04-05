@@ -59,16 +59,16 @@ public class UserService {
         }
     }
 
-  public User updateUserStatus(Long id, User newUser){
-      User oldUser = userRepository.findUserById(id);
+  public User updateUserStatus(String token, User newUser){
+      User oldUser = userRepository.findByToken(token);
       oldUser.setStatus(UserStatus.OFFLINE);
       // oldUser.setLogged_in(newUser.getLogged_in());
       userRepository.flush();
       return oldUser;
 
   }
-  public void updateUser(Long id, User newUser){
-      User oldUser = userRepository.findUserById(id);
+  public void updateUser(String token, User newUser){
+      User oldUser = userRepository.findByToken(token);
       if(oldUser == null){
           throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The resource is not found.");
       }
