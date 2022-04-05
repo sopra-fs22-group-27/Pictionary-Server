@@ -5,6 +5,8 @@ import ch.uzh.ifi.hase.soprafs22.constant.UserStatus;
 import javax.persistence.*;
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Internal User Representation
  * This class composes the internal representation of the user and defines how
@@ -37,11 +39,13 @@ public class User implements Serializable {
   @Column(nullable = false)
   private UserStatus status;
 
-  @Column(nullable = false)
+  @Column(nullable = false, unique = true)
   private String email;
 
   @Column()
+  @JsonFormat(pattern="dd/MM/yyyy")
   private String creation_date;
+  // private LocalDate creation_date;
 
   // @Column(nullable = false)
   // private Boolean logged_in;

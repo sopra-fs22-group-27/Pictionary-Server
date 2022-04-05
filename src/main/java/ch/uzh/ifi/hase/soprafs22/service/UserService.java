@@ -18,6 +18,8 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /**
  * User Service
@@ -105,6 +107,15 @@ public class UserService {
 
 
   public User createUser(User newUser) {
+    if(newUser.getPassword() == "" || newUser.getUsername() == ""){
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The username or password is. Try to use a valid one");
+    }
+    if(newUser.getCreation_date() == null){
+        LocalDate today = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String formattedCreation_date = formatter.format(today);
+        newUser.setCreation_date(formattedCreation_date);
+    }
     newUser.setToken(UUID.randomUUID().toString());
     newUser.setStatus(UserStatus.ONLINE);
     // newUser.setLogged_in(true);
@@ -131,13 +142,18 @@ public class UserService {
    */
   private void checkIfUserExists(User userToBeCreated) {
     User userByUsername = userRepository.findByUsername(userToBeCreated.getUsername());
+    User userByEmail = userRepository.findByEmail(userToBeCreated.getEmail());
 //    User userByPassword = userRepository.findByPassword(userToBeCreated.getPassword());
 
     String baseErrorMessage = "The %s has already been used. Therefore, the user could not be created!";
     if (userByUsername != null){
-      throw new ResponseStatusException(HttpStatus.CONFLICT,
-          String.format(baseErrorMessage, "username"));
+        throw new ResponseStatusException(HttpStatus.CONFLICT,
+            String.format(baseErrorMessage, "username"));
     }
+    if (userByEmail != null){
+        throw new ResponseStatusException(HttpStatus.CONFLICT,
+            String.format(baseErrorMessage, "email"));
+      }
 
 //     else if (userByPassword != null) {
 //      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(baseErrorMessage, "password", "is"));
