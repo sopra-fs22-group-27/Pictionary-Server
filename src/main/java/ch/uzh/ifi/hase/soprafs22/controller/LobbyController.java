@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class LobbyController {
@@ -20,7 +19,13 @@ public class LobbyController {
         this.lobbyService = lobbyService;
     }
 
-
+    /**
+     * Create a Lobby with User Token. Adds User as Host.
+     *
+     * @param userToken
+     * @param lobbyPostDTO
+     * @return LobbyGetDTO
+     */
     @PostMapping("/lobby/create/{userToken}")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
@@ -36,12 +41,12 @@ public class LobbyController {
     }
 
     /**
-     * Returns list of lobbies
+     * @return List of Lobbies
      */
     @GetMapping("/lobbies")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<LobbyGetDTO> getLobbies(){
+    public List<LobbyGetDTO> getLobbies() {
         List<Lobby> lobbiesList = lobbyService.getLobbies();
         List<LobbyGetDTO> lobbyGetDTOs = new ArrayList<>();
         // convert each user to the API representation
@@ -51,11 +56,17 @@ public class LobbyController {
         return lobbyGetDTOs;
     }
 
-    @PutMapping("/lobby/{id}/adduser/{token}")
+    /**
+     * Add User to an existing Lobby using user token
+     * @param lobbyToken
+     * @param userToken
+     * @return LobbyGetDTO
+     */
+    @PutMapping("/lobby/{lobbyToken}/adduser/{userToken}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public LobbyGetDTO addUserToLobby(@PathVariable("id") Long id, @PathVariable("token") String token){
-        Lobby lobby = lobbyService.addUserToLobby(id, token);
+    public LobbyGetDTO addUserToLobby(@PathVariable("lobbyToken") String lobbyToken, @PathVariable("userToken") String userToken) {
+        Lobby lobby = lobbyService.addUserToLobby(lobbyToken, userToken);
 
         return DTOMapper.INSTANCE.convertEntityToLobbyGetDTO(lobby);
     }

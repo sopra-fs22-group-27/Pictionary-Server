@@ -3,7 +3,6 @@ package ch.uzh.ifi.hase.soprafs22.entity;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Entity
 @Table(name = "LOBBY")
@@ -12,6 +11,9 @@ public class Lobby {
     @Id
     @GeneratedValue
     private Long id;
+
+    @Column(nullable = false, unique = true)
+    private String token;
 
     @Column(nullable = false, unique = true)
     private String lobbyName;
@@ -35,8 +37,12 @@ public class Lobby {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public String getLobbyName() {
@@ -72,13 +78,17 @@ public class Lobby {
     }
 
     public List<User> getLobbyUserList() {
-        return lobbyUserList;
+        List<User> lobbyListCopy = new ArrayList<User>();
+        if (lobbyUserList != null) {
+            lobbyListCopy.addAll(lobbyUserList);
+        }
+        return lobbyListCopy;
     }
 
-    public void setLobbyUserList(List<User> lobbyUserList) {
-        this.lobbyUserList = lobbyUserList;
-    }
-
+    /**
+     * Adds User to a Lobby User List
+     * @param user
+     */
     public void addUserToLobbyUserList(User user) {
         List<User> lobbyUserListCopy = this.lobbyUserList;
         lobbyUserListCopy.add(user);

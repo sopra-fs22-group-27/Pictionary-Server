@@ -14,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -36,6 +37,7 @@ public class LobbyService {
 
     public Lobby createLobby(Lobby newLobby, String userToken) throws ResponseStatusException {
         checkIfLobbyExists(newLobby);
+        newLobby.setToken(UUID.randomUUID().toString());
         User user = userService.getUserByToken(userToken);
         newLobby.setIsInGame(false);
         newLobby.setHost(user);
@@ -48,21 +50,20 @@ public class LobbyService {
         return newLobby;
     }
 
-    public Lobby addUserToLobby(long id, String userToken){
-        Optional<Lobby> lobby = getLobby(id);
+    public Lobby addUserToLobby(String lobbyToken, String userToken){
+        Lobby lobby = getLobby(lobbyToken);
         User user = userService.getUserByToken(userToken);
-        if(lobby.isPresent()){
-            lobby.get().addUserToLobbyUserList(user);
-            Lobby lobbyCopy = lobby.get();
-            return lobbyCopy;
+        if(lobby != null){
+            lobby.addUserToLobbyUserList(user);
+            return lobby;
         }
         else{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Lobby cannot be found.");
         }
     }
 
-    private Optional<Lobby> getLobby(Long id){
-        Optional<Lobby> lobby = this.lobbyRepository.findById(id);
+    private Lobby getLobby(String token){
+        Lobby lobby = this.lobbyRepository.findByToken(token);
         if(lobby != null){
             return lobby;
         }else{

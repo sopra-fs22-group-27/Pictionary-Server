@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class LobbyGetDTO {
 
-    private Long id;
+    private String token;
     private String lobbyName;
     private Boolean isPublic;
     private Boolean isInGame;
@@ -15,12 +15,12 @@ public class LobbyGetDTO {
     private ArrayList<User> lobbyUserList;
     private int gameLength;
 
-    public Long getId() {
-        return id;
+    public String getToken() {
+        return token;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public String getLobbyName() {

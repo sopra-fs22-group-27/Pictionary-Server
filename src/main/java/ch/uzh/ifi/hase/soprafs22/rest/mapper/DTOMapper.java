@@ -49,7 +49,7 @@ public interface DTOMapper {
     @Mapping(source = "isPublic", target = "isPublic")
     Lobby convertLobbyPostDTOtoEntity(LobbyPostDTO lobbyPostDTO);
 
-    @Mapping(source = "id", target = "id")
+    @Mapping(source = "token", target = "token")
     @Mapping(source = "lobbyName", target = "lobbyName")
     @Mapping(source = "isPublic", target = "isPublic")
     @Mapping(source = "isInGame", target = "isInGame")
