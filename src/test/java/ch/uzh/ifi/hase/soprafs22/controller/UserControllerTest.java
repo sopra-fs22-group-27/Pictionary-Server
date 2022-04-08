@@ -49,6 +49,7 @@ public class UserControllerTest {
     User user = new User();
     user.setPassword("password");
     user.setUsername("firstname@lastname");
+    user.setEmail("test@email.com");
     user.setStatus(UserStatus.OFFLINE);
 
     List<User> allUsers = Collections.singletonList(user);
@@ -75,6 +76,7 @@ public class UserControllerTest {
     user.setId(1L);
     user.setPassword("Test Password");
     user.setUsername("testUsername");
+    user.setEmail("test@email.com");
     user.setToken("1");
     user.setStatus(UserStatus.ONLINE);
 

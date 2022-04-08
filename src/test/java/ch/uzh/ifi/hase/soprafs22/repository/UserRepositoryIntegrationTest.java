@@ -27,7 +27,7 @@ public class UserRepositoryIntegrationTest {
     user.setUsername("firstname@lastname");
     user.setStatus(UserStatus.OFFLINE);
     user.setToken("1");
-    user.setEmail("email");
+    user.setEmail("email@test.com");
     entityManager.persist(user);
     entityManager.flush();
 

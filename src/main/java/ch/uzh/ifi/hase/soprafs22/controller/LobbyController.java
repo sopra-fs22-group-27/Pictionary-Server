@@ -26,7 +26,7 @@ public class LobbyController {
      * @param lobbyPostDTO
      * @return LobbyGetDTO
      */
-    @PostMapping("/lobby/create/{userToken}")
+    @PostMapping("/lobby/{userToken}")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public LobbyGetDTO createLobby(@PathVariable String userToken, @RequestBody LobbyPostDTO lobbyPostDTO) {
@@ -43,7 +43,7 @@ public class LobbyController {
     /**
      * @return List of Lobbies
      */
-    @GetMapping("/lobbies")
+    @GetMapping("/lobby")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public List<LobbyGetDTO> getLobbies() {
@@ -62,7 +62,7 @@ public class LobbyController {
      * @param userToken
      * @return LobbyGetDTO
      */
-    @PutMapping("/lobby/{lobbyToken}/adduser/{userToken}")
+    @PutMapping("/lobby/{lobbyToken}/user/{userToken}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public LobbyGetDTO addUserToLobby(@PathVariable("lobbyToken") String lobbyToken, @PathVariable("userToken") String userToken) {
