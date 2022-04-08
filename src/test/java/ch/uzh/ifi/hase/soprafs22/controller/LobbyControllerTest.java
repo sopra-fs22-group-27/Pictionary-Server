@@ -68,7 +68,7 @@ public class LobbyControllerTest {
         given(lobbyService.getLobbies()).willReturn(allLobbies);
 
         // when
-        MockHttpServletRequestBuilder getRequest = get("/lobbies").contentType(MediaType.APPLICATION_JSON);
+        MockHttpServletRequestBuilder getRequest = get("/lobby").contentType(MediaType.APPLICATION_JSON);
 
         // then
         mockMvc.perform(getRequest).andExpect(status().isOk())
@@ -101,7 +101,7 @@ public class LobbyControllerTest {
         given(lobbyService.createLobby(Mockito.any(), Mockito.any())).willReturn(lobby);
 
         // when/then -> do the request + validate the result
-        MockHttpServletRequestBuilder postRequest = post("/lobby/create/1")
+        MockHttpServletRequestBuilder postRequest = post("/lobby/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(lobbyPostDTO));
 
