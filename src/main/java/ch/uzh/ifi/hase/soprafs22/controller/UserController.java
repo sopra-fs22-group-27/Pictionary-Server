@@ -30,6 +30,7 @@ public class UserController {
         this.userService = userService;
     }
 
+    //Dont know if we need this request. Look at REST.docx in Teams
     @GetMapping("/users")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -45,9 +46,9 @@ public class UserController {
         return userGetDTOs;
     }
 
-    @GetMapping(path = "/users/{id}")
-    public User findUserById(@PathVariable("id") Long id){
-        User user = userService.getUserById(id);
+    @GetMapping(path = "/users/{token}")
+    public User findUserByToken(@PathVariable("token") String token){
+        User user = userService.getUserByToken(token);
         if(user != null){
             return user;
         }else{
