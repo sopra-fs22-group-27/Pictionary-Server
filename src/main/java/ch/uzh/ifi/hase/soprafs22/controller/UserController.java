@@ -47,10 +47,10 @@ public class UserController {
     }
 
     @GetMapping(path = "/users/{token}")
-    public User findUserByToken(@PathVariable("token") String token){
+    public UserGetDTO findUserByToken(@PathVariable("token") String token){
         User user = userService.getUserByToken(token);
         if(user != null){
-            return user;
+            return DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
         }else{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The resource is not found.");
         }
