@@ -78,7 +78,6 @@ public class UserService {
       //Change Username
       if (newUser.getUsername()!=null && !newUser.getUsername().equals("")){
           String newUsername = newUser.getUsername();
-          // String newEmail = newUser.getEmail();
           if(userRepository.findByUsername(newUsername) != null && !oldUser.getUsername().equals(newUsername)){
               throw new ResponseStatusException(HttpStatus.CONFLICT, "The username has been taken. Try to change another");
           }
@@ -92,8 +91,14 @@ public class UserService {
       //Change Email
       if (newUser.getEmail()!=null && !newUser.getEmail().equals("")){
           String newEmail = newUser.getEmail();
-          oldUser.setEmail(newEmail);
-          userRepository.flush();
+          if(userRepository.findByEmail(newEmail) != null && !oldUser.getEmail().equals(newEmail)){
+              throw new ResponseStatusException(HttpStatus.CONFLICT, "The Email has been taken. Try to change another");
+          }
+          else{
+              // oldUser.setEmail(newEmail);
+              oldUser.setEmail(newEmail);
+              userRepository.flush();
+          }
       }
 
       //Change Password
@@ -118,6 +123,7 @@ public class UserService {
     }
     newUser.setToken(UUID.randomUUID().toString());
     newUser.setStatus(UserStatus.ONLINE);
+    newUser.setRanking_points(0);
     // newUser.setLogged_in(true);
     checkIfUserExists(newUser);
 

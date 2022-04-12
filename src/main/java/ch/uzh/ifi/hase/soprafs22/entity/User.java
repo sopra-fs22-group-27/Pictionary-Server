@@ -48,6 +48,9 @@ public class User implements Serializable {
     @Column()
     @JsonFormat(pattern = "dd/MM/yyyy")
     private String creation_date;
+
+    @Column(nullable = false)
+    private int ranking_points;
     // private LocalDate creation_date;
 
     // @Column(nullable = false)
@@ -125,9 +128,13 @@ public class User implements Serializable {
         this.creation_date = creation_date;
     }
 
-    // public Boolean getLogged_in(){return logged_in;}
+    public int getRanking_points() {
+        return ranking_points;
+    }
 
-    // public void setLogged_in(Boolean logged_in){this.logged_in = logged_in;}
+    public void setRanking_points(int ranking_points) {
+        this.ranking_points = ranking_points;
+    }
 }
 
 //User:

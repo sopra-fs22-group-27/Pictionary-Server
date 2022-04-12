@@ -12,6 +12,8 @@ public class UserPostDTO {
 
   private String creation_date;
 
+  private int ranking_points;
+
   // private Boolean logged_in;
 
 
@@ -39,7 +41,17 @@ public class UserPostDTO {
 
   public void setCreation_date(String creation_date){this.creation_date = creation_date;}
 
-  // public Boolean getLogged_in() {return logged_in;}
+  public int getRanking_points() {
+      return ranking_points;
+  }
+
+  public void setRanking_points(int ranking_points) {
+      this.ranking_points = ranking_points;
+  }
+
+
+
+    // public Boolean getLogged_in() {return logged_in;}
 
   // public void setLogged_in(Boolean logged_in) {this.logged_in = logged_in;}
 

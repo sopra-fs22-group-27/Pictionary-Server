@@ -16,6 +16,7 @@ public class UserGetDTO {
   private UserStatus status;
   private String email;
   private String creation_date;
+  private int ranking_points;
 //  private String creation_date;
   // private Boolean logged_in;
 
@@ -69,5 +70,12 @@ public class UserGetDTO {
   public String getToken(){return token;}
 
   public void setToken(String token){this.token = token;}
+
+  public int getRanking_points() {
+        return ranking_points;
+    }
+    public void setRanking_points(int ranking_points) {
+        this.ranking_points = ranking_points;
+    }
 
 }
