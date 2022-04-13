@@ -71,4 +71,14 @@ public class LobbyController {
         return DTOMapper.INSTANCE.convertEntityToLobbyGetDTO(lobby);
     }
 
+    /**
+     * Delete user from an existing Lobby using user token. However, if the user is the host, close the lobby
+     * @param lobbyToken
+     * @param userToken
+     */
+    @DeleteMapping("/lobby/{lobbyToken}/user/{userToken}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUserFromLobby(@PathVariable("lobbyToken") String lobbyToken, @PathVariable("userToken") String userToken) {
+        lobbyService.removeUserFromLobby(lobbyToken, userToken);
+    }
 }

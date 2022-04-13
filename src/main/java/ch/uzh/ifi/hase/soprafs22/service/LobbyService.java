@@ -16,6 +16,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.List;
 
 @Service
 @Transactional
@@ -79,6 +80,46 @@ public class LobbyService {
         else{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Lobby cannot be found.");
         }
+    }
+
+    public void removeUserFromLobby(String lobbyToken, String userToken){
+        Lobby lobby = getLobby(lobbyToken);
+        User user = userService.getUserByToken(userToken);
+        List<User> users = lobby.getLobbyUserList();
+        //check if user is the host
+        if(lobby.getHost().getToken().equals(userToken)){
+            // set isInLobby
+            user.setIsInLobby(false);
+            for(User joiner : users){
+                joiner.setIsInLobby(false);
+            }
+            // delete the lobby
+            lobbyRepository.delete(lobby);
+            lobbyRepository.flush();
+        }
+        else if(users.isEmpty()){
+            // no joiner except the host
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No joiner in the lobby so you can't remove any user.");
+        }
+        else if(checkIfUserInUserList(userToken, users)){
+            // user is one of the joiners
+            users.removeIf(joiner -> joiner.getToken().equals(userToken));
+            user.setIsInLobby(false);
+            lobby.setLobbyUserList(users);
+        }
+        else{
+            // user is not in this lobby
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User is not in this lobby.");
+        }
+    }
+
+    private Boolean checkIfUserInUserList(String userToken, List<User> userList){
+        for(User joiner: userList){
+            if(joiner.getToken().equals(userToken)){
+                return true;
+            }
+        }
+        return false;
     }
 
     private Lobby getLobby(String token){

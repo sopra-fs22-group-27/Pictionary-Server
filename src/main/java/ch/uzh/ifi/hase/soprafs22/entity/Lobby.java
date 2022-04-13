@@ -87,6 +87,10 @@ public class Lobby {
         return lobbyListCopy;
     }
 
+    public void setLobbyUserList(List<User> lobbyUserList) {
+        this.lobbyUserList = lobbyUserList;
+    }
+
     /**
      * Adds User to a Lobby User List
      * @param user
