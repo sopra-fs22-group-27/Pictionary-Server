@@ -108,4 +108,11 @@ public class UserController {
         return DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
     }
 
+    @DeleteMapping("/users/{token}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUser(@PathVariable("token") String token){
+        User user = userService.getUserByToken(token);
+        userService.deleteUser(user);
+    }
+
 }

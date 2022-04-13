@@ -3,6 +3,7 @@ package ch.uzh.ifi.hase.soprafs22.service;
 import ch.uzh.ifi.hase.soprafs22.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs22.entity.User;
 import ch.uzh.ifi.hase.soprafs22.repository.LobbyRepository;
+import ch.uzh.ifi.hase.soprafs22.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +23,14 @@ public class LobbyService {
     private final Logger log = LoggerFactory.getLogger(UserService.class);
 
     private final LobbyRepository lobbyRepository;
+    private final UserRepository userRepository;
 
     private UserService userService;
 
     @Autowired
-    public LobbyService(@Qualifier("lobbyRepository") LobbyRepository lobbyRepository, UserService userService) {
+    public LobbyService(@Qualifier("lobbyRepository") LobbyRepository lobbyRepository, @Qualifier("userRepository") UserRepository userRepository, UserService userService) {
         this.lobbyRepository = lobbyRepository;
+        this.userRepository = userRepository;
         this.userService = userService;
     }
 
@@ -39,6 +42,14 @@ public class LobbyService {
         checkIfLobbyExists(newLobby);
         newLobby.setToken(UUID.randomUUID().toString());
         User user = userService.getUserByToken(userToken);
+
+        // check if the user has already entered a room
+        if(user.getIsInLobby()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The user is already in a room, so he/she can't join in another room as a host.");
+        }
+        user.setIsInLobby(true);
+        userRepository.flush();
+
         newLobby.setIsInGame(false);
         newLobby.setHost(user);
         // saves the given entity but data is only persisted in the database once
@@ -53,6 +64,14 @@ public class LobbyService {
     public Lobby addUserToLobby(String lobbyToken, String userToken){
         Lobby lobby = getLobby(lobbyToken);
         User user = userService.getUserByToken(userToken);
+
+        // check if the user has already entered a room
+        if(user.getIsInLobby()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The user is already in a room, so he/she can't join in another room as a non-host.");
+        }
+        user.setIsInLobby(true);
+        userRepository.flush();
+
         if(lobby != null){
             lobby.addUserToLobbyUserList(user);
             return lobby;

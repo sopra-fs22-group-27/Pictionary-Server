@@ -22,7 +22,7 @@ public class Lobby {
     private Boolean isPublic;
 
     @Column(nullable = false)
-    private Boolean isInGame;
+    private Boolean isInGame = false;
 
     @OneToOne
     private User host;
@@ -32,6 +32,8 @@ public class Lobby {
 
     @Column
     private int gameLength;
+
+    
 
     public Long getId() {
         return id;

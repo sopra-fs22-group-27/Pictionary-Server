@@ -51,6 +51,9 @@ public class User implements Serializable {
 
     @Column(nullable = false)
     private int ranking_points;
+
+    @Column(nullable = false)
+    private Boolean isInLobby = false;
     // private LocalDate creation_date;
 
     // @Column(nullable = false)
@@ -134,6 +137,13 @@ public class User implements Serializable {
 
     public void setRanking_points(int ranking_points) {
         this.ranking_points = ranking_points;
+    }
+
+    public Boolean getIsInLobby() {
+        return isInLobby;
+    }
+    public void setIsInLobby(Boolean isInLobby) {
+        this.isInLobby = isInLobby;
     }
 }
 

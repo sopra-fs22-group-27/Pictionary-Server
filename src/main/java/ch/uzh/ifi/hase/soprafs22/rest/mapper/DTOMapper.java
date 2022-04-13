@@ -41,6 +41,7 @@ public interface DTOMapper {
     @Mapping(source = "email", target = "email")
     // @Mapping(source = "logged_in", target = "logged_in")
     @Mapping(source = "token", target = "token")
+    @Mapping(source = "isInLobby", target = "isInLobby")
     UserGetDTO convertEntityToUserGetDTO(User user);
 
 
