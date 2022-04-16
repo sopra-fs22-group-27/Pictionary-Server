@@ -1,7 +1,10 @@
 package ch.uzh.ifi.hase.soprafs22.rest.mapper;
 
+import ch.uzh.ifi.hase.soprafs22.entity.Game;
 import ch.uzh.ifi.hase.soprafs22.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs22.entity.User;
+import ch.uzh.ifi.hase.soprafs22.rest.dto.GameGetDTO;
+import ch.uzh.ifi.hase.soprafs22.rest.dto.GamePostDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.dto.LobbyGetDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.dto.LobbyPostDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.dto.UserGetDTO;
@@ -57,5 +60,25 @@ public interface DTOMapper {
     @Mapping(source = "host", target = "host")
     @Mapping(source = "gameLength", target = "gameLength")
     LobbyGetDTO convertEntityToLobbyGetDTO(Lobby lobby);
+
+    @Mapping(source = "gameName", target = "gameName")
+    @Mapping(source = "numberOfPlayersRequired", target = "numberOfPlayersRequired")
+    @Mapping(source = "numberOfPlayers", target = "numberOfPlayers")
+    @Mapping(source = "roundLength", target = "roundLength")
+    @Mapping(source = "numberOfRounds", target = "numberOfRounds")
+    @Mapping(source = "gameStatus", target = "gameStatus")
+    Game convertGamePostDTOtoEntity(GamePostDTO gamePostDTO);
+
+    @Mapping(source = "gameName", target = "gameName")
+    @Mapping(source = "numberOfPlayersRequired", target = "numberOfPlayersRequired")
+    @Mapping(source = "numberOfPlayers", target = "numberOfPlayers")
+    @Mapping(source = "roundLength", target = "roundLength")
+    @Mapping(source = "numberOfRounds", target = "numberOfRounds")
+    @Mapping(source = "gameStatus", target = "gameStatus")
+    @Mapping(source = "gameId", target = "gameId")
+    GameGetDTO convertEntityToGameGetDTO(Game gamePostDTO);
+
+    
+
 
 }
