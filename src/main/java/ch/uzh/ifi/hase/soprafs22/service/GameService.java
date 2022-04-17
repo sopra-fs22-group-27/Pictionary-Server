@@ -29,7 +29,7 @@ public class GameService {
     }
 
     public Game createGame (Game newGame) {
-        newGame.setGameId(UUID.randomUUID().toString());
+        newGame.setGameToken(UUID.randomUUID().toString());
         newGame = gameRepository.save(newGame);
         gameRepository.flush();
         return newGame;

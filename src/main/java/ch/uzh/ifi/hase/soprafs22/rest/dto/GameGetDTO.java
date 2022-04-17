@@ -7,7 +7,7 @@ public class GameGetDTO {
     private int roundLength;
     private int numberOfRounds;
     private String gameStatus;
-    private String gameId;
+    private String gameToken;
     
     public String getGameName() {
         return gameName;
@@ -45,11 +45,11 @@ public class GameGetDTO {
     public void setGameStatus(String gameStatus) {
         this.gameStatus = gameStatus;
     }
-    public String getGameId() {
-        return gameId;
+    public String getGameToken() {
+        return gameToken;
     }
-    public void setGameId(String gameId) {
-        this.gameId = gameId;
+    public void setGameToken(String gameToken) {
+        this.gameToken = gameToken;
     }
 
 }
