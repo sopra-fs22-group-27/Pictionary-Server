@@ -32,7 +32,7 @@ public class Game {
     private String gameToken;
 
     @Column(nullable = false)
-    private List<User> players;
+    private List<String> players;
 
 
     public String getGameName() {
@@ -91,11 +91,11 @@ public class Game {
         this.gameToken = gameToken;
     }
 
-    public List<User> getPlayers() {
+    public List<String> getPlayers() {
         return players;
     }
 
-    public void setPlayers(List<User> players) {
+    public void setPlayers(List<String> players) {
         this.players = players;
     }
 }

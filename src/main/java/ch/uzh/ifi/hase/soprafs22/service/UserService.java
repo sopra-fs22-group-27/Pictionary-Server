@@ -115,6 +115,8 @@ public class UserService {
         if(newUser.getPassword() == "" || newUser.getUsername() == ""){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The username or password is. Try to use a valid one");
         }
+        checkIfUserExists(newUser);
+
         if(newUser.getCreation_date() == null){
             LocalDate today = LocalDate.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -125,7 +127,6 @@ public class UserService {
         newUser.setStatus(UserStatus.ONLINE);
         newUser.setRanking_points(0);
         // newUser.setLogged_in(true);
-        checkIfUserExists(newUser);
 
         // saves the given entity but data is only persisted in the database once
         // flush() is called

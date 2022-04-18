@@ -60,11 +60,11 @@ public class GameController {
 
     /**
      * Add player to a game by id
-     * @param id
+     * @param gameToken
      * @param userToken
      * @return GameGetDTO
      */   
-    @PostMapping(path = "/games/{gameToken}/players/{userToken}")
+    @PutMapping(path = "/games/{gameToken}/players/{userToken}")
     public GameGetDTO addPlayerToGame(@PathVariable String gameToken, @PathVariable String userToken) {
         Game game = gameService.addPlayerToGame(gameToken, userToken);
         return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
