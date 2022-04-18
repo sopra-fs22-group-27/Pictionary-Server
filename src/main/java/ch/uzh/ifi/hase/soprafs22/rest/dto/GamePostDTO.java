@@ -1,35 +1,13 @@
-package ch.uzh.ifi.hase.soprafs22.entity;
-import javax.persistence.*;
+package ch.uzh.ifi.hase.soprafs22.rest.dto;
 
-@Entity
-@Table(name = "Game")
-public class Game {
-
-    @Id
-    @GeneratedValue
-    private Long id;
-
-    @Column(nullable = false)
+public class GamePostDTO {
     private String gameName;
-
-    @Column(nullable = false)
     private int numberOfPlayersRequired;
-
-    @Column(nullable = false)
     private int numberOfPlayers;
-
-    @Column(nullable = false)
     private int roundLength;
-
-    @Column(nullable = false)
     private int numberOfRounds;
-
-    @Column(nullable = false)
     private String gameStatus;
-
-    @Column(nullable = false)
     private String gameToken;
-
 
     public String getGameName() {
         return gameName;
