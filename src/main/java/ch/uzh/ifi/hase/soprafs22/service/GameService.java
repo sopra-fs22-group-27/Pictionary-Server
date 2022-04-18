@@ -34,4 +34,20 @@ public class GameService {
         gameRepository.flush();
         return newGame;
     }
+
+    public Game addPlayerToGame (String gameToken, String userToken) {
+        Game game = gameRepository.findById(gameToken);
+
+        if (game.getGameStatus().equals("waiting")) {
+            List players = game.getPlayers();
+            players.add(userToken);
+            game.setPlayers(players);
+            game.setNumberOfPlayers(players.size());
+            gameRepository.save(game);
+            gameRepository.flush();
+            return game;
+        } else {
+            return null;
+        }   
+    }
 }

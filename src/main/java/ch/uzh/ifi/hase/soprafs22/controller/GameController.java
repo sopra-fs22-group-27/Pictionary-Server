@@ -37,6 +37,7 @@ public class GameController {
      * Get all games
      * @return List of GameGetDTO
      */
+    @GetMapping(path = "/games")
     public List<GameGetDTO> getGames() {
         List<Game> gamesList = gameService.getGames();
         List<GameGetDTO> gameGetDTOs = new ArrayList<>();
@@ -51,9 +52,21 @@ public class GameController {
      * @param id
      * @return GameGetDTO
      */
-    @GetMapping(path = "/games/{id}")
-    public GameGetDTO getGameById(@PathVariable String id) {
-        Game game = gameService.getGameById(id);
+    @GetMapping(path = "/games/{gameToken}")
+    public GameGetDTO getGameById(@PathVariable String gameToken) {
+        Game game = gameService.getGameById(gameToken);
+        return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
+    }
+
+    /**
+     * Add player to a game by id
+     * @param id
+     * @param userToken
+     * @return GameGetDTO
+     */   
+    @PostMapping(path = "/games/{gameToken}/players/{userToken}")
+    public GameGetDTO addPlayerToGame(@PathVariable String gameToken, @PathVariable String userToken) {
+        Game game = gameService.addPlayerToGame(gameToken, userToken);
         return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
     }
 }

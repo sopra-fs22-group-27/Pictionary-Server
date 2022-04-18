@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs22.entity;
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "Game")
@@ -17,7 +18,7 @@ public class Game {
 
     @Column(nullable = false)
     private int numberOfPlayers;
-
+    
     @Column(nullable = false)
     private int roundLength;
 
@@ -29,6 +30,9 @@ public class Game {
 
     @Column(nullable = false)
     private String gameToken;
+
+    @Column(nullable = false)
+    private List<User> players;
 
 
     public String getGameName() {
@@ -85,5 +89,13 @@ public class Game {
 
     public void setGameToken(String gameToken) {
         this.gameToken = gameToken;
+    }
+
+    public List<User> getPlayers() {
+        return players;
+    }
+
+    public void setPlayers(List<User> players) {
+        this.players = players;
     }
 }
