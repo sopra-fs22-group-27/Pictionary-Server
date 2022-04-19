@@ -69,7 +69,7 @@ public class UserService {
         return oldUser;
 
     }
-    public void updateUser(String token, User newUser){
+    public User updateUser(String token, User newUser){
         User oldUser = userRepository.findByToken(token);
         if(oldUser == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The resource is not found.");
@@ -107,6 +107,8 @@ public class UserService {
             oldUser.setPassword(newPassword);
             userRepository.flush();
         }
+
+        return oldUser;
 
     }
 

@@ -60,14 +60,14 @@ public class UserController {
     }
 
     @PutMapping(path = "/users/{token}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public void updateUser(@PathVariable("token") String token, @RequestBody UserPostDTO userPostDTO){
+    public UserGetDTO updateUser(@PathVariable("token") String token, @RequestBody UserPostDTO userPostDTO){
 //        User user = userService.getUserById(id);
 
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
-        userService.updateUser(token, userInput);
-
+        User updatedUser = userService.updateUser(token, userInput);
+        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(updatedUser);
 //        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(updatedUser);
     }
 
