@@ -71,13 +71,14 @@ public class UserController {
 //        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(updatedUser);
     }
 
+    /**
+     * Update UserStatus to Offline
+     * @param token
+     */
     @PutMapping(path = "/status/{token}")
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public UserGetDTO updateUserStatus(@PathVariable("token") String token, @RequestBody UserPostDTO userPostDTO){
-        User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
-        User updatedUser = userService.updateUserStatus(token, userInput);
-        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(updatedUser);
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateUserStatus(@PathVariable("token") String token){
+        userService.updateUserStatus(token);
     }
 
 
