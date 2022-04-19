@@ -78,7 +78,7 @@ This project was started using this template -> [Server](https://github.com/HASE
 - [Rafael Dubach](https://github.com/radubauzh)
 - [Raphael Wäspi](https://github.com/sumsumcity)
 - [Dylan Baumgartner](https://github.com/mrspacerobot)
-- [Beat Furrer](https://github.com/elBeato)
+- [Shaoyan Li](https://github.com/SyLi9527)
 - [Solveig Helland](https://github.com/hellasol)
 
 ## License
