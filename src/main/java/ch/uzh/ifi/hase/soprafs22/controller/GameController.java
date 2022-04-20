@@ -9,7 +9,7 @@ import ch.uzh.ifi.hase.soprafs22.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs22.service.GameService;
 import java.util.List;
 import java.util.ArrayList;
-
+import org.springframework.http.HttpStatus;
 @RestController
 public class GameController {
     private final GameService gameService;
@@ -52,11 +52,11 @@ public class GameController {
      * @param id
      * @return GameGetDTO
      */
-    @GetMapping(path = "/games/{gameToken}")
-    public GameGetDTO getGameById(@PathVariable String gameToken) {
-        Game game = gameService.getGameById(gameToken);
-        return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
-    }
+    // @GetMapping(path = "/games/{gameToken}")
+    // public GameGetDTO getGameByToken(@PathVariable String gameToken) {
+    //     Game game = gameService.getGameByToken(gameToken);
+    //     return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
+    // }
 
     /**
      * Add player to a game by id
@@ -64,8 +64,8 @@ public class GameController {
      * @param userToken
      * @return GameGetDTO
      */   
-    @PutMapping(path = "/games/{gameToken}/players/{userToken}")
-    public GameGetDTO addPlayerToGame(@PathVariable String gameToken, @PathVariable String userToken) {
+    @PutMapping(path = "/games/{gameToken}/player/{userToken}")
+    public GameGetDTO addPlayerToGame(@PathVariable("gameToken") String gameToken, @PathVariable("userToken") String userToken) {
         Game game = gameService.addPlayerToGame(gameToken, userToken);
         return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
     }

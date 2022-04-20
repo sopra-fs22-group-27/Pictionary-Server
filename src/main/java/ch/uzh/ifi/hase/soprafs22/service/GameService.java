@@ -1,4 +1,5 @@
 package ch.uzh.ifi.hase.soprafs22.service;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,8 +32,8 @@ public class GameService {
 
     public Game getGameById(String id) {
         return this.gameRepository.findById(id);
-    }
-
+    }    
+    
     public Game createGame (Game newGame) {
         newGame.setGameToken(UUID.randomUUID().toString());
         newGame = gameRepository.save(newGame);
@@ -41,21 +42,23 @@ public class GameService {
     }
 
     public Game addPlayerToGame (String gameToken, String userToken) {
-        Game game = gameRepository.findById(gameToken);
+        Game game = this.gameRepository.findById(gameToken);
         User user = userService.getUserByToken(userToken);
-        List<String> currentPlayers = game.getPlayers();
+        String[] currentPlayers = game.getPlayerTokens();
 
         if (game.getGameStatus().equals("started") || game.getGameStatus().equals("finished")) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The game has already started or is finished");
-        } else if (currentPlayers.contains(userToken)) {
+        } else if (Arrays.stream(currentPlayers).anyMatch(userToken::equals)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The user is already in the game");
-        } else if (currentPlayers.size() == game.getNumberOfPlayersRequired()) {
+        } else if (currentPlayers.length == game.getNumberOfPlayersRequired()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The game is already full");
-        } else if (game == null || user == null) {
+        } else if (game.getGameName() == null || user == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The game or user does not exist");
         } else {
-            currentPlayers.add(userToken);
-            game.setPlayers(currentPlayers);
+            //add userToken to currentPlayers
+            String[] newPlayers = Arrays.copyOf(currentPlayers, currentPlayers.length + 1);
+            newPlayers[currentPlayers.length] = userToken;
+            game.setPlayerTokens(newPlayers);
             gameRepository.flush();
             return game;
         }

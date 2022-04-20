@@ -12,7 +12,7 @@ public class GamePostDTO {
     private int numberOfRounds;
     private String gameStatus;
     private String gameToken;
-    private List<String> players;
+    private String[] playerTokens;
 
     public String getGameName() {
         return gameName;
@@ -70,11 +70,12 @@ public class GamePostDTO {
         this.gameToken = gameToken;
     }
 
-    public List<String> getPlayers() {
-        return players;
+    public String[] getPlayerTokens() {
+        return playerTokens;
     }
 
-    public void setPlayers(List<String> players) {
-        this.players = players;
+    public void setPlayerTokens(String[] playerTokens) {
+        this.playerTokens = playerTokens;
     }
+
 }

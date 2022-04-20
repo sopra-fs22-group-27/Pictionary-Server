@@ -1,11 +1,9 @@
 package ch.uzh.ifi.hase.soprafs22.entity;
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
-@Table(name = "Game")
+@Table(name = "GAME")
 public class Game {
-
     @Id
     @GeneratedValue
     private Long id;
@@ -28,11 +26,11 @@ public class Game {
     @Column(nullable = false)
     private String gameStatus;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String gameToken;
 
     @Column(nullable = false)
-    private List<String> players;
+    private String[] playerTokens;
 
 
     public String getGameName() {
@@ -91,11 +89,11 @@ public class Game {
         this.gameToken = gameToken;
     }
 
-    public List<String> getPlayers() {
-        return players;
+    public String[] getPlayerTokens() {
+        return playerTokens;
     }
 
-    public void setPlayers(List<String> players) {
-        this.players = players;
+    public void setPlayerTokens(String[] playerTokens) {
+        this.playerTokens = playerTokens;
     }
 }

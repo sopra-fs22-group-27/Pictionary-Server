@@ -10,7 +10,7 @@ public class GameGetDTO {
     private int numberOfRounds;
     private String gameStatus;
     private String gameToken;
-    private List<String> players;
+    private String[] playerTokens;
     
     public String getGameName() {
         return gameName;
@@ -54,11 +54,11 @@ public class GameGetDTO {
     public void setGameToken(String gameToken) {
         this.gameToken = gameToken;
     }
-    public List<String> getPlayers() {
-        return players;
+    public String[] getPlayerTokens() {
+        return playerTokens;
     }
-    public void setPlayers(List<String> players) {
-        this.players = players;
+    public void setPlayerTokens(String[] playerTokens) {
+        this.playerTokens = playerTokens;
     }
 
 }
