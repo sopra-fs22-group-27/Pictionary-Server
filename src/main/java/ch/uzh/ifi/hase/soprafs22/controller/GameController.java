@@ -9,7 +9,6 @@ import ch.uzh.ifi.hase.soprafs22.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs22.service.GameService;
 import java.util.List;
 import java.util.ArrayList;
-import org.springframework.http.HttpStatus;
 @RestController
 public class GameController {
     private final GameService gameService;
@@ -23,7 +22,6 @@ public class GameController {
      * @param GamePostDTO
      * @return GameGetDTO
      */
-
     @PostMapping(path = "/games")
     public GameGetDTO createGame(@RequestBody GamePostDTO gamePostDTO) {
         Game game = DTOMapper.INSTANCE.convertGamePostDTOtoEntity(gamePostDTO);
@@ -52,11 +50,11 @@ public class GameController {
      * @param id
      * @return GameGetDTO
      */
-    // @GetMapping(path = "/games/{gameToken}")
-    // public GameGetDTO getGameByToken(@PathVariable String gameToken) {
-    //     Game game = gameService.getGameByToken(gameToken);
-    //     return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
-    // }
+    @GetMapping(path = "/games/{gameToken}")
+    public GameGetDTO getGameByToken(@PathVariable("gameToken") String gameToken) {
+        Game game = gameService.getGameByToken(gameToken);
+        return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
+    }
 
     /**
      * Add player to a game by id

@@ -6,7 +6,6 @@ import ch.uzh.ifi.hase.soprafs22.entity.Game;
 
 @Repository("gameRepository")
 public interface GameRepository extends JpaRepository<Game, Long> {
-        // Game findByToken(String gameToken);
-
+        Game findByGameToken(String gameToken);
         Game findById(String id);
 }   

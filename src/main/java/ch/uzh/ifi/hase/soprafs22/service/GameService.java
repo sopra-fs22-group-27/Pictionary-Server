@@ -33,6 +33,10 @@ public class GameService {
     public Game getGameById(String id) {
         return this.gameRepository.findById(id);
     }    
+
+    public Game getGameByToken(String token) {
+        return this.gameRepository.findByGameToken(token);
+    }
     
     public Game createGame (Game newGame) {
         newGame.setGameToken(UUID.randomUUID().toString());
@@ -42,7 +46,7 @@ public class GameService {
     }
 
     public Game addPlayerToGame (String gameToken, String userToken) {
-        Game game = this.gameRepository.findById(gameToken);
+        Game game = this.gameRepository.findByGameToken(gameToken);
         User user = userService.getUserByToken(userToken);
         String[] currentPlayers = game.getPlayerTokens();
 
@@ -59,6 +63,7 @@ public class GameService {
             String[] newPlayers = Arrays.copyOf(currentPlayers, currentPlayers.length + 1);
             newPlayers[currentPlayers.length] = userToken;
             game.setPlayerTokens(newPlayers);
+            game.setNumberOfPlayers(game.getNumberOfPlayers() + 1);
             gameRepository.flush();
             return game;
         }
