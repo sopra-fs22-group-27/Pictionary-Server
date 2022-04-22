@@ -30,6 +30,9 @@ public class Game {
     @Column(nullable = false)
     private String gameToken;
 
+    @Column()
+    private String img;
+
 
     public String getGameName() {
         return gameName;
@@ -85,5 +88,13 @@ public class Game {
 
     public void setGameToken(String gameToken) {
         this.gameToken = gameToken;
+    }
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
     }
 }
