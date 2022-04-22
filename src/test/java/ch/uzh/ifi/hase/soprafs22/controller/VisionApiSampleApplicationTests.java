@@ -48,4 +48,4 @@ public class VisionApiSampleApplicationTests {
                     //assertThat(annotationNames).contains("glasses");
                 });
     }
-}
+}**/
