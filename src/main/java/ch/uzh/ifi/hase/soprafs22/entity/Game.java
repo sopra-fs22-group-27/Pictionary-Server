@@ -31,6 +31,7 @@ public class Game {
     private String gameToken;
 
     @Column()
+    @Lob
     private String img;
 
 

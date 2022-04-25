@@ -60,7 +60,7 @@ public class GameController {
         gameService.updateImg(gameToken, img.getImg());
     }
 
-    @GetMapping(path = "games/drawing")
+    @GetMapping(path = "/games/drawing")
     ResponseEntity<String> getImage(String gameToken) {
         return ResponseEntity.ok(gameService.getImage(gameToken));
     }
