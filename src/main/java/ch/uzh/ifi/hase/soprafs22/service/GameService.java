@@ -35,7 +35,11 @@ public class GameService {
     }    
 
     public Game getGameByToken(String token) {
-        return this.gameRepository.findByGameToken(token);
+        Game game = gameRepository.findByGameToken(token);
+        if (game == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The Game was not found with this GameToken");
+        }
+        return game;
     }
     
     public Game createGame (Game newGame) {
@@ -47,15 +51,18 @@ public class GameService {
 
     public Game addPlayerToGame (String gameToken, String userToken) {
         Game game = this.gameRepository.findByGameToken(gameToken);
+        if(game == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The Game was not found with this GameToken");
+        }
         User user = userService.getUserByToken(userToken);
         String[] currentPlayers = game.getPlayerTokens();
 
         if (game.getGameStatus().equals("started") || game.getGameStatus().equals("finished")) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The game has already started or is finished");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "The game has already started or is finished");
         } else if (Arrays.stream(currentPlayers).anyMatch(userToken::equals)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The user is already in the game");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "The user is already in the game");
         } else if (currentPlayers.length == game.getNumberOfPlayersRequired()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The game is already full");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "The game is already full");
         } else if (game.getGameName() == null || user == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The game or user does not exist");
         } else {
