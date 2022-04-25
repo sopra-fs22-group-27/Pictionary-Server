@@ -1,5 +1,8 @@
 package ch.uzh.ifi.hase.soprafs22.controller;
 
+import ch.uzh.ifi.hase.soprafs22.entity.Img;
+import ch.uzh.ifi.hase.soprafs22.entity.User;
+import ch.uzh.ifi.hase.soprafs22.rest.dto.GamePutDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -51,8 +54,10 @@ public class GameController {
 
     @PutMapping(path = "/games/drawing")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void updateImage(String gameToken, String img){
-        gameService.updateImg(gameToken, img);
+    public void updateImage(String gameToken, @RequestBody GamePutDTO gamePutDTO){
+        Img img = DTOMapper.INSTANCE.convertGamePutDTOToImg(gamePutDTO);
+        System.out.println(img.getImg());
+        gameService.updateImg(gameToken, img.getImg());
     }
 
     @GetMapping(path = "games/drawing")
