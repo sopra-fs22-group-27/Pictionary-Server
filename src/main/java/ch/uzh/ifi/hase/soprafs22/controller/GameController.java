@@ -56,7 +56,6 @@ public class GameController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void updateImage(String gameToken, @RequestBody GamePutDTO gamePutDTO){
         Img img = DTOMapper.INSTANCE.convertGamePutDTOToImg(gamePutDTO);
-        System.out.println(img.getImg());
         gameService.updateImg(gameToken, img.getImg());
     }
 
