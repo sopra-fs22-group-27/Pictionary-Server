@@ -1,5 +1,10 @@
 package ch.uzh.ifi.hase.soprafs22.controller;
 
+import ch.uzh.ifi.hase.soprafs22.entity.Img;
+import ch.uzh.ifi.hase.soprafs22.entity.User;
+import ch.uzh.ifi.hase.soprafs22.rest.dto.GamePutDTO;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import ch.uzh.ifi.hase.soprafs22.entity.Game;
@@ -7,6 +12,7 @@ import ch.uzh.ifi.hase.soprafs22.rest.dto.GameGetDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.dto.GamePostDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs22.service.GameService;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -44,6 +50,18 @@ public class GameController {
             gameGetDTOs.add(DTOMapper.INSTANCE.convertEntityToGameGetDTO(game));
         }
         return gameGetDTOs;
+    }
+
+    @PutMapping(path = "/games/drawing")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public void updateImage(String gameToken, @RequestBody GamePutDTO gamePutDTO){
+        Img img = DTOMapper.INSTANCE.convertGamePutDTOToImg(gamePutDTO);
+        gameService.updateImg(gameToken, img.getImg());
+    }
+
+    @GetMapping(path = "/games/drawing")
+    ResponseEntity<String> getImage(String gameToken) {
+        return ResponseEntity.ok(gameService.getImage(gameToken));
     }
 
     /**
