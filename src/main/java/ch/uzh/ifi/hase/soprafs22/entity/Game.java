@@ -31,6 +31,10 @@ public class Game {
 
     @Column(nullable = false)
     private String[] playerTokens;
+    
+    @Column()
+    @Lob
+    private String img;
 
 
     public String getGameName() {
@@ -95,5 +99,12 @@ public class Game {
 
     public void setPlayerTokens(String[] playerTokens) {
         this.playerTokens = playerTokens;
+    }
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
     }
 }

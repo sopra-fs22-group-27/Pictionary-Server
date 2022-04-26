@@ -75,4 +75,17 @@ public class GameService {
             return game;
         }
     }
+
+    public void updateImg(String gameToken, String img){
+        Game game = gameRepository.findByGameToken(gameToken);
+        game.setImg(img);
+        gameRepository.save(game);
+        gameRepository.flush();
+    }
+
+    public String getImage(String gameToken){
+        Game game = gameRepository.findByGameToken(gameToken);
+        String img = game.getImg();
+        return img;
+    }
 }

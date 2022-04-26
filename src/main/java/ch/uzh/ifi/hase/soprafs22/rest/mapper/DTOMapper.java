@@ -1,14 +1,10 @@
 package ch.uzh.ifi.hase.soprafs22.rest.mapper;
 
 import ch.uzh.ifi.hase.soprafs22.entity.Game;
+import ch.uzh.ifi.hase.soprafs22.entity.Img;
 import ch.uzh.ifi.hase.soprafs22.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs22.entity.User;
-import ch.uzh.ifi.hase.soprafs22.rest.dto.GameGetDTO;
-import ch.uzh.ifi.hase.soprafs22.rest.dto.GamePostDTO;
-import ch.uzh.ifi.hase.soprafs22.rest.dto.LobbyGetDTO;
-import ch.uzh.ifi.hase.soprafs22.rest.dto.LobbyPostDTO;
-import ch.uzh.ifi.hase.soprafs22.rest.dto.UserGetDTO;
-import ch.uzh.ifi.hase.soprafs22.rest.dto.UserPostDTO;
+import ch.uzh.ifi.hase.soprafs22.rest.dto.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -79,4 +75,9 @@ public interface DTOMapper {
     @Mapping(source = "gameToken", target = "gameToken")
     @Mapping(source = "playerTokens", target = "playerTokens")
     GameGetDTO convertEntityToGameGetDTO(Game gamePostDTO);
+
+    @Mapping(source = "img", target = "img")
+    Img convertGamePutDTOToImg(GamePutDTO gamePutDTO);
+
+
 }
