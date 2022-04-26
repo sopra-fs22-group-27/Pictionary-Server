@@ -2,9 +2,8 @@ package ch.uzh.ifi.hase.soprafs22.entity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "Game")
+@Table(name = "GAME")
 public class Game {
-
     @Id
     @GeneratedValue
     private Long id;
@@ -17,7 +16,7 @@ public class Game {
 
     @Column(nullable = false)
     private int numberOfPlayers;
-
+    
     @Column(nullable = false)
     private int roundLength;
 
@@ -27,9 +26,12 @@ public class Game {
     @Column(nullable = false)
     private String gameStatus;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String gameToken;
 
+    @Column(nullable = false)
+    private String[] playerTokens;
+    
     @Column()
     @Lob
     private String img;
@@ -91,6 +93,13 @@ public class Game {
         this.gameToken = gameToken;
     }
 
+    public String[] getPlayerTokens() {
+        return playerTokens;
+    }
+
+    public void setPlayerTokens(String[] playerTokens) {
+        this.playerTokens = playerTokens;
+    }
     public String getImg() {
         return img;
     }

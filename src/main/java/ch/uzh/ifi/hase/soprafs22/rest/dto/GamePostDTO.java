@@ -1,5 +1,9 @@
 package ch.uzh.ifi.hase.soprafs22.rest.dto;
 
+import java.util.List;
+
+import ch.uzh.ifi.hase.soprafs22.entity.User;
+
 public class GamePostDTO {
     private String gameName;
     private int numberOfPlayersRequired;
@@ -8,6 +12,7 @@ public class GamePostDTO {
     private int numberOfRounds;
     private String gameStatus;
     private String gameToken;
+    private String[] playerTokens;
 
     public String getGameName() {
         return gameName;
@@ -64,4 +69,13 @@ public class GamePostDTO {
     public void setGameToken(String gameToken) {
         this.gameToken = gameToken;
     }
+
+    public String[] getPlayerTokens() {
+        return playerTokens;
+    }
+
+    public void setPlayerTokens(String[] playerTokens) {
+        this.playerTokens = playerTokens;
+    }
+
 }

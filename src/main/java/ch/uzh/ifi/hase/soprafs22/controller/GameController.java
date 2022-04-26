@@ -15,7 +15,6 @@ import ch.uzh.ifi.hase.soprafs22.service.GameService;
 
 import java.util.List;
 import java.util.ArrayList;
-
 @RestController
 public class GameController {
     private final GameService gameService;
@@ -29,7 +28,6 @@ public class GameController {
      * @param GamePostDTO
      * @return GameGetDTO
      */
-
     @PostMapping(path = "/games")
     public GameGetDTO createGame(@RequestBody GamePostDTO gamePostDTO) {
         Game game = DTOMapper.INSTANCE.convertGamePostDTOtoEntity(gamePostDTO);
@@ -70,9 +68,21 @@ public class GameController {
      * @param id
      * @return GameGetDTO
      */
-    @GetMapping(path = "/games/{id}")
-    public GameGetDTO getGameById(@PathVariable String id) {
-        Game game = gameService.getGameById(id);
+    @GetMapping(path = "/games/{gameToken}")
+    public GameGetDTO getGameByToken(@PathVariable("gameToken") String gameToken) {
+        Game game = gameService.getGameByToken(gameToken);
+        return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
+    }
+
+    /**
+     * Add player to a game by id
+     * @param gameToken
+     * @param userToken
+     * @return GameGetDTO
+     */   
+    @PutMapping(path = "/games/{gameToken}/player/{userToken}")
+    public GameGetDTO addPlayerToGame(@PathVariable("gameToken") String gameToken, @PathVariable("userToken") String userToken) {
+        Game game = gameService.addPlayerToGame(gameToken, userToken);
         return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
     }
 }
