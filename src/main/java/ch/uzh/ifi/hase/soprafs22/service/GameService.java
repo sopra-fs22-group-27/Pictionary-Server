@@ -47,4 +47,8 @@ public class GameService {
         String img = game.getImg();
         return img;
     }
+
+    public List<Game> getGameByGameName(String gameName) {
+        return this.gameRepository.findByGameName(gameName);
+    }
 }

@@ -43,6 +43,7 @@ public class GameController {
      * Get all games
      * @return List of GameGetDTO
      */
+    @GetMapping(path = "/games")
     public List<GameGetDTO> getGames() {
         List<Game> gamesList = gameService.getGames();
         List<GameGetDTO> gameGetDTOs = new ArrayList<>();
@@ -74,4 +75,20 @@ public class GameController {
         Game game = gameService.getGameById(id);
         return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
     }
+
+    /**
+     * Get games by gameName
+     * @param gameName
+     * @return GameGetDTO
+     */
+    @GetMapping(path = "games/gameName/{gameName}")
+    public List<GameGetDTO> getGameByGameName(@PathVariable String gameName) {
+        List<Game> games = gameService.getGameByGameName(gameName);
+        List<GameGetDTO> gameGetDTOs = new ArrayList<>();
+        for (Game game : games) {
+            gameGetDTOs.add(DTOMapper.INSTANCE.convertEntityToGameGetDTO(game));
+        }
+        return gameGetDTOs;
+    }
+
 }
