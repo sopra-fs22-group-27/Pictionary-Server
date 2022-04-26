@@ -43,6 +43,7 @@ public class GameController {
      * Get all games
      * @return List of GameGetDTO
      */
+    @GetMapping(path = "/games")
     public List<GameGetDTO> getGames() {
         List<Game> gamesList = gameService.getGames();
         List<GameGetDTO> gameGetDTOs = new ArrayList<>();
