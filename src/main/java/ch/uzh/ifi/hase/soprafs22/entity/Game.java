@@ -36,6 +36,9 @@ public class Game {
     @Lob
     private String img;
 
+    @Column(nullable = false)
+    private String word;
+
 
     public String getGameName() {
         return gameName;
@@ -106,5 +109,13 @@ public class Game {
 
     public void setImg(String img) {
         this.img = img;
+    }
+
+    public String getWord() {
+        return word;
+    }
+
+    public void setWord(String word) {
+        this.word = word;
     }
 }

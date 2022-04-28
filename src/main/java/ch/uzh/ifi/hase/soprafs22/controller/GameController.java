@@ -85,4 +85,16 @@ public class GameController {
         Game game = gameService.addPlayerToGame(gameToken, userToken);
         return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
     }
+
+    @PutMapping(path = "/games/{gameToken}/word/{word}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void changeWord(@PathVariable("gameToken") String gameToken, @PathVariable("word") String word){
+        gameService.changeWord(gameToken, word);
+    }
+
+    @GetMapping(path = "/games/{gameToken}/word/{guessedWord}")
+    @ResponseStatus(HttpStatus.OK)
+    public Boolean controlGuessedWord(@PathVariable("gameToken") String gameToken, @PathVariable("guessedWord") String guessedWord){
+        return gameService.getResultOfGuess(gameToken, guessedWord);
+    }
 }

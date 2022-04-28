@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs22.service;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,7 @@ public class GameService {
     
     public Game createGame (Game newGame) {
         newGame.setGameToken(UUID.randomUUID().toString());
+        newGame.setWord("");
         newGame = gameRepository.save(newGame);
         gameRepository.flush();
         return newGame;
@@ -87,5 +89,21 @@ public class GameService {
         Game game = gameRepository.findByGameToken(gameToken);
         String img = game.getImg();
         return img;
+    }
+
+    public void changeWord(String gameToken, String word){
+        Game game = gameRepository.findByGameToken(gameToken);
+        if(game == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The Game was not found with this GameToken");
+        }
+        game.setWord(word);
+    }
+
+    public Boolean getResultOfGuess(String gameToken, String guessedWord){
+        Game game = gameRepository.findByGameToken(gameToken);
+        if(game == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The Game was not found with this GameToken");
+        }
+        return Objects.equals(game.getWord(), guessedWord);
     }
 }
