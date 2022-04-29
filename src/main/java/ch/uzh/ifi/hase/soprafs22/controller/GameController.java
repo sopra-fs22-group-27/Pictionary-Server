@@ -1,8 +1,10 @@
 package ch.uzh.ifi.hase.soprafs22.controller;
 
+import ch.uzh.ifi.hase.soprafs22.entity.GameRound;
 import ch.uzh.ifi.hase.soprafs22.entity.Img;
 import ch.uzh.ifi.hase.soprafs22.entity.User;
 import ch.uzh.ifi.hase.soprafs22.rest.dto.GamePutDTO;
+import ch.uzh.ifi.hase.soprafs22.rest.dto.GameRoundGetDTO;
 import ch.uzh.ifi.hase.soprafs22.service.GameRoundService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -105,6 +107,13 @@ public class GameController {
     @ResponseStatus(HttpStatus.OK)
     public Boolean isGameFull(@PathVariable("gameToken") String gameToken){
         return gameService.isGameFull(gameToken);
+    }
+
+    @GetMapping(path = "/gameRound/{gameToken}")
+    @ResponseStatus(HttpStatus.OK)
+    public GameRoundGetDTO getGameRound(@PathVariable("gameToken") String gameToken){
+        GameRound gameRound = gameRoundService.getGameRound(gameToken);
+        return DTOMapper.INSTANCE.convertEntityToGameRoundGetDTO(gameRound);
     }
 
     /**@GetMapping(path = "/games/{gameToken}/timeGameRound")

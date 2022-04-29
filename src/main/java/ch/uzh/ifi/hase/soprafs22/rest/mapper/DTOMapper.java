@@ -1,9 +1,6 @@
 package ch.uzh.ifi.hase.soprafs22.rest.mapper;
 
-import ch.uzh.ifi.hase.soprafs22.entity.Game;
-import ch.uzh.ifi.hase.soprafs22.entity.Img;
-import ch.uzh.ifi.hase.soprafs22.entity.Lobby;
-import ch.uzh.ifi.hase.soprafs22.entity.User;
+import ch.uzh.ifi.hase.soprafs22.entity.*;
 import ch.uzh.ifi.hase.soprafs22.rest.dto.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -79,5 +76,10 @@ public interface DTOMapper {
     @Mapping(source = "img", target = "img")
     Img convertGamePutDTOToImg(GamePutDTO gamePutDTO);
 
+    @Mapping(source = "word", target = "word")
+    @Mapping(source = "winner", target = "winner")
+    @Mapping(source = "roundStartingTime", target = "roundStartingTime")
+    @Mapping(source = "drawer", target = "drawerToken")
+    GameRoundGetDTO convertEntityToGameRoundGetDTO(GameRound gameRound);
 
 }
