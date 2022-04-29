@@ -92,9 +92,21 @@ public class GameController {
         gameService.changeWord(gameToken, word);
     }
 
-    @GetMapping(path = "/games/{gameToken}/word/{guessedWord}")
+    @GetMapping(path = "/games/{gameToken}/user/{userToken}/word/{guessedWord}")
     @ResponseStatus(HttpStatus.OK)
-    public Boolean controlGuessedWord(@PathVariable("gameToken") String gameToken, @PathVariable("guessedWord") String guessedWord){
-        return gameService.getResultOfGuess(gameToken, guessedWord);
+    public Boolean controlGuessedWord(@PathVariable("gameToken") String gameToken, @PathVariable("userToken") String userToken, @PathVariable("guessedWord") String guessedWord){
+        return gameService.getResultOfGuess(gameToken, userToken, guessedWord);
     }
+
+    @GetMapping(path = "/games/{gameToken}/full")
+    @ResponseStatus(HttpStatus.OK)
+    public Boolean isGameFull(@PathVariable("gameToken") String gameToken){
+        return gameService.isGameFull(gameToken);
+    }
+
+    /**@GetMapping(path = "/games/{gameToken}/timeGameRound")
+    @ResponseStatus(HttpStatus.OK)
+    public long startedGameTime(@PathVariable("gameToken") String gameToken){
+        return gameService.
+    }*/
 }

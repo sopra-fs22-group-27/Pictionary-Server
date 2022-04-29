@@ -1,5 +1,7 @@
 package ch.uzh.ifi.hase.soprafs22.entity;
 import javax.persistence.*;
+import java.util.HashMap;
+import java.util.List;
 
 @Entity
 @Table(name = "GAME")
@@ -31,14 +33,15 @@ public class Game {
 
     @Column(nullable = false)
     private String[] playerTokens;
-    
+
     @Column()
-    @Lob
-    private String img;
+    private HashMap<String, Integer> playerPoints = new HashMap<String, Integer>();
 
-    @Column(nullable = false)
-    private String word;
+    @OneToMany
+    private List<GameRound> gameRoundList;
 
+    @Column()
+    private int currentGameRound;
 
     public String getGameName() {
         return gameName;
@@ -103,19 +106,33 @@ public class Game {
     public void setPlayerTokens(String[] playerTokens) {
         this.playerTokens = playerTokens;
     }
-    public String getImg() {
-        return img;
+
+    public HashMap<String, Integer> getPlayerPoints() {
+        return playerPoints;
     }
 
-    public void setImg(String img) {
-        this.img = img;
+    public void setPlayerPoints(String userToken, int value) {
+        HashMap<String, Integer> hashmap = (HashMap<String, Integer>) this.playerPoints.clone();
+        int newValue = hashmap.get(userToken) + value;
+        hashmap.put(userToken, newValue);
+        this.playerPoints = hashmap;
     }
 
-    public String getWord() {
-        return word;
+    public List<GameRound> getGameRoundList() {
+        return gameRoundList;
     }
 
-    public void setWord(String word) {
-        this.word = word;
+    public void setGameRoundList(List<GameRound> gameRoundList) {
+        this.gameRoundList = gameRoundList;
     }
+
+    public int getCurrentGameRound() {
+        return currentGameRound;
+    }
+
+    public void setCurrentGameRound(int currentGameRound) {
+        this.currentGameRound = currentGameRound;
+    }
+
+
 }

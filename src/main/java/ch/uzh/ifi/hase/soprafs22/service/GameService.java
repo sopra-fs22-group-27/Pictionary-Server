@@ -1,9 +1,7 @@
 package ch.uzh.ifi.hase.soprafs22.service;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
+import ch.uzh.ifi.hase.soprafs22.entity.GameRound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -20,6 +18,7 @@ import ch.uzh.ifi.hase.soprafs22.repository.GameRepository;
 public class GameService {
     private final GameRepository gameRepository;
     private UserService userService;
+    private GameRoundService gameRoundService;
 
     @Autowired
     public GameService(@Qualifier("gameRepository") GameRepository gameRepository , UserService userService) {
@@ -45,7 +44,6 @@ public class GameService {
     
     public Game createGame (Game newGame) {
         newGame.setGameToken(UUID.randomUUID().toString());
-        newGame.setWord("");
         newGame = gameRepository.save(newGame);
         gameRepository.flush();
         return newGame;
@@ -69,6 +67,7 @@ public class GameService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The game or user does not exist");
         } else {
             //add userToken to currentPlayers
+            game.setPlayerPoints(userToken, 0);
             String[] newPlayers = Arrays.copyOf(currentPlayers, currentPlayers.length + 1);
             newPlayers[currentPlayers.length] = userToken;
             game.setPlayerTokens(newPlayers);
@@ -80,14 +79,16 @@ public class GameService {
 
     public void updateImg(String gameToken, String img){
         Game game = gameRepository.findByGameToken(gameToken);
-        game.setImg(img);
+        GameRound currentGameRound = game.getGameRoundList().get(game.getCurrentGameRound());
+        currentGameRound.setImg(img);
         gameRepository.save(game);
         gameRepository.flush();
     }
 
     public String getImage(String gameToken){
         Game game = gameRepository.findByGameToken(gameToken);
-        String img = game.getImg();
+        GameRound currentGameRound = game.getGameRoundList().get(game.getCurrentGameRound());
+        String img = currentGameRound.getImg();
         return img;
     }
 
@@ -96,14 +97,46 @@ public class GameService {
         if(game == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The Game was not found with this GameToken");
         }
-        game.setWord(word);
+        game.setCurrentGameRound(game.getCurrentGameRound() + 1);
+        GameRound currentGameRound = game.getGameRoundList().get(game.getCurrentGameRound());
+        currentGameRound.setWord(word);
+        //Getting the current date
+        Date date = new Date();
+        //This method returns the time in millis
+        long startTime = date.getTime();
+        currentGameRound.setRoundStartingTime(startTime);
     }
 
-    public Boolean getResultOfGuess(String gameToken, String guessedWord){
+    public Boolean getResultOfGuess(String gameToken, String userToken, String guessedWord){
         Game game = gameRepository.findByGameToken(gameToken);
         if(game == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The Game was not found with this GameToken");
         }
-        return Objects.equals(game.getWord(), guessedWord);
+        GameRound currentGameRound = game.getGameRoundList().get(game.getCurrentGameRound());
+        if(Objects.equals(currentGameRound.getWord(), guessedWord)){
+            currentGameRound.setPlayerGuessed(userToken);
+            if(!currentGameRound.getPlayerGuessed().contains(userToken)){
+                game.setPlayerPoints(userToken, 10);
+            }
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    public Boolean isGameFull(String gameToken){
+        Game game = gameRepository.findByGameToken(gameToken);
+        if(game == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The Game was not found with this GameToken");
+        }
+        if(game.getNumberOfPlayers() == game.getNumberOfPlayersRequired()){
+            game.setGameRoundList(gameRoundService.createGameRounds(game.getNumberOfRounds(), game.getPlayerTokens()));
+            game.setCurrentGameRound(0);
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 }
