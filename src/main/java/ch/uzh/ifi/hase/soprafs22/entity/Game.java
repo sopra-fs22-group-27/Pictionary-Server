@@ -42,9 +42,6 @@ public class Game {
     @Column(nullable = false)
     private String[] playerTokens;
 
-    @Column()
-    private HashMap<String, Integer> playerPoints = new HashMap<String, Integer>();
-
     @OneToMany
     private List<GameRound> gameRoundList;
 
@@ -113,22 +110,6 @@ public class Game {
 
     public void setPlayerTokens(String[] playerTokens) {
         this.playerTokens = playerTokens;
-    }
-
-    public HashMap<String, Integer> getPlayerPoints() {
-        return playerPoints;
-    }
-
-    public void setPlayerPoints(String userToken, int value) {
-        HashMap<String, Integer> hashmap = (HashMap<String, Integer>) this.playerPoints.clone();
-        if (hashmap.get(userToken)==null){
-            hashmap.put(userToken, value);
-        }
-        else{
-            int newValue = hashmap.get(userToken) + value;
-            hashmap.put(userToken, newValue);
-        }
-        this.playerPoints = hashmap;
     }
 
     public List<GameRound> getGameRoundList() {

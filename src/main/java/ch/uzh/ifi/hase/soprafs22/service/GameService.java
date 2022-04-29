@@ -72,7 +72,6 @@ public class GameService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The game or user does not exist");
         } else {
             //add userToken to currentPlayers
-            game.setPlayerPoints(userToken, 0);
             String[] newPlayers = Arrays.copyOf(currentPlayers, currentPlayers.length + 1);
             newPlayers[currentPlayers.length] = userToken;
             game.setPlayerTokens(newPlayers);
@@ -119,10 +118,10 @@ public class GameService {
         }
         GameRound currentGameRound = game.getGameRoundList().get(game.getCurrentGameRound());
         if(Objects.equals(currentGameRound.getWord(), guessedWord)){
-            if(currentGameRound.getWinner()==null){
+            if(currentGameRound.getWinner()==null){ //Only the first one get the points
                 currentGameRound.setWinner(userToken);
-                game.setPlayerPoints(userToken, 10);
                 User winner = userRepository.findByToken(userToken);
+                winner.setRanking_points(10);
                 userRepository.save(winner);
                 userRepository.flush();
             }
