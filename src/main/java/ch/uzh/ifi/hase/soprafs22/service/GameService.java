@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs22.service;
 import java.util.*;
 
 import ch.uzh.ifi.hase.soprafs22.entity.GameRound;
+import ch.uzh.ifi.hase.soprafs22.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -19,11 +20,15 @@ public class GameService {
     private final GameRepository gameRepository;
     private UserService userService;
     private GameRoundService gameRoundService;
+    private final UserRepository userRepository;
+
 
     @Autowired
-    public GameService(@Qualifier("gameRepository") GameRepository gameRepository , UserService userService) {
+    public GameService(@Qualifier("gameRepository") GameRepository gameRepository , UserService userService, GameRoundService gameRoundService, @Qualifier("userRepository") UserRepository userRepository ) {
         this.gameRepository = gameRepository;
         this.userService = userService;
+        this.gameRoundService = gameRoundService;
+        this.userRepository = userRepository;
     }
     
     public List<Game> getGames() {
@@ -97,8 +102,8 @@ public class GameService {
         if(game == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The Game was not found with this GameToken");
         }
-        game.setCurrentGameRound(game.getCurrentGameRound() + 1);
         GameRound currentGameRound = game.getGameRoundList().get(game.getCurrentGameRound());
+        //game.setCurrentGameRound(game.getCurrentGameRound() + 1); //next round
         currentGameRound.setWord(word);
         //Getting the current date
         Date date = new Date();
@@ -114,9 +119,12 @@ public class GameService {
         }
         GameRound currentGameRound = game.getGameRoundList().get(game.getCurrentGameRound());
         if(Objects.equals(currentGameRound.getWord(), guessedWord)){
-            currentGameRound.setPlayerGuessed(userToken);
-            if(!currentGameRound.getPlayerGuessed().contains(userToken)){
+            if(currentGameRound.getWinner()==null){
+                currentGameRound.setWinner(userToken);
                 game.setPlayerPoints(userToken, 10);
+                User winner = userRepository.findByToken(userToken);
+                userRepository.save(winner);
+                userRepository.flush();
             }
             return true;
         }

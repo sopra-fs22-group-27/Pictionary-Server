@@ -1,4 +1,11 @@
 package ch.uzh.ifi.hase.soprafs22.entity;
+import ch.uzh.ifi.hase.soprafs22.repository.GameRepository;
+import ch.uzh.ifi.hase.soprafs22.repository.UserRepository;
+import ch.uzh.ifi.hase.soprafs22.service.GameRoundService;
+import ch.uzh.ifi.hase.soprafs22.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
 import javax.persistence.*;
 import java.util.HashMap;
 import java.util.List;
@@ -6,6 +13,7 @@ import java.util.List;
 @Entity
 @Table(name = "GAME")
 public class Game {
+
     @Id
     @GeneratedValue
     private Long id;
@@ -113,8 +121,13 @@ public class Game {
 
     public void setPlayerPoints(String userToken, int value) {
         HashMap<String, Integer> hashmap = (HashMap<String, Integer>) this.playerPoints.clone();
-        int newValue = hashmap.get(userToken) + value;
-        hashmap.put(userToken, newValue);
+        if (hashmap.get(userToken)==null){
+            hashmap.put(userToken, value);
+        }
+        else{
+            int newValue = hashmap.get(userToken) + value;
+            hashmap.put(userToken, newValue);
+        }
         this.playerPoints = hashmap;
     }
 

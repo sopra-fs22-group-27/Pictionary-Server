@@ -3,6 +3,7 @@ package ch.uzh.ifi.hase.soprafs22.controller;
 import ch.uzh.ifi.hase.soprafs22.entity.Img;
 import ch.uzh.ifi.hase.soprafs22.entity.User;
 import ch.uzh.ifi.hase.soprafs22.rest.dto.GamePutDTO;
+import ch.uzh.ifi.hase.soprafs22.service.GameRoundService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,9 +19,11 @@ import java.util.ArrayList;
 @RestController
 public class GameController {
     private final GameService gameService;
+    private final GameRoundService gameRoundService;
 
-    GameController(GameService gameService) {
+    GameController(GameService gameService, GameRoundService gameRoundService) {
         this.gameService = gameService;
+        this.gameRoundService = gameRoundService;
     }
 
     /**

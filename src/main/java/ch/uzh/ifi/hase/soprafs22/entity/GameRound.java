@@ -16,7 +16,7 @@ public class GameRound {
     @Lob
     private String img;
 
-    @Column(nullable = false)
+    @Column()
     private String word;
 
     @Column(nullable = false)
@@ -29,7 +29,7 @@ public class GameRound {
     private String[] guessersToken;
 
     @Column()
-    private List<String> playerGuessed;
+    private String winner;
 
     @Column()
     private String gameToken;
@@ -66,12 +66,12 @@ public class GameRound {
         this.guessersToken = guessersToken;
     }
 
-    public List<String> getPlayerGuessed() {
-        return playerGuessed;
+    public String getWinner() {
+        return winner;
     }
 
-    public void setPlayerGuessed(String userToken) {
-        this.playerGuessed.add(userToken);
+    public void setWinner(String userToken) {
+        this.winner = userToken;
     }
 
     public String getDrawer() {
