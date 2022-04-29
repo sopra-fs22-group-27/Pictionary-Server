@@ -138,8 +138,10 @@ public class GameService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The Game was not found with this GameToken");
         }
         if(game.getNumberOfPlayers() == game.getNumberOfPlayersRequired()){
-            game.setGameRoundList(gameRoundService.createGameRounds(game.getNumberOfRounds(), game.getPlayerTokens()));
-            game.setCurrentGameRound(0);
+            if (game.getGameRoundList().isEmpty()){
+                game.setGameRoundList(gameRoundService.createGameRounds(game.getNumberOfRounds(), game.getPlayerTokens()));
+                game.setCurrentGameRound(0);
+            }
             return true;
         }
         else{
