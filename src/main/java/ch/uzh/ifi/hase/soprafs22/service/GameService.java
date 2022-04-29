@@ -148,4 +148,16 @@ public class GameService {
             return false;
         }
     }
+
+    public void changeGameRound(String gameToken){
+        Game game = gameRepository.findByGameToken(gameToken);
+        if(game == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The Game was not found with this GameToken");
+        }
+        if(game.getCurrentGameRound()==game.getNumberOfRounds()-1){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "There are not more GameRounds");
+        }
+        int newGameRound = game.getCurrentGameRound() + 1;
+        game.setCurrentGameRound(newGameRound); //next round
+    }
 }

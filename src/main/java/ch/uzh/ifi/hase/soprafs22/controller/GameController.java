@@ -116,6 +116,14 @@ public class GameController {
         return DTOMapper.INSTANCE.convertEntityToGameRoundGetDTO(gameRound);
     }
 
+    @PutMapping(path = "/nextRound/{gameToken}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void changeGameRound(@PathVariable("gameToken") String gameToken){
+        gameService.changeGameRound(gameToken);
+
+    }
+
+
     /**@GetMapping(path = "/games/{gameToken}/timeGameRound")
     @ResponseStatus(HttpStatus.OK)
     public long startedGameTime(@PathVariable("gameToken") String gameToken){
