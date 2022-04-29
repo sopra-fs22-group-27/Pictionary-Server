@@ -121,7 +121,8 @@ public class GameService {
             if(currentGameRound.getWinner()==null){ //Only the first one get the points
                 currentGameRound.setWinner(userToken);
                 User winner = userRepository.findByToken(userToken);
-                winner.setRanking_points(10);
+                int newRanking_points = winner.getRanking_points()+10;
+                winner.setRanking_points(newRanking_points);
                 userRepository.save(winner);
                 userRepository.flush();
             }
