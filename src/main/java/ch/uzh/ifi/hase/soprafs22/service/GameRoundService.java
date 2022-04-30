@@ -32,7 +32,7 @@ public class GameRoundService {
         Collections.shuffle(playerList);
 
         List<GameRound> gameRoundList = new ArrayList<GameRound>();
-        for(int i = 0; i < numberOfRounds; i++){
+        for(int i = 0; i <= numberOfRounds; i++){
             GameRound gameRound = new GameRound();
             ArrayList<String> guesserList = playerList;
             int drawIndex = i % playerList.size();

@@ -155,10 +155,11 @@ public class GameService {
         if(game == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The Game was not found with this GameToken");
         }
-        if(game.getCurrentGameRound()==game.getNumberOfRounds()-1){
+        if(game.getCurrentGameRound()==game.getNumberOfRounds()){
             throw new ResponseStatusException(HttpStatus.CONFLICT, "There are not more GameRounds");
         }
         int newGameRound = game.getCurrentGameRound() + 1;
+        System.out.println(game.getCurrentGameRound());
         game.setCurrentGameRound(newGameRound); //next round
     }
 }

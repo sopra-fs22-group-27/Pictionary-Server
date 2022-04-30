@@ -71,6 +71,7 @@ public interface DTOMapper {
     @Mapping(source = "gameStatus", target = "gameStatus")
     @Mapping(source = "gameToken", target = "gameToken")
     @Mapping(source = "playerTokens", target = "playerTokens")
+    @Mapping(source = "currentGameRound", target= "currentGameRound")
     GameGetDTO convertEntityToGameGetDTO(Game gamePostDTO);
 
     @Mapping(source = "img", target = "img")
