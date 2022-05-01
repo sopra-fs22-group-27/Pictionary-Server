@@ -408,12 +408,12 @@ public class GameControllerTest {
         user1.setPassword("Test Password");
         user1.setUsername("testUsername");
         user1.setEmail("test@email.com");
+        user1.setCreation_date("01/01/2022");
         user1.setToken("1");
         user1.setStatus(UserStatus.ONLINE);
-       
+        user1.setRanking_points(0);
 
-        // when
-        Mockito.doThrow(new ResponseStatusException(HttpStatus.CONFLICT)).when(gameService).addPlayerToGame(eq("2-game"), Mockito.anyString());
+        
 
         MockHttpServletRequestBuilder putRequest1 = put("/games/1-game/player/1")
             .contentType(MediaType.APPLICATION_JSON);
@@ -422,9 +422,10 @@ public class GameControllerTest {
 
         assertEquals(HttpStatus.OK.value(), result1.getResponse().getStatus());
         
-        
+        // when
+        Mockito.doThrow(new ResponseStatusException(HttpStatus.CONFLICT)).when(gameService).addPlayerToGame(eq("1-game"), Mockito.anyString());
 
-        MockHttpServletRequestBuilder putRequest2 = put("/games/2-game/player/1")
+        MockHttpServletRequestBuilder putRequest2 = put("/games/1-game/player/1")
         .contentType(MediaType.APPLICATION_JSON);
 
         // then
