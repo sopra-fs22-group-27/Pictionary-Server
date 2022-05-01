@@ -434,6 +434,122 @@ public class GameControllerTest {
     }
 
 
+    @Test
+    public void putRequest_changeWord_test() throws Exception {
+        Game game = new Game();
+        game.setGameName("testGameName");
+        game.setNumberOfPlayers(2);
+        game.setNumberOfPlayersRequired(2);
+        game.setNumberOfRounds(10);
+        game.setRoundLength(60);
+        game.setGameStatus("waiting");
+        game.setGameToken("1-game");
+        game.setPlayerTokens(new String[] {"4"});
+        game.setCurrentGameRound(0);
+
+
+        // when
+        MockHttpServletRequestBuilder putRequest = put("/games/1-game/word/hahaha")
+            .contentType(MediaType.APPLICATION_JSON);
+            
+        // then
+        MvcResult result = mockMvc.perform(putRequest).andReturn();
+
+        // test the http status of the response
+        assertEquals(HttpStatus.NO_CONTENT.value(), result.getResponse().getStatus());
+
+        // test the http method ()
+        assertEquals(HttpMethod.PUT.name(), result.getRequest().getMethod());
+
+        // test the content type of the response
+        assertEquals(MediaType.APPLICATION_JSON.toString(),result.getRequest().getContentType());
+    }
+
+    @Test
+    public void putRequest_changeWord_fail_test() throws Exception {
+        Game game = new Game();
+        game.setGameName("testGameName");
+        game.setNumberOfPlayers(2);
+        game.setNumberOfPlayersRequired(2);
+        game.setNumberOfRounds(10);
+        game.setRoundLength(60);
+        game.setGameStatus("waiting");
+        game.setGameToken("1-game");
+        game.setPlayerTokens(new String[] {"4"});
+        game.setCurrentGameRound(0);
+
+
+        // when
+        Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND)).when(gameService).changeWord(eq("2-game"), Mockito.anyString());
+
+        MockHttpServletRequestBuilder putRequest = put("/games/2-game/word/hahaha")
+            .contentType(MediaType.APPLICATION_JSON);
+            
+        MvcResult result = mockMvc.perform(putRequest).andReturn();
+
+        assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
+
+    }
+
+    @Test
+    public void getRequest_controlGuessedWord_test() throws Exception {
+        Game game = new Game();
+        game.setGameName("testGameName");
+        game.setNumberOfPlayers(2);
+        game.setNumberOfPlayersRequired(2);
+        game.setNumberOfRounds(10);
+        game.setRoundLength(60);
+        game.setGameStatus("waiting");
+        game.setGameToken("1-game");
+        game.setPlayerTokens(new String[] {"3", "4"});
+        game.setCurrentGameRound(0);
+
+        // when
+        MockHttpServletRequestBuilder getRequest = get("/games/1-game/user/4/word/hahaha")
+            .contentType(MediaType.APPLICATION_JSON);
+            
+        // then
+        MvcResult result = mockMvc.perform(getRequest).andReturn();
+
+        // test the http status of the response
+        assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus());
+
+        // test the http method ()
+        assertEquals(HttpMethod.GET.name(), result.getRequest().getMethod());
+
+        // test the content type of the response
+        assertEquals(MediaType.APPLICATION_JSON.toString(),result.getRequest().getContentType());
+    }
+    
+    @Test
+    public void getRequest_controlGuessedWord_fail_test() throws Exception {
+        Game game = new Game();
+        game.setGameName("testGameName");
+        game.setNumberOfPlayers(2);
+        game.setNumberOfPlayersRequired(2);
+        game.setNumberOfRounds(10);
+        game.setRoundLength(60);
+        game.setGameStatus("waiting");
+        game.setGameToken("1-game");
+        game.setPlayerTokens(new String[] {"3", "4"});
+        game.setCurrentGameRound(0);
+
+        // when
+
+        Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND)).when(gameService).getResultOfGuess(eq("2-game"), Mockito.anyString(), Mockito.anyString());
+
+        MockHttpServletRequestBuilder getRequest = get("/games/2-game/user/4/word/hahaha")
+            .contentType(MediaType.APPLICATION_JSON);
+            
+        // then
+        MvcResult result = mockMvc.perform(getRequest).andReturn();
+
+        // test the http status of the response
+        assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
+
+    }
+
+
     private String asJsonString(final Object object) {
         try {
         return new ObjectMapper().writeValueAsString(object);
