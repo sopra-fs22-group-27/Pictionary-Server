@@ -124,6 +124,7 @@ public class UserControllerTest {
         user.setToken("1");
         user.setStatus(UserStatus.ONLINE);
 
+        given(userService.getUserByToken(Mockito.anyString())).willReturn(user);
         // when/then -> do the request + validate the result
         MockHttpServletRequestBuilder getRequest = get("/users/1")
                 .contentType(MediaType.APPLICATION_JSON);
