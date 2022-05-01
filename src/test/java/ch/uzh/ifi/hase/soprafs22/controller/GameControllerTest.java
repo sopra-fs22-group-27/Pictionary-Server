@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -326,6 +327,110 @@ public class GameControllerTest {
         MvcResult result = mockMvc.perform(putRequest).andReturn();
 
         assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
+    }
+
+    @Test
+    public void putRequest_addPlayerToGame_fail3_test() throws Exception {
+        Game game = new Game();
+        game.setGameName("testGameName");
+        game.setNumberOfPlayers(2);
+        game.setNumberOfPlayersRequired(2);
+        game.setNumberOfRounds(10);
+        game.setRoundLength(60);
+        game.setGameStatus("waiting");
+        game.setGameToken("1-game");
+        game.setPlayerTokens(new String[] {"1", "2", "3"});
+        game.setCurrentGameRound(0);
+
+        User user1 = new User();
+        user1.setId(1L);
+        user1.setPassword("Test Password");
+        user1.setUsername("testUsername");
+        user1.setEmail("test@email.com");
+        user1.setToken("1");
+        user1.setStatus(UserStatus.ONLINE);
+       
+        User user2 = new User();
+        user2.setId(2L);
+        user2.setPassword("Test Password2");
+        user2.setUsername("testUsername2");
+        user2.setEmail("test2@email.com");
+        user2.setToken("2");
+        user2.setStatus(UserStatus.ONLINE);
+
+        // when
+        Mockito.doThrow(new ResponseStatusException(HttpStatus.CONFLICT)).when(gameService).addPlayerToGame(Mockito.anyString(), eq("2"));
+
+        MockHttpServletRequestBuilder putRequest1 = put("/games/1-game/player/1")
+            .contentType(MediaType.APPLICATION_JSON);
+            
+        MvcResult result1 = mockMvc.perform(putRequest1).andReturn();
+
+        assertEquals(HttpStatus.OK.value(), result1.getResponse().getStatus());
+        
+        
+
+        MockHttpServletRequestBuilder putRequest2 = put("/games/1-game/player/2")
+        .contentType(MediaType.APPLICATION_JSON);
+
+        // then
+        MvcResult result2 = mockMvc.perform(putRequest2).andReturn();
+
+        assertEquals(HttpStatus.CONFLICT.value(), result2.getResponse().getStatus());
+    }
+
+    @Test
+    public void putRequest_addPlayerToGame_fail4_test() throws Exception {
+        Game game1 = new Game();
+        game1.setGameName("testGameName");
+        game1.setNumberOfPlayers(2);
+        game1.setNumberOfPlayersRequired(2);
+        game1.setNumberOfRounds(10);
+        game1.setRoundLength(60);
+        game1.setGameStatus("waiting");
+        game1.setGameToken("1-game");
+        game1.setPlayerTokens(new String[] {"4"});
+        game1.setCurrentGameRound(0);
+
+        Game game2 = new Game();
+        game2.setGameName("testGameName");
+        game2.setNumberOfPlayers(2);
+        game2.setNumberOfPlayersRequired(2);
+        game2.setNumberOfRounds(10);
+        game2.setRoundLength(60);
+        game2.setGameStatus("waiting");
+        game2.setGameToken("2-game");
+        game2.setPlayerTokens(new String[] {"4"});
+        game2.setCurrentGameRound(0);
+
+        User user1 = new User();
+        user1.setId(1L);
+        user1.setPassword("Test Password");
+        user1.setUsername("testUsername");
+        user1.setEmail("test@email.com");
+        user1.setToken("1");
+        user1.setStatus(UserStatus.ONLINE);
+       
+
+        // when
+        Mockito.doThrow(new ResponseStatusException(HttpStatus.CONFLICT)).when(gameService).addPlayerToGame(eq("2-game"), Mockito.anyString());
+
+        MockHttpServletRequestBuilder putRequest1 = put("/games/1-game/player/1")
+            .contentType(MediaType.APPLICATION_JSON);
+            
+        MvcResult result1 = mockMvc.perform(putRequest1).andReturn();
+
+        assertEquals(HttpStatus.OK.value(), result1.getResponse().getStatus());
+        
+        
+
+        MockHttpServletRequestBuilder putRequest2 = put("/games/2-game/player/1")
+        .contentType(MediaType.APPLICATION_JSON);
+
+        // then
+        MvcResult result2 = mockMvc.perform(putRequest2).andReturn();
+
+        assertEquals(HttpStatus.CONFLICT.value(), result2.getResponse().getStatus());
     }
 
 
