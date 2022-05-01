@@ -11,7 +11,14 @@ public class GameGetDTO {
     private String gameStatus;
     private String gameToken;
     private String[] playerTokens;
-    
+    private int currentGameRound;
+
+    public int getCurrentGameRound() {
+        return currentGameRound;
+    }
+    public void setCurrentGameRound(int currentGameRound) {
+        this.currentGameRound = currentGameRound;
+    }
     public String getGameName() {
         return gameName;
     }

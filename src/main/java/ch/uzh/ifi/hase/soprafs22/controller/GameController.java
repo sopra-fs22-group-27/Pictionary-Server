@@ -1,8 +1,11 @@
 package ch.uzh.ifi.hase.soprafs22.controller;
 
+import ch.uzh.ifi.hase.soprafs22.entity.GameRound;
 import ch.uzh.ifi.hase.soprafs22.entity.Img;
 import ch.uzh.ifi.hase.soprafs22.entity.User;
 import ch.uzh.ifi.hase.soprafs22.rest.dto.GamePutDTO;
+import ch.uzh.ifi.hase.soprafs22.rest.dto.GameRoundGetDTO;
+import ch.uzh.ifi.hase.soprafs22.service.GameRoundService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,9 +21,11 @@ import java.util.ArrayList;
 @RestController
 public class GameController {
     private final GameService gameService;
+    private final GameRoundService gameRoundService;
 
-    GameController(GameService gameService) {
+    GameController(GameService gameService, GameRoundService gameRoundService) {
         this.gameService = gameService;
+        this.gameRoundService = gameRoundService;
     }
 
     /**
@@ -92,9 +97,36 @@ public class GameController {
         gameService.changeWord(gameToken, word);
     }
 
-    @GetMapping(path = "/games/{gameToken}/word/{guessedWord}")
+    @GetMapping(path = "/games/{gameToken}/user/{userToken}/word/{guessedWord}")
     @ResponseStatus(HttpStatus.OK)
-    public Boolean controlGuessedWord(@PathVariable("gameToken") String gameToken, @PathVariable("guessedWord") String guessedWord){
-        return gameService.getResultOfGuess(gameToken, guessedWord);
+    public Boolean controlGuessedWord(@PathVariable("gameToken") String gameToken, @PathVariable("userToken") String userToken, @PathVariable("guessedWord") String guessedWord){
+        return gameService.getResultOfGuess(gameToken, userToken, guessedWord);
     }
+
+    @GetMapping(path = "/games/{gameToken}/full")
+    @ResponseStatus(HttpStatus.OK)
+    public Boolean isGameFull(@PathVariable("gameToken") String gameToken){
+        return gameService.isGameFull(gameToken);
+    }
+
+    @GetMapping(path = "/gameRound/{gameToken}")
+    @ResponseStatus(HttpStatus.OK)
+    public GameRoundGetDTO getGameRound(@PathVariable("gameToken") String gameToken){
+        GameRound gameRound = gameRoundService.getGameRound(gameToken);
+        return DTOMapper.INSTANCE.convertEntityToGameRoundGetDTO(gameRound);
+    }
+
+    @PutMapping(path = "/nextRound/{gameToken}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void changeGameRound(@PathVariable("gameToken") String gameToken){
+        gameService.changeGameRound(gameToken);
+
+    }
+
+
+    /**@GetMapping(path = "/games/{gameToken}/timeGameRound")
+    @ResponseStatus(HttpStatus.OK)
+    public long startedGameTime(@PathVariable("gameToken") String gameToken){
+        return gameService.
+    }*/
 }

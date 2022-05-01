@@ -1,9 +1,19 @@
 package ch.uzh.ifi.hase.soprafs22.entity;
+import ch.uzh.ifi.hase.soprafs22.repository.GameRepository;
+import ch.uzh.ifi.hase.soprafs22.repository.UserRepository;
+import ch.uzh.ifi.hase.soprafs22.service.GameRoundService;
+import ch.uzh.ifi.hase.soprafs22.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+
 import javax.persistence.*;
+import java.util.HashMap;
+import java.util.List;
 
 @Entity
 @Table(name = "GAME")
 public class Game {
+
     @Id
     @GeneratedValue
     private Long id;
@@ -31,14 +41,12 @@ public class Game {
 
     @Column(nullable = false)
     private String[] playerTokens;
-    
+
+    @OneToMany
+    private List<GameRound> gameRoundList;
+
     @Column()
-    @Lob
-    private String img;
-
-    @Column(nullable = false)
-    private String word;
-
+    private int currentGameRound;
 
     public String getGameName() {
         return gameName;
@@ -103,19 +111,22 @@ public class Game {
     public void setPlayerTokens(String[] playerTokens) {
         this.playerTokens = playerTokens;
     }
-    public String getImg() {
-        return img;
+
+    public List<GameRound> getGameRoundList() {
+        return gameRoundList;
     }
 
-    public void setImg(String img) {
-        this.img = img;
+    public void setGameRoundList(List<GameRound> gameRoundList) {
+        this.gameRoundList = gameRoundList;
     }
 
-    public String getWord() {
-        return word;
+    public int getCurrentGameRound() {
+        return currentGameRound;
     }
 
-    public void setWord(String word) {
-        this.word = word;
+    public void setCurrentGameRound(int currentGameRound) {
+        this.currentGameRound = currentGameRound;
     }
+
+
 }

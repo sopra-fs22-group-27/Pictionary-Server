@@ -1,9 +1,8 @@
 package ch.uzh.ifi.hase.soprafs22.service;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
+import ch.uzh.ifi.hase.soprafs22.entity.GameRound;
+import ch.uzh.ifi.hase.soprafs22.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -20,11 +19,16 @@ import ch.uzh.ifi.hase.soprafs22.repository.GameRepository;
 public class GameService {
     private final GameRepository gameRepository;
     private UserService userService;
+    private GameRoundService gameRoundService;
+    private final UserRepository userRepository;
+
 
     @Autowired
-    public GameService(@Qualifier("gameRepository") GameRepository gameRepository , UserService userService) {
+    public GameService(@Qualifier("gameRepository") GameRepository gameRepository , UserService userService, GameRoundService gameRoundService, @Qualifier("userRepository") UserRepository userRepository ) {
         this.gameRepository = gameRepository;
         this.userService = userService;
+        this.gameRoundService = gameRoundService;
+        this.userRepository = userRepository;
     }
     
     public List<Game> getGames() {
@@ -45,7 +49,6 @@ public class GameService {
     
     public Game createGame (Game newGame) {
         newGame.setGameToken(UUID.randomUUID().toString());
-        newGame.setWord("");
         newGame = gameRepository.save(newGame);
         gameRepository.flush();
         return newGame;
@@ -80,14 +83,16 @@ public class GameService {
 
     public void updateImg(String gameToken, String img){
         Game game = gameRepository.findByGameToken(gameToken);
-        game.setImg(img);
+        GameRound currentGameRound = game.getGameRoundList().get(game.getCurrentGameRound());
+        currentGameRound.setImg(img);
         gameRepository.save(game);
         gameRepository.flush();
     }
 
     public String getImage(String gameToken){
         Game game = gameRepository.findByGameToken(gameToken);
-        String img = game.getImg();
+        GameRound currentGameRound = game.getGameRoundList().get(game.getCurrentGameRound());
+        String img = currentGameRound.getImg();
         return img;
     }
 
@@ -96,14 +101,65 @@ public class GameService {
         if(game == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The Game was not found with this GameToken");
         }
-        game.setWord(word);
+        GameRound currentGameRound = game.getGameRoundList().get(game.getCurrentGameRound());
+        //game.setCurrentGameRound(game.getCurrentGameRound() + 1); //next round
+        currentGameRound.setWord(word);
+        //Getting the current date
+        Date date = new Date();
+        //This method returns the time in millis
+        long startTime = date.getTime();
+        currentGameRound.setRoundStartingTime(startTime);
     }
 
-    public Boolean getResultOfGuess(String gameToken, String guessedWord){
+    public Boolean getResultOfGuess(String gameToken, String userToken, String guessedWord){
         Game game = gameRepository.findByGameToken(gameToken);
         if(game == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The Game was not found with this GameToken");
         }
-        return Objects.equals(game.getWord(), guessedWord);
+        GameRound currentGameRound = game.getGameRoundList().get(game.getCurrentGameRound() - 1);
+        if(Objects.equals(currentGameRound.getWord(), guessedWord)){
+            if(currentGameRound.getWinner()==null){ //Only the first one get the points
+                currentGameRound.setWinner(userToken);
+                User winner = userRepository.findByToken(userToken);
+                int newRanking_points = winner.getRanking_points()+10;
+                winner.setRanking_points(newRanking_points);
+                userRepository.save(winner);
+                userRepository.flush();
+            }
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    public Boolean isGameFull(String gameToken){
+        Game game = gameRepository.findByGameToken(gameToken);
+        if(game == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The Game was not found with this GameToken");
+        }
+        if(game.getNumberOfPlayers() == game.getNumberOfPlayersRequired()){
+            if (game.getGameRoundList().isEmpty()){
+                game.setGameRoundList(gameRoundService.createGameRounds(game.getNumberOfRounds(), game.getPlayerTokens()));
+                game.setCurrentGameRound(0);
+            }
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    public void changeGameRound(String gameToken){
+        Game game = gameRepository.findByGameToken(gameToken);
+        if(game == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The Game was not found with this GameToken");
+        }
+        if(game.getCurrentGameRound()==game.getNumberOfRounds()){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "There are not more GameRounds");
+        }
+        int newGameRound = game.getCurrentGameRound() + 1;
+        System.out.println(game.getCurrentGameRound());
+        game.setCurrentGameRound(newGameRound); //next round
     }
 }
