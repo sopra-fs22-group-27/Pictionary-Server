@@ -62,7 +62,7 @@ public class UserServiceIntegrationTest {
     User testUser = new User();
     testUser.setPassword("password1");
     testUser.setUsername("testUsername");
-      testUser.setEmail("test@email.com");
+    testUser.setEmail("test@email.com");
     User createdUser = userService.createUser(testUser);
 
     // attempt to create second user with same username
@@ -74,5 +74,41 @@ public class UserServiceIntegrationTest {
     testUser.setEmail("test2@email.com");
     // check that an error is thrown
     assertThrows(ResponseStatusException.class, () -> userService.createUser(testUser2));
+  }
+
+  @Test
+  public void updateUser_duplicateUsername_throwsException() {
+      assertNull(userRepository.findByUsername("testUsername"));
+
+      User testUser = new User();
+      testUser.setId(1L);
+      testUser.setPassword("password");
+      testUser.setUsername("testUsername");
+      testUser.setCreation_date("01/01/2022");
+      testUser.setToken("1");
+      testUser.setEmail("test@gmail.com");
+      testUser.setRanking_points(0);
+      testUser.setIsInLobby(false);
+      testUser.setStatus(UserStatus.ONLINE);
+      User createdUser1 = userService.createUser(testUser);
+
+      User testUser2 = new User();
+      // change the username
+      testUser2.setId(2L);
+      testUser2.setPassword("password");
+      testUser2.setUsername("testUsername2");
+      testUser2.setCreation_date("01/01/2022");
+      testUser2.setToken("2");
+      testUser2.setEmail("test3@gmail.com");
+      testUser2.setRanking_points(0);
+      testUser2.setIsInLobby(false);
+      testUser2.setStatus(UserStatus.ONLINE);
+      User createdUser2 = userService.createUser(testUser2);
+
+      User testUser3 = new User();
+
+      testUser3.setUsername("testUsername2");
+      // check that an error is thrown
+      assertThrows(ResponseStatusException.class, () -> userService.updateUser(createdUser1.getToken(), testUser3));
   }
 }
