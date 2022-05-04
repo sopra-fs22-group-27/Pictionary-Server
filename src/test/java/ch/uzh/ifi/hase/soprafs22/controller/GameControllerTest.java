@@ -234,7 +234,8 @@ public class GameControllerTest {
         game.setGameToken("1-game");
         game.setPlayerTokens(new String[] {"1", "2", "3"});
         game.setCurrentGameRound(0);
-
+        game.setPassword("");
+        game.setIsPublic(true);
         User user = new User();
         user.setId(1L);
         user.setPassword("Test Password");
@@ -242,10 +243,13 @@ public class GameControllerTest {
         user.setEmail("test@email.com");
         user.setToken("1");
         user.setStatus(UserStatus.ONLINE);
-       
+
+        GamePostDTO gamePostDTO = new GamePostDTO();
+        gamePostDTO.setPassword("");
         // when
         MockHttpServletRequestBuilder putRequest = put("/games/1-game/player/1")
-            .contentType(MediaType.APPLICATION_JSON);
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(asJsonString(gamePostDTO));
 
 
         // then
@@ -282,12 +286,15 @@ public class GameControllerTest {
         user.setToken("1");
         user.setStatus(UserStatus.ONLINE);
        
+        GamePostDTO gamePostDTO = new GamePostDTO();
+        gamePostDTO.setPassword("");
 
         // when
-        Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND)).when(gameService).addPlayerToGame(Mockito.anyString(), Mockito.anyString());
+        Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND)).when(gameService).addPlayerToGame(Mockito.anyString(), Mockito.anyString(), Mockito.any());
 
         MockHttpServletRequestBuilder putRequest = put("/games/1-game/player/2")
-            .contentType(MediaType.APPLICATION_JSON);
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(asJsonString(gamePostDTO));
 
         // then
         MvcResult result = mockMvc.perform(putRequest).andReturn();
@@ -316,12 +323,15 @@ public class GameControllerTest {
         user.setToken("1");
         user.setStatus(UserStatus.ONLINE);
        
+        GamePostDTO gamePostDTO = new GamePostDTO();
+        gamePostDTO.setPassword("");
 
         // when
-        Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND)).when(gameService).addPlayerToGame(Mockito.anyString(), Mockito.anyString());
+        Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND)).when(gameService).addPlayerToGame(Mockito.anyString(), Mockito.anyString(), Mockito.any());
 
         MockHttpServletRequestBuilder putRequest = put("/games/2-game/player/1")
-            .contentType(MediaType.APPLICATION_JSON);
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(asJsonString(gamePostDTO));
 
         // then
         MvcResult result = mockMvc.perform(putRequest).andReturn();
@@ -358,11 +368,15 @@ public class GameControllerTest {
         user2.setToken("2");
         user2.setStatus(UserStatus.ONLINE);
 
+        GamePostDTO gamePostDTO = new GamePostDTO();
+        gamePostDTO.setPassword("");
+        
         // when
-        Mockito.doThrow(new ResponseStatusException(HttpStatus.CONFLICT)).when(gameService).addPlayerToGame(Mockito.anyString(), eq("2"));
+        Mockito.doThrow(new ResponseStatusException(HttpStatus.CONFLICT)).when(gameService).addPlayerToGame(Mockito.anyString(), eq("2"), Mockito.any());
 
         MockHttpServletRequestBuilder putRequest1 = put("/games/1-game/player/1")
-            .contentType(MediaType.APPLICATION_JSON);
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(asJsonString(gamePostDTO));
             
         MvcResult result1 = mockMvc.perform(putRequest1).andReturn();
 
@@ -371,7 +385,8 @@ public class GameControllerTest {
         
 
         MockHttpServletRequestBuilder putRequest2 = put("/games/1-game/player/2")
-        .contentType(MediaType.APPLICATION_JSON);
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(asJsonString(gamePostDTO));
 
         // then
         MvcResult result2 = mockMvc.perform(putRequest2).andReturn();
@@ -413,20 +428,23 @@ public class GameControllerTest {
         user1.setStatus(UserStatus.ONLINE);
         user1.setRanking_points(0);
 
-        
+        GamePostDTO gamePostDTO = new GamePostDTO();
+        gamePostDTO.setPassword("");
 
         MockHttpServletRequestBuilder putRequest1 = put("/games/1-game/player/1")
-            .contentType(MediaType.APPLICATION_JSON);
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(asJsonString(gamePostDTO));
             
         MvcResult result1 = mockMvc.perform(putRequest1).andReturn();
 
         assertEquals(HttpStatus.OK.value(), result1.getResponse().getStatus());
         
         // when
-        Mockito.doThrow(new ResponseStatusException(HttpStatus.CONFLICT)).when(gameService).addPlayerToGame(eq("1-game"), Mockito.anyString());
+        Mockito.doThrow(new ResponseStatusException(HttpStatus.CONFLICT)).when(gameService).addPlayerToGame(eq("1-game"), Mockito.anyString(), Mockito.any());
 
         MockHttpServletRequestBuilder putRequest2 = put("/games/1-game/player/1")
-        .contentType(MediaType.APPLICATION_JSON);
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(asJsonString(gamePostDTO));
 
         // then
         MvcResult result2 = mockMvc.perform(putRequest2).andReturn();
@@ -479,7 +497,7 @@ public class GameControllerTest {
         game.setPlayerTokens(new String[] {"4"});
         game.setCurrentGameRound(0);
 
-
+        
         // when
         Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND)).when(gameService).changeWord(eq("2-game"), Mockito.anyString());
 
