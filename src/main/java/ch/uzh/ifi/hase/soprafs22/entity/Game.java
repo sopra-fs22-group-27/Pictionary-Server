@@ -48,6 +48,12 @@ public class Game {
     @Column()
     private int currentGameRound;
 
+    @Column()
+    private Boolean isPublic;
+
+    @Column()
+    private String password = "";
+
     public String getGameName() {
         return gameName;
     }
@@ -128,5 +134,20 @@ public class Game {
         this.currentGameRound = currentGameRound;
     }
 
+    public Boolean getIsPublic() {
+        return isPublic;
+    }
+
+    public void setIsPublic(Boolean isPublic){
+        this.isPublic = isPublic;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
 }

@@ -86,8 +86,10 @@ public class GameController {
      * @return GameGetDTO
      */   
     @PutMapping(path = "/games/{gameToken}/player/{userToken}")
-    public GameGetDTO addPlayerToGame(@PathVariable("gameToken") String gameToken, @PathVariable("userToken") String userToken) {
-        Game game = gameService.addPlayerToGame(gameToken, userToken);
+    @ResponseBody
+    public GameGetDTO addPlayerToGame(@PathVariable("gameToken") String gameToken, @PathVariable("userToken") String userToken, @RequestBody GamePostDTO gamePostDTO) {
+        Game gameInput = DTOMapper.INSTANCE.convertGamePostDTOtoEntity(gamePostDTO);
+        Game game = gameService.addPlayerToGame(gameToken, userToken, gameInput);
         return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
     }
 

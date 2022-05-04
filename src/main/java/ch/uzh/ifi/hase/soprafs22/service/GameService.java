@@ -54,10 +54,21 @@ public class GameService {
         return newGame;
     }
 
-    public Game addPlayerToGame (String gameToken, String userToken) {
+    public Game addPlayerToGame (String gameToken, String userToken, Game gameInput) {
         Game game = this.gameRepository.findByGameToken(gameToken);
         if(game == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The Game was not found with this GameToken");
+        }
+        if(!game.getIsPublic()) {
+            // String password = gameInput.getPassword();
+            System.out.println(gameInput.getPassword());
+            System.out.println(game.getPassword());
+            if(gameInput.getPassword() == ""){
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Please input a valid password, your input is empty");
+            }
+            if(!gameInput.getPassword().equals(game.getPassword())) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The password was wrong with this GameToken");
+            }
         }
         User user = userService.getUserByToken(userToken);
         String[] currentPlayers = game.getPlayerTokens();
