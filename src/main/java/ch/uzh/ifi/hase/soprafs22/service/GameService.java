@@ -1,6 +1,6 @@
 package ch.uzh.ifi.hase.soprafs22.service;
 import java.util.*;
-
+import java.util.stream.Collectors;
 import ch.uzh.ifi.hase.soprafs22.entity.GameRound;
 import ch.uzh.ifi.hase.soprafs22.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -153,6 +153,7 @@ public class GameService {
             if (game.getGameRoundList().isEmpty()){
                 game.setGameRoundList(gameRoundService.createGameRounds(game.getNumberOfRounds(), game.getPlayerTokens()));
                 game.setCurrentGameRound(0);
+                game.setGameStatus("started");
             }
             return true;
         }
@@ -172,5 +173,20 @@ public class GameService {
         int newGameRound = game.getCurrentGameRound() + 1;
         System.out.println(game.getCurrentGameRound());
         game.setCurrentGameRound(newGameRound); //next round
+    }
+
+
+    public List<Game> getJoinableGames() {
+        List<Game> allGames = this.gameRepository.findAll();
+        List<Game> joinableGames = allGames.stream().filter(game -> game.getNumberOfPlayers() < game.getNumberOfPlayersRequired()).collect(Collectors.toList());;
+        return joinableGames;
+    }
+
+    public void finishGame(String gameToken) {
+        Game game = gameRepository.findByGameToken(gameToken);
+        if(game == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The Game was not found with this GameToken");
+        }
+        game.setGameStatus("finished"); // end the game
     }
 }

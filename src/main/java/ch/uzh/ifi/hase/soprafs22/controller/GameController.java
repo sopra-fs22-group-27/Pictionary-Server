@@ -125,6 +125,26 @@ public class GameController {
 
     }
 
+    /**
+     * Get all available games that I can join in
+     * @return List of GameGetDTO
+     */
+    @GetMapping(path = "/joinable-games")
+    public List<GameGetDTO> getJoinableGames() {
+        List<Game> gamesList = gameService.getJoinableGames();
+        List<GameGetDTO> gameGetDTOs = new ArrayList<>();
+        for (Game game : gamesList) {
+            gameGetDTOs.add(DTOMapper.INSTANCE.convertEntityToGameGetDTO(game));
+        }
+        return gameGetDTOs;
+    }
+
+    @PutMapping(path = "/games/{gameToken}/updateStatus")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void finishGame(@PathVariable("gameToken") String gameToken) {
+        gameService.finishGame(gameToken);
+    }
+
 
     /**@GetMapping(path = "/games/{gameToken}/timeGameRound")
     @ResponseStatus(HttpStatus.OK)

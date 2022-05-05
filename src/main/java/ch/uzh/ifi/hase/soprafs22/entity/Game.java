@@ -34,7 +34,7 @@ public class Game {
     private int numberOfRounds;
 
     @Column(nullable = false)
-    private String gameStatus;
+    private String gameStatus = "waiting"; //possile values: waiting, started, finished
 
     @Column(nullable = false, unique = true)
     private String gameToken;
