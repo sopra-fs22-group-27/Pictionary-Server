@@ -35,7 +35,7 @@ public class Game {
     private int numberOfRounds;
 
     @Column(nullable = false)
-    private String gameStatus;
+    private String gameStatus = "waiting"; //possile values: waiting, started, finished
 
     @Column(nullable = false, unique = true)
     private String gameToken;
@@ -49,6 +49,12 @@ public class Game {
 
     @Column()
     private int currentGameRound;
+
+    @Column()
+    private Boolean isPublic;
+
+    @Column()
+    private String password = "";
 
     public Map<User, Integer> getUserToIntegerMap() {
         return userToIntegerMap;
@@ -138,5 +144,20 @@ public class Game {
         this.currentGameRound = currentGameRound;
     }
 
+    public Boolean getIsPublic() {
+        return isPublic;
+    }
+
+    public void setIsPublic(Boolean isPublic){
+        this.isPublic = isPublic;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
 }
