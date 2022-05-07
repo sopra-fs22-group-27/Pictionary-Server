@@ -13,6 +13,8 @@ public class GamePostDTO {
     private String gameStatus;
     private String gameToken;
     private String[] playerTokens;
+    private Boolean isPublic;
+    private String password;
 
     public String getGameName() {
         return gameName;
@@ -76,6 +78,22 @@ public class GamePostDTO {
 
     public void setPlayerTokens(String[] playerTokens) {
         this.playerTokens = playerTokens;
+    }
+
+    public Boolean getIsPublic() {
+        return isPublic;
+    }
+
+    public void setIsPublic(Boolean isPublic){
+        this.isPublic = isPublic;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
 }

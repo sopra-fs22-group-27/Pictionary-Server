@@ -86,8 +86,10 @@ public class GameController {
      * @return GameGetDTO
      */   
     @PutMapping(path = "/games/{gameToken}/player/{userToken}")
-    public GameGetDTO addPlayerToGame(@PathVariable("gameToken") String gameToken, @PathVariable("userToken") String userToken) {
-        Game game = gameService.addPlayerToGame(gameToken, userToken);
+    @ResponseBody
+    public GameGetDTO addPlayerToGame(@PathVariable("gameToken") String gameToken, @PathVariable("userToken") String userToken, @RequestBody GamePostDTO gamePostDTO) {
+        Game gameInput = DTOMapper.INSTANCE.convertGamePostDTOtoEntity(gamePostDTO);
+        Game game = gameService.addPlayerToGame(gameToken, userToken, gameInput);
         return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
     }
 
@@ -121,6 +123,26 @@ public class GameController {
     public void changeGameRound(@PathVariable("gameToken") String gameToken){
         gameService.changeGameRound(gameToken);
 
+    }
+
+    /**
+     * Get all available games that I can join in
+     * @return List of GameGetDTO
+     */
+    @GetMapping(path = "/joinable-games")
+    public List<GameGetDTO> getJoinableGames() {
+        List<Game> gamesList = gameService.getJoinableGames();
+        List<GameGetDTO> gameGetDTOs = new ArrayList<>();
+        for (Game game : gamesList) {
+            gameGetDTOs.add(DTOMapper.INSTANCE.convertEntityToGameGetDTO(game));
+        }
+        return gameGetDTOs;
+    }
+
+    @PutMapping(path = "/games/{gameToken}/updateStatus")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void finishGame(@PathVariable("gameToken") String gameToken) {
+        gameService.finishGame(gameToken);
     }
 
 

@@ -12,6 +12,7 @@ public class GameGetDTO {
     private String gameToken;
     private String[] playerTokens;
     private int currentGameRound;
+    private Boolean isPublic;
 
     public int getCurrentGameRound() {
         return currentGameRound;
@@ -66,6 +67,12 @@ public class GameGetDTO {
     }
     public void setPlayerTokens(String[] playerTokens) {
         this.playerTokens = playerTokens;
+    }
+    public Boolean getIsPublic() {
+        return isPublic;
+    }
+    public void setIsPublic(Boolean isPublic){
+        this.isPublic = isPublic;
     }
 
 }
