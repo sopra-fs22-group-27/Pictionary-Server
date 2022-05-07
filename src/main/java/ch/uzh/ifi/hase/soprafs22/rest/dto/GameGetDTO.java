@@ -1,6 +1,9 @@
 package ch.uzh.ifi.hase.soprafs22.rest.dto;
 
+import ch.uzh.ifi.hase.soprafs22.entity.User;
+
 import java.util.List;
+import java.util.Map;
 
 public class GameGetDTO {
     private String gameName;
@@ -10,7 +13,7 @@ public class GameGetDTO {
     private int numberOfRounds;
     private String gameStatus;
     private String gameToken;
-    private String[] playerTokens;
+    private Map<User, Integer> userToIntegerMap;
     private int currentGameRound;
 
     public int getCurrentGameRound() {
@@ -61,11 +64,12 @@ public class GameGetDTO {
     public void setGameToken(String gameToken) {
         this.gameToken = gameToken;
     }
-    public String[] getPlayerTokens() {
-        return playerTokens;
+    public Map<User, Integer> getUserToIntegerMap() {
+        return userToIntegerMap;
     }
-    public void setPlayerTokens(String[] playerTokens) {
-        this.playerTokens = playerTokens;
+
+    public void setUserToIntegerMap(Map<User, Integer> userToIntegerMap) {
+        this.userToIntegerMap = userToIntegerMap;
     }
 
 }

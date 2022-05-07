@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import javax.persistence.*;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "GAME")
@@ -39,14 +40,31 @@ public class Game {
     @Column(nullable = false, unique = true)
     private String gameToken;
 
-    @Column(nullable = false)
-    private String[] playerTokens;
-
     @OneToMany
     private List<GameRound> gameRoundList;
 
+    @ElementCollection
+    @Column(nullable = false)
+    private Map<User, Integer> userToIntegerMap;
+
     @Column()
     private int currentGameRound;
+
+    public Map<User, Integer> getUserToIntegerMap() {
+        return userToIntegerMap;
+    }
+
+    public void addUserToIntegerMap(User user) {
+        if(this.userToIntegerMap == null){
+            this.userToIntegerMap = new HashMap<User, Integer>();
+        }
+        this.userToIntegerMap.put(user, 0);
+    }
+
+    public void updatePointsUserMap(User user, int points) {
+       int currentPoints = this.userToIntegerMap.get(user);
+       this.userToIntegerMap.put(user, points + currentPoints);
+    }
 
     public String getGameName() {
         return gameName;
@@ -102,14 +120,6 @@ public class Game {
 
     public void setGameToken(String gameToken) {
         this.gameToken = gameToken;
-    }
-
-    public String[] getPlayerTokens() {
-        return playerTokens;
-    }
-
-    public void setPlayerTokens(String[] playerTokens) {
-        this.playerTokens = playerTokens;
     }
 
     public List<GameRound> getGameRoundList() {

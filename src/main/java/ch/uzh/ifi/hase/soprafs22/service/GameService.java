@@ -47,10 +47,13 @@ public class GameService {
         return game;
     }
     
-    public Game createGame (Game newGame) {
+    public Game createGame (String userToken, Game newGame) {
+        User user = userService.getUserByToken(userToken);
+        newGame.addUserToIntegerMap(user);
         newGame.setGameToken(UUID.randomUUID().toString());
         newGame = gameRepository.save(newGame);
         gameRepository.flush();
+
         return newGame;
     }
 
@@ -60,21 +63,23 @@ public class GameService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The Game was not found with this GameToken");
         }
         User user = userService.getUserByToken(userToken);
-        String[] currentPlayers = game.getPlayerTokens();
+        //String[] currentPlayers = game.getPlayerTokens();
 
+        Map<User, Integer> userMap = game.getUserToIntegerMap();
         if (game.getGameStatus().equals("started") || game.getGameStatus().equals("finished")) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "The game has already started or is finished");
-        } else if (Arrays.stream(currentPlayers).anyMatch(userToken::equals)) {
+        } else if (userMap.containsKey(user)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "The user is already in the game");
-        } else if (currentPlayers.length == game.getNumberOfPlayersRequired()) {
+        } else if (userMap.size() == game.getNumberOfPlayersRequired()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "The game is already full");
         } else if (game.getGameName() == null || user == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The game or user does not exist");
         } else {
             //add userToken to currentPlayers
-            String[] newPlayers = Arrays.copyOf(currentPlayers, currentPlayers.length + 1);
-            newPlayers[currentPlayers.length] = userToken;
-            game.setPlayerTokens(newPlayers);
+            //String[] newPlayers = Arrays.copyOf(currentPlayers, currentPlayers.length + 1);
+            //newPlayers[currentPlayers.length] = userToken;
+            //game.setPlayerTokens(newPlayers);
+            game.addUserToIntegerMap(user);
             game.setNumberOfPlayers(game.getNumberOfPlayers() + 1);
             gameRepository.flush();
             return game;
@@ -140,7 +145,13 @@ public class GameService {
         }
         if(game.getNumberOfPlayers() == game.getNumberOfPlayersRequired()){
             if (game.getGameRoundList().isEmpty()){
-                game.setGameRoundList(gameRoundService.createGameRounds(game.getNumberOfRounds(), game.getPlayerTokens()));
+                ArrayList<String> stringList = new ArrayList<>();
+                Map<User, Integer> userMap = game.getUserToIntegerMap();
+                for (User user : userMap.keySet()) {
+                    stringList.add(user.getToken());
+                }
+                String[] stringArray = stringList.toArray(new String[0]);
+                game.setGameRoundList(gameRoundService.createGameRounds(game.getNumberOfRounds(), stringArray));
                 game.setCurrentGameRound(0);
             }
             return true;

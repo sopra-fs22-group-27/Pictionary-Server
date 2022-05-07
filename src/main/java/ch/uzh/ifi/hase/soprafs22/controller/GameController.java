@@ -34,10 +34,10 @@ public class GameController {
      * @return GameGetDTO
      */
     @PostMapping(path = "/games")
-    public GameGetDTO createGame(@RequestBody GamePostDTO gamePostDTO) {
+    public GameGetDTO createGame(String userToken, @RequestBody GamePostDTO gamePostDTO) {
         Game game = DTOMapper.INSTANCE.convertGamePostDTOtoEntity(gamePostDTO);
 
-        Game createGame = gameService.createGame(game);
+        Game createGame = gameService.createGame(userToken, game);
 
         return DTOMapper.INSTANCE.convertEntityToGameGetDTO(createGame);
     }
