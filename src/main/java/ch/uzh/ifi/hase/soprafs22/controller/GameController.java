@@ -79,6 +79,12 @@ public class GameController {
         return DTOMapper.INSTANCE.convertEntityToGameGetDTO(game);
     }
 
+    // delete game
+    @DeleteMapping(path = "/games/{gameToken}")
+    public void deleteGame(@PathVariable("gameToken") String gameToken) {
+        gameService.deleteGameByToken(gameToken);
+    }
+
     /**
      * Add player to a game by id
      * @param gameToken

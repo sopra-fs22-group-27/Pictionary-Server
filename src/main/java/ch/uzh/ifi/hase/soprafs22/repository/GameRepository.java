@@ -8,4 +8,5 @@ import ch.uzh.ifi.hase.soprafs22.entity.Game;
 public interface GameRepository extends JpaRepository<Game, Long> {
         Game findByGameToken(String gameToken);
         Game findById(String id);
+        void deleteByGameToken(String gameToken);
 }   
