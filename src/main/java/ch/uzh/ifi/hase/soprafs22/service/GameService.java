@@ -39,6 +39,10 @@ public class GameService {
         return this.gameRepository.findById(id);
     }    
 
+    public void deleteGameByToken(String token) {
+        this.gameRepository.deleteByGameToken(token);
+    }
+
     public Game getGameByToken(String token) {
         Game game = gameRepository.findByGameToken(token);
         if (game == null){
