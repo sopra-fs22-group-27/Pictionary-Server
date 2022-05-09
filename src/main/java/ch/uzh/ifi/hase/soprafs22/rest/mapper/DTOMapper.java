@@ -47,7 +47,7 @@ public interface DTOMapper {
     @Mapping(source = "roundLength", target = "roundLength")
     @Mapping(source = "numberOfRounds", target = "numberOfRounds")
     @Mapping(source = "gameStatus", target = "gameStatus")
-    @Mapping(source = "playerTokens", target = "playerTokens")
+    //@Mapping(source = "playerTokens", target = "playerTokens")
     @Mapping(source = "isPublic", target = "isPublic")
     @Mapping(source = "password", target = "password")
     Game convertGamePostDTOtoEntity(GamePostDTO gamePostDTO);

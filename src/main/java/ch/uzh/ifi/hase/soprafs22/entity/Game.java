@@ -49,9 +49,6 @@ public class Game {
     @Column()
     private int currentGameRound;
 
-    @Column(nullable = false)
-    private String[] playerTokens;
-
     @Column()
     private Boolean isPublic;
 
@@ -100,14 +97,6 @@ public class Game {
 
     public void setGameName(String gameName) {
         this.gameName = gameName;
-    }
-
-    public String[] getPlayerTokens() {
-        return playerTokens;
-    }
-
-    public void setPlayerTokens(String[] playerTokens) {
-        this.playerTokens = playerTokens;
     }
 
     public int getNumberOfPlayersRequired() {

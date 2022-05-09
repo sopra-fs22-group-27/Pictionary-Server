@@ -55,6 +55,8 @@ public class GameService {
         User user = userService.getUserByToken(userToken);
         newGame.addUserToIntegerMap(user);
         newGame.setGameToken(UUID.randomUUID().toString());
+
+        newGame.setGameRoundList(new ArrayList<GameRound>());
         newGame = gameRepository.save(newGame);
         gameRepository.flush();
 

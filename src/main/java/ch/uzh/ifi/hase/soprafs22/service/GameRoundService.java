@@ -19,12 +19,13 @@ import java.util.*;
 public class GameRoundService {
     private final GameRoundRepository gameRoundRepository;
     private final GameRepository gameRepository;
-    private UserService userService;
+    private final UserService userService;
 
     @Autowired
-    public GameRoundService(@Qualifier("gameRoundRepository") GameRoundRepository gameRoundRepository, @Qualifier("gameRepository") GameRepository gameRepository) {
+    public GameRoundService(@Qualifier("gameRoundRepository") GameRoundRepository gameRoundRepository, UserService userService, @Qualifier("gameRepository") GameRepository gameRepository) {
         this.gameRoundRepository = gameRoundRepository;
         this.gameRepository = gameRepository;
+        this.userService = userService;
     }
 
     public List<GameRound> createGameRounds(int numberOfRounds, String[] playerTokens){
