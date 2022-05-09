@@ -58,10 +58,10 @@ public class Game {
         return this.userToIntegerMap;
     }
 
-    public TreeMap<Integer, String> getScoreBoardMap() {
-        TreeMap<Integer, String> treeMap = new TreeMap<Integer, String>(Collections.reverseOrder());
-        for(Map.Entry<User, Integer> user : this.userToIntegerMap.entrySet()) {
-            treeMap.put(user.getValue(), user.getKey().getUsername());
+    public TreeMap<String, Integer> getScoreBoardMap() {
+        TreeMap<String, Integer> treeMap = new TreeMap<String, Integer>();
+        for(Map.Entry<User, Integer> user : entriesSortedByValues((this.userToIntegerMap))) {
+            treeMap.put(user.getKey().getUsername(), user.getValue());
         }
         return treeMap;
     }
@@ -71,6 +71,19 @@ public class Game {
             this.userToIntegerMap = new HashMap<User, Integer>();
         }
         this.userToIntegerMap.put(user, 0);
+    }
+
+    static <K,V extends Comparable<? super V>> SortedSet<Map.Entry<K,V>> entriesSortedByValues(Map<K,V> map) {
+        SortedSet<Map.Entry<K,V>> sortedEntries = new TreeSet<Map.Entry<K,V>>(
+                new Comparator<Map.Entry<K,V>>() {
+                    @Override public int compare(Map.Entry<K,V> e1, Map.Entry<K,V> e2) {
+                        int res = e1.getValue().compareTo(e2.getValue());
+                        return res != 0 ? res : 1; // Special fix to preserve items with equal values
+                    }
+                }
+        );
+        sortedEntries.addAll(map.entrySet());
+        return sortedEntries;
     }
 
     public void updatePointsUserMap(User user, int points) {
