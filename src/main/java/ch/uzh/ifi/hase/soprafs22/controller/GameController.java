@@ -146,9 +146,10 @@ public class GameController {
     }
 
 
-    /**@GetMapping(path = "/games/{gameToken}/timeGameRound")
+    @GetMapping(path = "/games/{gameToken}/usernames")
     @ResponseStatus(HttpStatus.OK)
-    public long startedGameTime(@PathVariable("gameToken") String gameToken){
-        return gameService.
-    }*/
+    @ResponseBody
+    public List<String> getUsernamesInGame(@PathVariable("gameToken") String gameToken){
+        return gameService.getUsernamesInGame(gameToken);
+    }
 }

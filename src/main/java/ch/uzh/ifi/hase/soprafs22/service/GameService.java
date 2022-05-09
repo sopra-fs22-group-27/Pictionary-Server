@@ -189,4 +189,23 @@ public class GameService {
         }
         game.setGameStatus("finished"); // end the game
     }
+
+    public List<String> getUsernamesInGame(String gameToken) {
+        Game game = gameRepository.findByGameToken(gameToken);
+        if(game == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The Game was not found with this GameToken");
+        }
+
+        List<String> userTokens = Arrays.asList(game.getPlayerTokens());
+        if (userTokens.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no player in the game");
+        }
+        
+        List<String> usernames = new ArrayList<String>();
+        for (String userToken : userTokens) {
+            User user = userRepository.findByToken(userToken);
+            usernames.add(user.getUsername());
+        }
+        return usernames;
+    }
 }
