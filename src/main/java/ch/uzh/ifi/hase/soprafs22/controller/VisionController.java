@@ -1,42 +1,54 @@
 package ch.uzh.ifi.hase.soprafs22.controller;
 
+import ch.uzh.ifi.hase.soprafs22.entity.Game;
+import ch.uzh.ifi.hase.soprafs22.service.GameService;
 import com.google.cloud.vision.v1.AnnotateImageResponse;
 import com.google.cloud.vision.v1.EntityAnnotation;
 import com.google.cloud.vision.v1.Feature.Type;
 import com.google.cloud.spring.vision.CloudVisionTemplate;
 
+import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
 public class VisionController {
 
-    @Autowired private ResourceLoader resourceLoader;
-
     @Autowired private CloudVisionTemplate cloudVisionTemplate;
 
+    @Autowired private GameService gameService;
+
     /**
-     * This method downloads an image from a URL and sends its contents to the Vision API for label
+     * This method checks the current image and sends to the Vision API for label
      * detection.
      *
-     * @param imageUrl the URL of the image
+     * @param gameToken game identification
      * @param map the model map to use
      * @return a string with the list of labels and percentage of certainty
      */
-    @GetMapping("/vision")
-    public ResponseEntity<?> extractLabels(String imageUrl, ModelMap map){
+    @GetMapping("/vision/{gameToken}")
+    public ResponseEntity<?> extractLabels(@PathVariable String gameToken, ModelMap map){
+        Game game = gameService.getGameByToken(gameToken);
+        String image = game.getGameRoundList().get(game.getCurrentGameRound()).getImg();
+        image = image.replace("data:image/png;base64,", "");
+        byte[] decodeImg = Base64.getDecoder().decode(image);
+        Resource resource = new ByteArrayResource(decodeImg);
+
         AnnotateImageResponse response =
                 this.cloudVisionTemplate.analyzeImage(
-                        this.resourceLoader.getResource(imageUrl) , Type.LABEL_DETECTION);
+                        resource , Type.LABEL_DETECTION);
 
         Map<String, Float> imageLabels =
                 response.getLabelAnnotationsList().stream()
@@ -51,7 +63,7 @@ public class VisionController {
         // [END spring_vision_image_labelling]
 
         map.addAttribute("annotations", imageLabels);
-        map.addAttribute("imageUrl", imageUrl);
+        map.addAttribute("gameID", gameToken);
 
         return ResponseEntity.ok(map);
     }
