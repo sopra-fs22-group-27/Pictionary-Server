@@ -55,8 +55,16 @@ public class Game {
     @Column()
     private String password = "";
 
-    public Map<User, Integer> getUserToIntegerMap() {
-        return userToIntegerMap;
+    public Map<User, Integer> getUserToIntegerMap(){
+        return this.userToIntegerMap;
+    }
+
+    public TreeMap<Integer, String> getScoreBoardMap() {
+        TreeMap<Integer, String> treeMap = new TreeMap<Integer, String>(Collections.reverseOrder());
+        for(Map.Entry<User, Integer> user : this.userToIntegerMap.entrySet()) {
+            treeMap.put(user.getValue(), user.getKey().getUsername());
+        }
+        return treeMap;
     }
 
     public void addUserToIntegerMap(User user) {

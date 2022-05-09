@@ -193,9 +193,9 @@ public class GameService {
         System.out.println(game.getCurrentGameRound());
         game.setCurrentGameRound(newGameRound); //next round
     }
-    public Map<User, Integer> getGameScoreBoard(String gameToken){
+    public Map<Integer, String> getGameScoreBoard(String gameToken){
         Game game = getGameByToken(gameToken);
-        return game.getGameScoreBoard();
+        return game.getScoreBoardMap();
 
          /**if(currentGameRound.getWinner()==null){ //Only the first one get the points
          currentGameRound.setWinner(userToken);
