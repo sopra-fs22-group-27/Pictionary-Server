@@ -34,10 +34,10 @@ public class GameController {
      * @return GameGetDTO
      */
     @PostMapping(path = "/games")
-    public GameGetDTO createGame(@RequestBody GamePostDTO gamePostDTO) {
+    public GameGetDTO createGame(String userToken, @RequestBody GamePostDTO gamePostDTO) {
         Game game = DTOMapper.INSTANCE.convertGamePostDTOtoEntity(gamePostDTO);
 
-        Game createGame = gameService.createGame(game);
+        Game createGame = gameService.createGame(userToken, game);
 
         return DTOMapper.INSTANCE.convertEntityToGameGetDTO(createGame);
     }
@@ -128,7 +128,11 @@ public class GameController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void changeGameRound(@PathVariable("gameToken") String gameToken){
         gameService.changeGameRound(gameToken);
+    }
 
+    @GetMapping(path = "/games/{gameToken}/scoreboard")
+    public ResponseEntity getScoreboard(@PathVariable("gameToken") String gameToken){
+        return ResponseEntity.ok(gameService.getGameScoreBoard(gameToken));
     }
 
     /**

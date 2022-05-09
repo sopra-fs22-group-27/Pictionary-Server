@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import javax.persistence.*;
-import java.util.HashMap;
-import java.util.List;
+import javax.persistence.criteria.CriteriaBuilder;
+import java.util.*;
 
 @Entity
 @Table(name = "GAME")
@@ -39,11 +39,12 @@ public class Game {
     @Column(nullable = false, unique = true)
     private String gameToken;
 
-    @Column(nullable = false)
-    private String[] playerTokens;
-
     @OneToMany
     private List<GameRound> gameRoundList;
+
+    @ElementCollection
+    @OrderBy()
+    private Map<User, Integer> userToIntegerMap;
 
     @Column()
     private int currentGameRound;
@@ -53,6 +54,50 @@ public class Game {
 
     @Column()
     private String password = "";
+
+    public Map<User, Integer> getUserToIntegerMap(){
+        return this.userToIntegerMap;
+    }
+
+    public TreeMap<Integer, String> getScoreBoardMap() {
+        TreeMap<Integer, String> treeMap = new TreeMap<Integer, String>(Collections.reverseOrder());
+        for(Map.Entry<User, Integer> user : this.userToIntegerMap.entrySet()) {
+            treeMap.put(user.getValue(), user.getKey().getUsername());
+        }
+        return treeMap;
+    }
+
+    public void addUserToIntegerMap(User user) {
+        if(this.userToIntegerMap == null){
+            this.userToIntegerMap = new HashMap<User, Integer>();
+        }
+        this.userToIntegerMap.put(user, 0);
+    }
+
+    public void updatePointsUserMap(User user, int points) {
+       int currentPoints = this.userToIntegerMap.get(user);
+       this.userToIntegerMap.put(user, points + currentPoints);
+    }
+
+    public User getWinnerFromUserMap(){
+        User maxKey=null;
+        int maxValue=0;
+        for(Map.Entry<User, Integer> user : this.userToIntegerMap.entrySet()) {
+            if(user.getValue() > maxValue) {
+                maxValue = user.getValue();
+                maxKey = user.getKey();
+            }
+        }
+        return maxKey;
+        //using redblack Tree -> now presorted
+        //return this.userToIntegerMap.firstKey();
+    }
+
+
+     //Todo: implement scoreboard return function
+    public Map<User, Integer> getGameScoreBoard(){
+        return this.userToIntegerMap;
+    }
 
     public String getGameName() {
         return gameName;
@@ -108,14 +153,6 @@ public class Game {
 
     public void setGameToken(String gameToken) {
         this.gameToken = gameToken;
-    }
-
-    public String[] getPlayerTokens() {
-        return playerTokens;
-    }
-
-    public void setPlayerTokens(String[] playerTokens) {
-        this.playerTokens = playerTokens;
     }
 
     public List<GameRound> getGameRoundList() {

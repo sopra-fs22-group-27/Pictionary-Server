@@ -47,7 +47,7 @@ public interface DTOMapper {
     @Mapping(source = "roundLength", target = "roundLength")
     @Mapping(source = "numberOfRounds", target = "numberOfRounds")
     @Mapping(source = "gameStatus", target = "gameStatus")
-    @Mapping(source = "playerTokens", target = "playerTokens")
+    //@Mapping(source = "playerTokens", target = "playerTokens")
     @Mapping(source = "isPublic", target = "isPublic")
     @Mapping(source = "password", target = "password")
     Game convertGamePostDTOtoEntity(GamePostDTO gamePostDTO);
@@ -59,7 +59,6 @@ public interface DTOMapper {
     @Mapping(source = "numberOfRounds", target = "numberOfRounds")
     @Mapping(source = "gameStatus", target = "gameStatus")
     @Mapping(source = "gameToken", target = "gameToken")
-    @Mapping(source = "playerTokens", target = "playerTokens")
     @Mapping(source = "currentGameRound", target= "currentGameRound")
     @Mapping(source = "isPublic", target= "isPublic")
     GameGetDTO convertEntityToGameGetDTO(Game game);
@@ -68,7 +67,7 @@ public interface DTOMapper {
     Img convertGamePutDTOToImg(GamePutDTO gamePutDTO);
 
     @Mapping(source = "word", target = "word")
-    @Mapping(source = "winner", target = "winner")
+    //@Mapping(source = "winner", target = "winner")
     @Mapping(source = "roundStartingTime", target = "roundStartingTime")
     @Mapping(source = "drawer", target = "drawerToken")
     GameRoundGetDTO convertEntityToGameRoundGetDTO(GameRound gameRound);

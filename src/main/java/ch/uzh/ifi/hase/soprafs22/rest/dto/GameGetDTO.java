@@ -1,6 +1,9 @@
 package ch.uzh.ifi.hase.soprafs22.rest.dto;
 
+import ch.uzh.ifi.hase.soprafs22.entity.User;
+
 import java.util.List;
+import java.util.Map;
 
 public class GameGetDTO {
     private String gameName;
@@ -10,7 +13,6 @@ public class GameGetDTO {
     private int numberOfRounds;
     private String gameStatus;
     private String gameToken;
-    private String[] playerTokens;
     private int currentGameRound;
     private Boolean isPublic;
 
@@ -61,12 +63,6 @@ public class GameGetDTO {
     }
     public void setGameToken(String gameToken) {
         this.gameToken = gameToken;
-    }
-    public String[] getPlayerTokens() {
-        return playerTokens;
-    }
-    public void setPlayerTokens(String[] playerTokens) {
-        this.playerTokens = playerTokens;
     }
     public Boolean getIsPublic() {
         return isPublic;

@@ -3,6 +3,7 @@ package ch.uzh.ifi.hase.soprafs22.entity;
 import javax.persistence.*;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Table(name = "GAMEROUND")
@@ -29,10 +30,25 @@ public class GameRound {
     private String[] guessersToken;
 
     @Column()
-    private String winner;
-
-    @Column()
     private String gameToken;
+
+    @ElementCollection
+    private Map<User, Boolean> userToAlreadyGuessedMap;
+
+    public void addUserToAlreadyGuessedMap(User user) {
+        if(this.userToAlreadyGuessedMap == null){
+            this.userToAlreadyGuessedMap = new HashMap<User, Boolean>();
+        }
+        this.userToAlreadyGuessedMap.put(user, false);
+    }
+
+    public void updateUserToAlreadyGuessedMap(User user, boolean bool) {
+        this.userToAlreadyGuessedMap.put(user, bool);
+    }
+
+    public Boolean getUserGuessedInfo(User user){
+        return this.userToAlreadyGuessedMap.get(user);
+    }
 
     public String getImg() {
         return img;
@@ -64,14 +80,6 @@ public class GameRound {
 
     public void setGuessersToken(String[] guessersToken) {
         this.guessersToken = guessersToken;
-    }
-
-    public String getWinner() {
-        return winner;
-    }
-
-    public void setWinner(String userToken) {
-        this.winner = userToken;
     }
 
     public String getDrawer() {
