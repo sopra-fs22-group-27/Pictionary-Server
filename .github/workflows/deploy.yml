@@ -15,7 +15,7 @@ jobs:
       HEROKU_KEY: ${{ secrets.HEROKU_API_KEY }}
       HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
       HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
-      GOOGLE_APPLICATION_CREDENTIALS: pictionary-server/high-splicer-347809-dec8674bf9c0.json
+      GOOGLE_APPLICATION_CREDENTIALS: ../../high-splicer-347809-dec8674bf9c0.json
 
     steps:
     - name: checkout repository code
