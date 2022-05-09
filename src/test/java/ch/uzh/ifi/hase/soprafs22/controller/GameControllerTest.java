@@ -78,7 +78,7 @@ public class GameControllerTest {
         MvcResult result = mockMvc.perform(postRequest).andReturn();
 
 
-        verify(gameService, times(1)).createGame("sss", Mockito.any());
+        verify(gameService, times(1)).createGame(Mockito.anyString(), Mockito.any());
 
         // test the http status of the response
         assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus());
