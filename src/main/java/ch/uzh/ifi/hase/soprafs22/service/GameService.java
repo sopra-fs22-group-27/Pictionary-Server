@@ -98,6 +98,7 @@ public class GameService {
             //game.setPlayerTokens(newPlayers);
             game.addUserToIntegerMap(user);
             game.setNumberOfPlayers(game.getNumberOfPlayers() + 1);
+            gameRepository.save(game);
             gameRepository.flush();
             return game;
         }

@@ -43,7 +43,6 @@ public class Game {
     private List<GameRound> gameRoundList;
 
     @ElementCollection
-    @OrderBy()
     private Map<User, Integer> userToIntegerMap;
 
     @Column()
