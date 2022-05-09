@@ -1,10 +1,8 @@
 package ch.uzh.ifi.hase.soprafs22.service;
 
 import ch.uzh.ifi.hase.soprafs22.constant.UserStatus;
-import ch.uzh.ifi.hase.soprafs22.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs22.entity.User;
 import ch.uzh.ifi.hase.soprafs22.repository.UserRepository;
-import ch.uzh.ifi.hase.soprafs22.rest.mapper.DTOMapper;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -119,6 +117,8 @@ public class UserService {
         if(newUser.getPassword() == "" || newUser.getUsername() == ""){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The username or password is. Try to use a valid one");
         }
+        checkIfUserExists(newUser);
+
         if(newUser.getCreation_date() == null){
             LocalDate today = LocalDate.now();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -129,7 +129,6 @@ public class UserService {
         newUser.setStatus(UserStatus.ONLINE);
         newUser.setRanking_points(0);
         // newUser.setLogged_in(true);
-        checkIfUserExists(newUser);
 
         // saves the given entity but data is only persisted in the database once
         // flush() is called
@@ -179,6 +178,9 @@ public class UserService {
         for (User user : users) {
             if(user.getUsername().equals(username) && user.getPassword().equals(password)){
                 // user.setLogged_in(true);
+                if(user.getStatus().equals(UserStatus.ONLINE)){
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User has already logged in. Please log out first.");
+                }
                 user.setStatus(UserStatus.ONLINE);
                 return user;
             }

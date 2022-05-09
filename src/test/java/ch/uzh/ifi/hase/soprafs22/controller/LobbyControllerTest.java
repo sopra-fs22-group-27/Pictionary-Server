@@ -1,11 +1,8 @@
+/*
 package ch.uzh.ifi.hase.soprafs22.controller;
 
 import ch.uzh.ifi.hase.soprafs22.constant.UserStatus;
-import ch.uzh.ifi.hase.soprafs22.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs22.entity.User;
-import ch.uzh.ifi.hase.soprafs22.rest.dto.LobbyPostDTO;
-import ch.uzh.ifi.hase.soprafs22.rest.dto.UserPostDTO;
-import ch.uzh.ifi.hase.soprafs22.service.LobbyService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -17,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collections;
@@ -33,12 +29,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+*/
 /**
- * UserControllerTest
- * This is a WebMvcTest which allows to test the UserController i.e. GET/POST
- * request without actually sending them over the network.
- * This tests if the UserController works.
- */
+ * The GameControllerTest should be like this!
+ *//*
+
+
 @WebMvcTest(LobbyController.class)
 public class LobbyControllerTest {
 
@@ -114,7 +110,8 @@ public class LobbyControllerTest {
                 .andExpect(jsonPath("$.isPublic", is(true)));
     }
 
-    /*
+    */
+/*
     @Test
     public void updateLobby_addUserToLobby() throws Exception{
         // given
@@ -157,16 +154,19 @@ public class LobbyControllerTest {
                 // .andExpect(jsonPath("$.password", is(user.getPassword())))
                 .andExpect(jsonPath("$.host.username", is(user.getUsername())))
                 .andExpect(jsonPath("$.isPublic", is(true)));
-    }*/
+    }*//*
 
-    /**
+
+    */
+/**
      * Helper Method to convert userPostDTO into a JSON string such that the input
      * can be processed
      * Input will look like this: {"name": "Test User", "username": "testUsername"}
      *
      * @param object
      * @return string
-     */
+     *//*
+
     private String asJsonString(final Object object) {
         try {
             return new ObjectMapper().writeValueAsString(object);
@@ -176,4 +176,4 @@ public class LobbyControllerTest {
                     String.format("The request body could not be created.%s", e.toString()));
         }
     }
-}
+}*/

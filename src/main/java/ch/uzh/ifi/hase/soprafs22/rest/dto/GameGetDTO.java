@@ -1,5 +1,10 @@
 package ch.uzh.ifi.hase.soprafs22.rest.dto;
 
+import ch.uzh.ifi.hase.soprafs22.entity.User;
+
+import java.util.List;
+import java.util.Map;
+
 public class GameGetDTO {
     private String gameName;
     private int numberOfPlayersRequired;
@@ -8,7 +13,15 @@ public class GameGetDTO {
     private int numberOfRounds;
     private String gameStatus;
     private String gameToken;
-    
+    private int currentGameRound;
+    private Boolean isPublic;
+
+    public int getCurrentGameRound() {
+        return currentGameRound;
+    }
+    public void setCurrentGameRound(int currentGameRound) {
+        this.currentGameRound = currentGameRound;
+    }
     public String getGameName() {
         return gameName;
     }
@@ -50,6 +63,12 @@ public class GameGetDTO {
     }
     public void setGameToken(String gameToken) {
         this.gameToken = gameToken;
+    }
+    public Boolean getIsPublic() {
+        return isPublic;
+    }
+    public void setIsPublic(Boolean isPublic){
+        this.isPublic = isPublic;
     }
 
 }

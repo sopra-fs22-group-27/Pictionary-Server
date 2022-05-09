@@ -1,14 +1,7 @@
 package ch.uzh.ifi.hase.soprafs22.rest.mapper;
 
-import ch.uzh.ifi.hase.soprafs22.entity.Game;
-import ch.uzh.ifi.hase.soprafs22.entity.Lobby;
-import ch.uzh.ifi.hase.soprafs22.entity.User;
-import ch.uzh.ifi.hase.soprafs22.rest.dto.GameGetDTO;
-import ch.uzh.ifi.hase.soprafs22.rest.dto.GamePostDTO;
-import ch.uzh.ifi.hase.soprafs22.rest.dto.LobbyGetDTO;
-import ch.uzh.ifi.hase.soprafs22.rest.dto.LobbyPostDTO;
-import ch.uzh.ifi.hase.soprafs22.rest.dto.UserGetDTO;
-import ch.uzh.ifi.hase.soprafs22.rest.dto.UserPostDTO;
+import ch.uzh.ifi.hase.soprafs22.entity.*;
+import ch.uzh.ifi.hase.soprafs22.rest.dto.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -48,25 +41,15 @@ public interface DTOMapper {
     UserGetDTO convertEntityToUserGetDTO(User user);
 
 
-    @Mapping(source = "lobbyName", target = "lobbyName")
-    @Mapping(source = "gameLength", target = "gameLength")
-    @Mapping(source = "isPublic", target = "isPublic")
-    Lobby convertLobbyPostDTOtoEntity(LobbyPostDTO lobbyPostDTO);
-
-    @Mapping(source = "token", target = "token")
-    @Mapping(source = "lobbyName", target = "lobbyName")
-    @Mapping(source = "isPublic", target = "isPublic")
-    @Mapping(source = "isInGame", target = "isInGame")
-    @Mapping(source = "host", target = "host")
-    @Mapping(source = "gameLength", target = "gameLength")
-    LobbyGetDTO convertEntityToLobbyGetDTO(Lobby lobby);
-
     @Mapping(source = "gameName", target = "gameName")
     @Mapping(source = "numberOfPlayersRequired", target = "numberOfPlayersRequired")
     @Mapping(source = "numberOfPlayers", target = "numberOfPlayers")
     @Mapping(source = "roundLength", target = "roundLength")
     @Mapping(source = "numberOfRounds", target = "numberOfRounds")
     @Mapping(source = "gameStatus", target = "gameStatus")
+    //@Mapping(source = "playerTokens", target = "playerTokens")
+    @Mapping(source = "isPublic", target = "isPublic")
+    @Mapping(source = "password", target = "password")
     Game convertGamePostDTOtoEntity(GamePostDTO gamePostDTO);
 
     @Mapping(source = "gameName", target = "gameName")
@@ -76,9 +59,17 @@ public interface DTOMapper {
     @Mapping(source = "numberOfRounds", target = "numberOfRounds")
     @Mapping(source = "gameStatus", target = "gameStatus")
     @Mapping(source = "gameToken", target = "gameToken")
-    GameGetDTO convertEntityToGameGetDTO(Game gamePostDTO);
+    @Mapping(source = "currentGameRound", target= "currentGameRound")
+    @Mapping(source = "isPublic", target= "isPublic")
+    GameGetDTO convertEntityToGameGetDTO(Game game);
 
-    
+    @Mapping(source = "img", target = "img")
+    Img convertGamePutDTOToImg(GamePutDTO gamePutDTO);
 
+    @Mapping(source = "word", target = "word")
+    //@Mapping(source = "winner", target = "winner")
+    @Mapping(source = "roundStartingTime", target = "roundStartingTime")
+    @Mapping(source = "drawer", target = "drawerToken")
+    GameRoundGetDTO convertEntityToGameRoundGetDTO(GameRound gameRound);
 
 }
