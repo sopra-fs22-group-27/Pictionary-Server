@@ -122,7 +122,11 @@ public class GameController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void changeGameRound(@PathVariable("gameToken") String gameToken){
         gameService.changeGameRound(gameToken);
+    }
 
+    @GetMapping(path = "/games/{gameToken}/scoreboard")
+    public ResponseEntity getScoreboard(@PathVariable("gameToken") String gameToken){
+        return ResponseEntity.ok(gameService.getGameScoreBoard(gameToken));
     }
 
     /**

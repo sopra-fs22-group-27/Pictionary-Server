@@ -7,9 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import javax.persistence.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.persistence.criteria.CriteriaBuilder;
+import java.util.*;
 
 @Entity
 @Table(name = "GAME")
@@ -44,11 +43,14 @@ public class Game {
     private List<GameRound> gameRoundList;
 
     @ElementCollection
-    @Column(nullable = false)
+    @OrderBy()
     private Map<User, Integer> userToIntegerMap;
 
     @Column()
     private int currentGameRound;
+
+    @Column(nullable = false)
+    private String[] playerTokens;
 
     @Column()
     private Boolean isPublic;
@@ -72,12 +74,40 @@ public class Game {
        this.userToIntegerMap.put(user, points + currentPoints);
     }
 
+    public User getWinnerFromUserMap(){
+        User maxKey=null;
+        int maxValue=0;
+        for(Map.Entry<User, Integer> user : this.userToIntegerMap.entrySet()) {
+            if(user.getValue() > maxValue) {
+                maxValue = user.getValue();
+                maxKey = user.getKey();
+            }
+        }
+        return maxKey;
+        //using redblack Tree -> now presorted
+        //return this.userToIntegerMap.firstKey();
+    }
+
+
+     //Todo: implement scoreboard return function
+    public Map<User, Integer> getGameScoreBoard(){
+        return this.userToIntegerMap;
+    }
+
     public String getGameName() {
         return gameName;
     }
 
     public void setGameName(String gameName) {
         this.gameName = gameName;
+    }
+
+    public String[] getPlayerTokens() {
+        return playerTokens;
+    }
+
+    public void setPlayerTokens(String[] playerTokens) {
+        this.playerTokens = playerTokens;
     }
 
     public int getNumberOfPlayersRequired() {

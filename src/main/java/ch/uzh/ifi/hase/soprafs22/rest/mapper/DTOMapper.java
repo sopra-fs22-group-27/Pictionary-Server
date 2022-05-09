@@ -68,7 +68,7 @@ public interface DTOMapper {
     Img convertGamePutDTOToImg(GamePutDTO gamePutDTO);
 
     @Mapping(source = "word", target = "word")
-    @Mapping(source = "winner", target = "winner")
+    //@Mapping(source = "winner", target = "winner")
     @Mapping(source = "roundStartingTime", target = "roundStartingTime")
     @Mapping(source = "drawer", target = "drawerToken")
     GameRoundGetDTO convertEntityToGameRoundGetDTO(GameRound gameRound);

@@ -134,15 +134,17 @@ public class GameService {
         }
         GameRound currentGameRound = game.getGameRoundList().get(game.getCurrentGameRound() - 1);
         if(Objects.equals(currentGameRound.getWord(), guessedWord)){
-            if(currentGameRound.getWinner()==null){ //Only the first one get the points
-                currentGameRound.setWinner(userToken);
-                User winner = userRepository.findByToken(userToken);
-                int newRanking_points = winner.getRanking_points()+10;
-                winner.setRanking_points(newRanking_points);
-                userRepository.save(winner);
-                userRepository.flush();
+            User correctGuessUser = userRepository.findByToken(userToken);
+            if(gameRoundService.checkIfUserAlreadyGuessed(currentGameRound, correctGuessUser)){
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User already guessed correctly");
             }
-            return true;
+            else{
+                game.updatePointsUserMap(correctGuessUser, 10);
+                gameRoundService.updateCorrectGuess(gameToken, userToken);
+                gameRepository.save(game);
+                gameRepository.flush();
+                return true;
+            }
         }
         else{
             return false;
@@ -185,6 +187,20 @@ public class GameService {
         System.out.println(game.getCurrentGameRound());
         game.setCurrentGameRound(newGameRound); //next round
     }
+    public Map<User, Integer> getGameScoreBoard(String gameToken){
+        Game game = getGameByToken(gameToken);
+        return game.getGameScoreBoard();
+
+         /**if(currentGameRound.getWinner()==null){ //Only the first one get the points
+         currentGameRound.setWinner(userToken);
+         User winner = userRepository.findByToken(userToken);
+         int newRanking_points = winner.getRanking_points()+10;
+         winner.setRanking_points(newRanking_points);
+         userRepository.save(winner);
+         userRepository.flush();
+         }*/
+    }
+
 
 
     public List<Game> getJoinableGames() {
