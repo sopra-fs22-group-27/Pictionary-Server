@@ -59,7 +59,6 @@ public interface DTOMapper {
     @Mapping(source = "numberOfRounds", target = "numberOfRounds")
     @Mapping(source = "gameStatus", target = "gameStatus")
     @Mapping(source = "gameToken", target = "gameToken")
-    @Mapping(source = "userToIntegerMap", target = "userToIntegerMap")
     @Mapping(source = "currentGameRound", target= "currentGameRound")
     @Mapping(source = "isPublic", target= "isPublic")
     GameGetDTO convertEntityToGameGetDTO(Game game);

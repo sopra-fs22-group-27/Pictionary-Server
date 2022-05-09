@@ -12,7 +12,6 @@ public class GamePostDTO {
     private int numberOfRounds;
     private String gameStatus;
     private String gameToken;
-    private String[] playerTokens;
     private Boolean isPublic;
     private String password;
 
@@ -51,16 +50,6 @@ public class GamePostDTO {
     public int getNumberOfRounds() {
         return numberOfRounds;
     }
-
-    public String[] getPlayerTokens() {
-        return playerTokens;
-    }
-
-    public void setPlayerTokens(String[] playerTokens) {
-        this.playerTokens = playerTokens;
-    }
-
-
 
     public void setNumberOfRounds(int numberOfRounds) {
         this.numberOfRounds = numberOfRounds;

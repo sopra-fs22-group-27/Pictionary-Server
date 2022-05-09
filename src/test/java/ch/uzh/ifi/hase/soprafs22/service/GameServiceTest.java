@@ -55,7 +55,7 @@ public class GameServiceTest {
     @Test
     public void createGame_validInputs_success() {
 
-        Game createGame = gameService.createGame(game);
+        Game createGame = gameService.createGame("sss",game);
 
         // then
         Mockito.verify(gameRepository, Mockito.times(1)).save(Mockito.any());
@@ -84,7 +84,7 @@ public class GameServiceTest {
         String formattedCreation_date = formatter.format(today);
         user.setCreation_date(formattedCreation_date);
 
-        Game createGame = gameService.createGame(game);
+        Game createGame = gameService.createGame("ssss", game);
 
         // ...
     }

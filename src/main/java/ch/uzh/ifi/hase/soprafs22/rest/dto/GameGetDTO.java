@@ -13,7 +13,6 @@ public class GameGetDTO {
     private int numberOfRounds;
     private String gameStatus;
     private String gameToken;
-    private Map<User, Integer> userToIntegerMap;
     private int currentGameRound;
     private Boolean isPublic;
 
@@ -64,13 +63,6 @@ public class GameGetDTO {
     }
     public void setGameToken(String gameToken) {
         this.gameToken = gameToken;
-    }
-    public Map<User, Integer> getUserToIntegerMap() {
-        return userToIntegerMap;
-    }
-
-    public void setUserToIntegerMap(Map<User, Integer> userToIntegerMap) {
-        this.userToIntegerMap = userToIntegerMap;
     }
     public Boolean getIsPublic() {
         return isPublic;

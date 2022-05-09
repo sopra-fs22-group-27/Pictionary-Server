@@ -68,10 +68,9 @@ public class GameControllerTest {
         gamePostDTO.setRoundLength(60);
         gamePostDTO.setGameStatus("waiting");
         gamePostDTO.setGameToken("1-game");
-        gamePostDTO.setPlayerTokens(new String[] {"1", "2", "3"});
 
         // when/then -> do the request + validate the result
-        MockHttpServletRequestBuilder postRequest = post("/games")
+        MockHttpServletRequestBuilder postRequest = post("/games?userToken=sss")
         .contentType(MediaType.APPLICATION_JSON)
         .content(asJsonString(gamePostDTO));
 
@@ -79,7 +78,7 @@ public class GameControllerTest {
         MvcResult result = mockMvc.perform(postRequest).andReturn();
 
 
-        verify(gameService, times(1)).createGame(Mockito.any());
+        verify(gameService, times(1)).createGame("sss", Mockito.any());
 
         // test the http status of the response
         assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus());
@@ -101,7 +100,6 @@ public class GameControllerTest {
         game.setRoundLength(60);
         game.setGameStatus("waiting");
         game.setGameToken("1-game");
-        game.setPlayerTokens(new String[] {"1", "2", "3"});
         game.setCurrentGameRound(0);
 
         List<Game> allGames = Collections.singletonList(game);
@@ -135,7 +133,6 @@ public class GameControllerTest {
         game.setRoundLength(60);
         game.setGameStatus("waiting");
         game.setGameToken("1-game");
-        game.setPlayerTokens(new String[] {"1", "2", "3"});
         game.setCurrentGameRound(0);
 
         // when/then -> do the request + validate the result
@@ -168,7 +165,6 @@ public class GameControllerTest {
         game.setRoundLength(60);
         game.setGameStatus("waiting");
         game.setGameToken("1-game");
-        game.setPlayerTokens(new String[] {"1", "2", "3"});
         game.setCurrentGameRound(0);
 
         Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND)).when(gameService).getGameByToken(Mockito.anyString());
@@ -194,7 +190,7 @@ public class GameControllerTest {
         game.setRoundLength(60);
         game.setGameStatus("waiting");
         game.setGameToken("1-game");
-        game.setPlayerTokens(new String[] {"1", "2", "3"});
+
         game.setCurrentGameRound(0);
 
         GamePutDTO gamePutDTO = new GamePutDTO();
@@ -232,7 +228,7 @@ public class GameControllerTest {
         game.setRoundLength(60);
         game.setGameStatus("waiting");
         game.setGameToken("1-game");
-        game.setPlayerTokens(new String[] {"1", "2", "3"});
+
         game.setCurrentGameRound(0);
         game.setPassword("");
         game.setIsPublic(true);
@@ -275,7 +271,7 @@ public class GameControllerTest {
         game.setRoundLength(60);
         game.setGameStatus("waiting");
         game.setGameToken("1-game");
-        game.setPlayerTokens(new String[] {"1", "2", "3"});
+
         game.setCurrentGameRound(0);
 
         User user = new User();
@@ -312,7 +308,7 @@ public class GameControllerTest {
         game.setRoundLength(60);
         game.setGameStatus("waiting");
         game.setGameToken("1-game");
-        game.setPlayerTokens(new String[] {"1", "2", "3"});
+
         game.setCurrentGameRound(0);
 
         User user = new User();
@@ -349,7 +345,7 @@ public class GameControllerTest {
         game.setRoundLength(60);
         game.setGameStatus("waiting");
         game.setGameToken("1-game");
-        game.setPlayerTokens(new String[] {"1", "2", "3"});
+
         game.setCurrentGameRound(0);
 
         User user1 = new User();
@@ -404,7 +400,6 @@ public class GameControllerTest {
         game1.setRoundLength(60);
         game1.setGameStatus("waiting");
         game1.setGameToken("1-game");
-        game1.setPlayerTokens(new String[] {"4"});
         game1.setCurrentGameRound(0);
 
         Game game2 = new Game();
@@ -415,7 +410,6 @@ public class GameControllerTest {
         game2.setRoundLength(60);
         game2.setGameStatus("waiting");
         game2.setGameToken("2-game");
-        game2.setPlayerTokens(new String[] {"4"});
         game2.setCurrentGameRound(0);
 
         User user1 = new User();
@@ -463,7 +457,6 @@ public class GameControllerTest {
         game.setRoundLength(60);
         game.setGameStatus("waiting");
         game.setGameToken("1-game");
-        game.setPlayerTokens(new String[] {"4"});
         game.setCurrentGameRound(0);
 
 
@@ -494,7 +487,6 @@ public class GameControllerTest {
         game.setRoundLength(60);
         game.setGameStatus("waiting");
         game.setGameToken("1-game");
-        game.setPlayerTokens(new String[] {"4"});
         game.setCurrentGameRound(0);
 
         
@@ -520,7 +512,6 @@ public class GameControllerTest {
         game.setRoundLength(60);
         game.setGameStatus("waiting");
         game.setGameToken("1-game");
-        game.setPlayerTokens(new String[] {"3", "4"});
         game.setCurrentGameRound(0);
 
         // when
@@ -550,7 +541,6 @@ public class GameControllerTest {
         game.setRoundLength(60);
         game.setGameStatus("waiting");
         game.setGameToken("1-game");
-        game.setPlayerTokens(new String[] {"3", "4"});
         game.setCurrentGameRound(0);
 
         // when
