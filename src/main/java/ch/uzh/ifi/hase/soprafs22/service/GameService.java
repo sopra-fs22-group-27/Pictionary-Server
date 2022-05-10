@@ -194,7 +194,7 @@ public class GameService {
         System.out.println(game.getCurrentGameRound());
         game.setCurrentGameRound(newGameRound); //next round
     }
-    public Map<Integer, String> getGameScoreBoard(String gameToken){
+    public TreeMap<String, Integer> getGameScoreBoard(String gameToken){
         Game game = getGameByToken(gameToken);
         return game.getScoreBoardMap();
 
