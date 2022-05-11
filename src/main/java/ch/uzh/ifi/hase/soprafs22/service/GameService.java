@@ -195,8 +195,8 @@ public class GameService {
         if(game == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The Game was not found with this GameToken");
         }
-        String [] playerTokens = game.getPlayerTokens();
-        List<String> userTokens = Arrays.asList(playerTokens);
+        String gameTokens = game.getPlayerTokens();
+        List<String> userTokens = Arrays.asList(game.getPlayerTokens());
         if (userTokens.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no player in the game");
         }
