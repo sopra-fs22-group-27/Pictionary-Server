@@ -191,11 +191,11 @@ public class GameService {
     }
 
     public List<String> getUsernamesInGame(String gameToken) {
-        Game game = gameRepository.findByGameToken(gameToken);
+        Game game = this.gameRepository.findByGameToken(gameToken);
         if(game == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The Game was not found with this GameToken");
         }
-        String gameTokens = game.getPlayerTokens();
+
         List<String> userTokens = Arrays.asList(game.getPlayerTokens());
         if (userTokens.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no player in the game");
