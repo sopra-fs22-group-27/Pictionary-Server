@@ -222,5 +222,33 @@ public class GameService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The Game was not found with this GameToken");
         }
         game.setGameStatus("finished"); // end the game
+
+        //Add ranking points to the winner
+        Map scoreBoard = game.getGameScoreBoard();
+        Iterator i = scoreBoard.entrySet().iterator();
+        int points_of_winner=0;
+        String winner = "nobody";
+        while (i.hasNext()){
+            Map.Entry pair = (Map.Entry)i.next();
+            int value = (int) pair.getValue();
+            User user = (User) pair.getKey();
+            if (value > points_of_winner){
+                winner = user.getUsername();
+            }
+            i.remove();
+        }
+        if (winner.equals("nobody")){
+            System.out.println("Nobody has won");
+        }
+        else{
+            User win = userRepository.findByUsername(winner);
+            if(win == null){
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The User was not found with this username");
+            }
+            int points = win.getRanking_points();
+            win.setRanking_points(points+10);
+            userRepository.save(win);
+            userRepository.flush();
+        }
     }
 }
