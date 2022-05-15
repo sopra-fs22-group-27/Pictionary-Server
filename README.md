@@ -1,4 +1,6 @@
-# Pictionary - Server
+![Pictionary_logo](https://user-images.githubusercontent.com/45404885/168472257-b2a7ea0e-91d3-4141-81be-97ef16add954.png)
+
+
 ## Information about the Project: 
 
 https://pictionary-server-22.herokuapp.com/
