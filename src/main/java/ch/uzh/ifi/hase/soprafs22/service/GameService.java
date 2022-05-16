@@ -33,11 +33,7 @@ public class GameService {
     
     public List<Game> getGames() {
         return this.gameRepository.findAll();
-    }
-
-    public Game getGameById(String id) {
-        return this.gameRepository.findById(id);
-    }    
+    }  
 
     public void deleteGameByToken(String token) {
         this.gameRepository.deleteByGameToken(token);
@@ -194,6 +190,7 @@ public class GameService {
         System.out.println(game.getCurrentGameRound());
         game.setCurrentGameRound(newGameRound); //next round
     }
+
     public TreeMap<String, Integer> getGameScoreBoard(String gameToken){
         Game game = getGameByToken(gameToken);
         return game.getScoreBoardMap();
