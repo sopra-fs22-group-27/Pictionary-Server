@@ -248,4 +248,17 @@ public class GameService {
             userRepository.flush();
         }
     }
+
+    public void givePoints(int points, String userToken) {
+        User user = userRepository.findByToken(userToken);
+        if(user == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The Game was not found with this GameToken");
+        }
+        else{
+            int ranking_points = user.getRanking_points();
+            user.setRanking_points(ranking_points + points);
+            userRepository.save(user);
+            userRepository.flush();
+        }
+    }
 }

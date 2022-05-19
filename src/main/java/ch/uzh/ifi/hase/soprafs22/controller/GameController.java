@@ -155,6 +155,11 @@ public class GameController {
         gameService.finishGame(gameToken);
     }
 
+    @PutMapping(path = "/games/{userToken}/points")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void givePoints(int points, @PathVariable("userToken") String userToken) {
+        gameService.givePoints(points, userToken);
+    }
 
     /**@GetMapping(path = "/games/{gameToken}/timeGameRound")
     @ResponseStatus(HttpStatus.OK)
