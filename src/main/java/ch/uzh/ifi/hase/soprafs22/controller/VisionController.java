@@ -63,7 +63,7 @@ public class VisionController {
         // [END spring_vision_image_labelling]
 
         map.addAttribute("annotations", imageLabels);
-        map.addAttribute("gameID", gameToken);
+        //map.addAttribute("gameID", gameToken);
 
         return ResponseEntity.ok(map);
     }
