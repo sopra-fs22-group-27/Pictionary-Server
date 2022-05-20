@@ -179,7 +179,7 @@ public class UserService {
             if(user.getUsername().equals(username) && user.getPassword().equals(password)){
                 // user.setLogged_in(true);
                 if(user.getStatus().equals(UserStatus.ONLINE)){
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User has already logged in. Please log out first.");
+                    //throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User has already logged in. Please log out first.");
                 }
                 user.setStatus(UserStatus.ONLINE);
                 return user;
