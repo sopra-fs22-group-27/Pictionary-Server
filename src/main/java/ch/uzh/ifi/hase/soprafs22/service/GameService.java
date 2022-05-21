@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.server.ResponseStatusException;
 
 import ch.uzh.ifi.hase.soprafs22.entity.Game;
@@ -21,7 +22,7 @@ public class GameService {
     private UserService userService;
     private GameRoundService gameRoundService;
     private final UserRepository userRepository;
-
+    private ModelMap map;
 
     @Autowired
     public GameService(@Qualifier("gameRepository") GameRepository gameRepository , UserService userService, GameRoundService gameRoundService, @Qualifier("userRepository") UserRepository userRepository ) {
@@ -33,7 +34,11 @@ public class GameService {
     
     public List<Game> getGames() {
         return this.gameRepository.findAll();
-    }  
+    }
+
+    public void setMap(ModelMap map) {
+        this.map = map;
+    }
 
     public void deleteGameByToken(String token) {
         this.gameRepository.deleteByGameToken(token);
@@ -259,6 +264,29 @@ public class GameService {
             user.setRanking_points(ranking_points + points);
             userRepository.save(user);
             userRepository.flush();
+        }
+    }
+
+    public void givePointsToDrawer(String gameToken){
+        Game game = gameRepository.findByGameToken(gameToken);
+        if(game == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The Game was not found with this GameToken");
+        }
+        String list = map.getAttribute("annotations").toString();
+        GameRound currentGameRound = game.getGameRoundList().get(game.getCurrentGameRound() - 1);
+        if(!currentGameRound.getDrawerGotPoints()){
+            String wordUpper = currentGameRound.getWord().substring(0, 1).toUpperCase() + currentGameRound.getWord().substring(1);
+            System.out.println(list.contains(wordUpper));
+            if (list.contains(wordUpper)){
+                User user = userRepository.findByToken(currentGameRound.getDrawer());
+                if(user == null){
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The User was not found with this UserToken");
+                }
+                game.updatePointsUserMap(user, 20);
+                currentGameRound.setDrawerGotPoints(true);
+                gameRepository.save(game);
+                gameRepository.flush();
+            }
         }
     }
 }

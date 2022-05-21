@@ -64,7 +64,8 @@ public class VisionController {
 
         map.addAttribute("annotations", imageLabels);
         //map.addAttribute("gameID", gameToken);
-
+        gameService.setMap(map);
+        gameService.givePointsToDrawer(gameToken);
         return ResponseEntity.ok(map);
     }
 }

@@ -32,6 +32,9 @@ public class GameRound {
     @Column()
     private String gameToken;
 
+    @Column()
+    private Boolean drawerGotPoints;
+
     @ElementCollection
     private Map<User, Boolean> userToAlreadyGuessedMap;
 
@@ -88,5 +91,13 @@ public class GameRound {
 
     public void setDrawer(String drawerToken) {
         this.drawerToken = drawerToken;
+    }
+
+    public Boolean getDrawerGotPoints() {
+        return drawerGotPoints;
+    }
+
+    public void setDrawerGotPoints(Boolean drawerGotPoints) {
+        this.drawerGotPoints = drawerGotPoints;
     }
 }

@@ -43,6 +43,7 @@ public class GameRoundService {
             guesserList.remove(drawIndex);
             guesserList.add(drawIndex,drawer);
             gameRound.setGuessersToken(guesserList.toArray(new String[guesserList.size()]));
+            gameRound.setDrawerGotPoints(false);
             gameRoundList.add(gameRound);
 
             //setting up gameRound HashTable to keep track of guesses
