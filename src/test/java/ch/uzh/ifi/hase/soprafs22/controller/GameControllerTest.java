@@ -10,6 +10,8 @@ import ch.uzh.ifi.hase.soprafs22.service.GameService;
 import ch.uzh.ifi.hase.soprafs22.service.GameRoundService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.*;
@@ -58,9 +60,13 @@ public class GameControllerTest {
     @MockBean
     private GameRoundService gameRoundService;
 
-    @Test
-    public void postRequest_createGame_test() throws Exception {
-        GamePostDTO gamePostDTO = new GamePostDTO();
+    private GamePostDTO gamePostDTO;
+    private Game game;
+    private User user;
+
+    @BeforeEach
+    void setUp() {
+        gamePostDTO = new GamePostDTO();
         gamePostDTO.setGameName("testGameName");
         gamePostDTO.setNumberOfPlayers(2);
         gamePostDTO.setNumberOfPlayersRequired(2);
@@ -69,30 +75,7 @@ public class GameControllerTest {
         gamePostDTO.setGameStatus("waiting");
         gamePostDTO.setGameToken("1-game");
 
-        // when/then -> do the request + validate the result
-        MockHttpServletRequestBuilder postRequest = post("/games?userToken=sss")
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(asJsonString(gamePostDTO));
-
-        // then
-        MvcResult result = mockMvc.perform(postRequest).andReturn();
-
-
-        verify(gameService, times(1)).createGame(Mockito.anyString(), Mockito.any());
-
-        // test the http status of the response
-        assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus());
-
-        // test the http method ()
-        assertEquals(HttpMethod.POST.name(), result.getRequest().getMethod());
-
-        // test the content type of the response
-        assertEquals(MediaType.APPLICATION_JSON.toString(),result.getRequest().getContentType());
-        }
-
-    @Test
-    public void getRequest_games_test() throws Exception {
-        Game game = new Game();
+        game = new Game();
         game.setGameName("testGameName");
         game.setNumberOfPlayers(2);
         game.setNumberOfPlayersRequired(2);
@@ -101,237 +84,109 @@ public class GameControllerTest {
         game.setGameStatus("waiting");
         game.setGameToken("1-game");
         game.setCurrentGameRound(0);
+        game.setPassword("");
+        game.setIsPublic(true);
 
-        List<Game> allGames = Collections.singletonList(game);
-        // when/then -> do the request + validate the result
-        given(gameService.getGames()).willReturn(allGames);
+        user = new User();
+        user.setId(1L);
+        user.setPassword("Test Password");
+        user.setUsername("testUsername");
+        user.setEmail("test@email.com");
+        user.setToken("1");
+        user.setStatus(UserStatus.ONLINE);
+    }
 
-        // when
-        MockHttpServletRequestBuilder getRequest = get("/games").contentType(MediaType.APPLICATION_JSON);
 
-
-        // then
-        MvcResult result = mockMvc.perform(getRequest).andReturn();
-
-        // test the http status of the response
+    @Test
+    public void postRequest_createGame_test() throws Exception {
+        MockHttpServletRequestBuilder postRequest = post("/games?userToken=sss")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(asJsonString(gamePostDTO));
+        MvcResult result = mockMvc.perform(postRequest).andReturn();
+        verify(gameService, times(1)).createGame(Mockito.anyString(), Mockito.any());
         assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus());
+        assertEquals(HttpMethod.POST.name(), result.getRequest().getMethod());
+        assertEquals(MediaType.APPLICATION_JSON.toString(),result.getRequest().getContentType());
+    }
 
-        // test the http method ()
+    @Test
+    public void getRequest_games_test() throws Exception {
+        List<Game> allGames = Collections.singletonList(game);
+        given(gameService.getGames()).willReturn(allGames);
+        MockHttpServletRequestBuilder getRequest = get("/games").contentType(MediaType.APPLICATION_JSON);
+        MvcResult result = mockMvc.perform(getRequest).andReturn();
+        assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus());
         assertEquals(HttpMethod.GET.name(), result.getRequest().getMethod());
-
-        // test the content type of the response
         assertEquals(MediaType.APPLICATION_JSON.toString(), result.getRequest().getContentType());
     }
 
     @Test
     public void getRequest_game_test() throws Exception {
-        Game game = new Game();
-        game.setGameName("testGameName");
-        game.setNumberOfPlayers(2);
-        game.setNumberOfPlayersRequired(2);
-        game.setNumberOfRounds(10);
-        game.setRoundLength(60);
-        game.setGameStatus("waiting");
-        game.setGameToken("1-game");
-        game.setCurrentGameRound(0);
-
-        // when/then -> do the request + validate the result
         given(gameService.getGameByToken(Mockito.anyString())).willReturn(game);
-
-        // when
         MockHttpServletRequestBuilder getRequest = get("/games/1-game").contentType(MediaType.APPLICATION_JSON);
-
-
-        // then
         MvcResult result = mockMvc.perform(getRequest).andReturn();
-
-        // test the http status of the response
         assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus());
-
-        // test the http method ()
         assertEquals(HttpMethod.GET.name(), result.getRequest().getMethod());
-
-        // test the content type of the response
         assertEquals(MediaType.APPLICATION_JSON.toString(), result.getRequest().getContentType());
     }
 
     @Test
     public void getRequest_game_fail_test() throws Exception {
-        Game game = new Game();
-        game.setGameName("testGameName");
-        game.setNumberOfPlayers(2);
-        game.setNumberOfPlayersRequired(2);
-        game.setNumberOfRounds(10);
-        game.setRoundLength(60);
-        game.setGameStatus("waiting");
-        game.setGameToken("1-game");
-        game.setCurrentGameRound(0);
-
         Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND)).when(gameService).getGameByToken(Mockito.anyString());
-        // when
         MockHttpServletRequestBuilder getRequest = get("/games/2-game").contentType(MediaType.APPLICATION_JSON);
-
-
-        // then
         MvcResult result = mockMvc.perform(getRequest).andReturn();
-
-        // test the http method ()
         assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
     }
 
     @Test
     public void putRequest_updateImage_test() throws Exception {
-
-        Game game = new Game();
-        game.setGameName("testGameName");
-        game.setNumberOfPlayers(2);
-        game.setNumberOfPlayersRequired(2);
-        game.setNumberOfRounds(10);
-        game.setRoundLength(60);
-        game.setGameStatus("waiting");
-        game.setGameToken("1-game");
-
-        game.setCurrentGameRound(0);
-
         GamePutDTO gamePutDTO = new GamePutDTO();
         gamePutDTO.setImg("testImage");
-
-
-        // when
         MockHttpServletRequestBuilder putRequest = put("/games/drawing/?gameToken=" + "1-game")
             .contentType(MediaType.APPLICATION_JSON)
             .content(asJsonString(gamePutDTO));
-
-
-        // then
         MvcResult result = mockMvc.perform(putRequest).andReturn();
-
         verify(gameService,times(1)).updateImg(Mockito.anyString(), Mockito.anyString());
-
-        // test the http status of the response
         assertEquals(HttpStatus.ACCEPTED.value(), result.getResponse().getStatus());
-
-        // test the http method ()
         assertEquals(HttpMethod.PUT.name(), result.getRequest().getMethod());
 
-        // test the content type of the response
         assertEquals(MediaType.APPLICATION_JSON.toString(),result.getRequest().getContentType());
     }
 
     @Test
     public void putRequest_addPlayerToGame_test() throws Exception {
-        Game game = new Game();
-        game.setGameName("testGameName");
-        game.setNumberOfPlayers(2);
-        game.setNumberOfPlayersRequired(2);
-        game.setNumberOfRounds(10);
-        game.setRoundLength(60);
-        game.setGameStatus("waiting");
-        game.setGameToken("1-game");
-
-        game.setCurrentGameRound(0);
-        game.setPassword("");
-        game.setIsPublic(true);
-        User user = new User();
-        user.setId(1L);
-        user.setPassword("Test Password");
-        user.setUsername("testUsername");
-        user.setEmail("test@email.com");
-        user.setToken("1");
-        user.setStatus(UserStatus.ONLINE);
-
         GamePostDTO gamePostDTO = new GamePostDTO();
         gamePostDTO.setPassword("");
-        // when
         MockHttpServletRequestBuilder putRequest = put("/games/1-game/player/1")
             .contentType(MediaType.APPLICATION_JSON)
             .content(asJsonString(gamePostDTO));
-
-
-        // then
         MvcResult result = mockMvc.perform(putRequest).andReturn();
-
-        // test the http status of the response
         assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus());
-
-        // test the http method ()
         assertEquals(HttpMethod.PUT.name(), result.getRequest().getMethod());
-
-        // test the content type of the response
         assertEquals(MediaType.APPLICATION_JSON.toString(),result.getRequest().getContentType());
     }
 
     @Test
     public void putRequest_addPlayerToGame_fail_test() throws Exception {
-        Game game = new Game();
-        game.setGameName("testGameName");
-        game.setNumberOfPlayers(2);
-        game.setNumberOfPlayersRequired(2);
-        game.setNumberOfRounds(10);
-        game.setRoundLength(60);
-        game.setGameStatus("waiting");
-        game.setGameToken("1-game");
-
-        game.setCurrentGameRound(0);
-
-        User user = new User();
-        user.setId(1L);
-        user.setPassword("Test Password");
-        user.setUsername("testUsername");
-        user.setEmail("test@email.com");
-        user.setToken("1");
-        user.setStatus(UserStatus.ONLINE);
-       
         GamePostDTO gamePostDTO = new GamePostDTO();
         gamePostDTO.setPassword("");
-
-        // when
         Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND)).when(gameService).addPlayerToGame(Mockito.anyString(), Mockito.anyString(), Mockito.any());
-
         MockHttpServletRequestBuilder putRequest = put("/games/1-game/player/2")
             .contentType(MediaType.APPLICATION_JSON)
             .content(asJsonString(gamePostDTO));
-
-        // then
         MvcResult result = mockMvc.perform(putRequest).andReturn();
-
         assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
     }
 
     @Test
     public void putRequest_addPlayerToGame_fail2_test() throws Exception {
-        Game game = new Game();
-        game.setGameName("testGameName");
-        game.setNumberOfPlayers(2);
-        game.setNumberOfPlayersRequired(2);
-        game.setNumberOfRounds(10);
-        game.setRoundLength(60);
-        game.setGameStatus("waiting");
-        game.setGameToken("1-game");
-
-        game.setCurrentGameRound(0);
-
-        User user = new User();
-        user.setId(1L);
-        user.setPassword("Test Password");
-        user.setUsername("testUsername");
-        user.setEmail("test@email.com");
-        user.setToken("1");
-        user.setStatus(UserStatus.ONLINE);
-       
         GamePostDTO gamePostDTO = new GamePostDTO();
         gamePostDTO.setPassword("");
-
-        // when
         Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND)).when(gameService).addPlayerToGame(Mockito.anyString(), Mockito.anyString(), Mockito.any());
-
         MockHttpServletRequestBuilder putRequest = put("/games/2-game/player/1")
             .contentType(MediaType.APPLICATION_JSON)
             .content(asJsonString(gamePostDTO));
-
-        // then
         MvcResult result = mockMvc.perform(putRequest).andReturn();
-
         assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
     }
 
@@ -345,11 +200,8 @@ public class GameControllerTest {
         game.setRoundLength(60);
         game.setGameStatus("waiting");
         game.setGameToken("1-game");
-
-        game.setCurrentGameRound(0);
-
+        game.setCurrentGameRound(0);       
         User user1 = new User();
-        user1.setId(1L);
         user1.setPassword("Test Password");
         user1.setUsername("testUsername");
         user1.setEmail("test@email.com");
@@ -420,142 +272,62 @@ public class GameControllerTest {
         user1.setCreation_date("01/01/2022");
         user1.setToken("1");
         user1.setStatus(UserStatus.ONLINE);
-        user1.setRanking_points(0);
-
-        GamePostDTO gamePostDTO = new GamePostDTO();
+        user1.setRanking_points(0);        
+        
+        GamePostDTO gamePostDTO = new GamePostDTO();        
         gamePostDTO.setPassword("");
-
         MockHttpServletRequestBuilder putRequest1 = put("/games/1-game/player/1")
             .contentType(MediaType.APPLICATION_JSON)
             .content(asJsonString(gamePostDTO));
             
         MvcResult result1 = mockMvc.perform(putRequest1).andReturn();
-
         assertEquals(HttpStatus.OK.value(), result1.getResponse().getStatus());
-        
-        // when
         Mockito.doThrow(new ResponseStatusException(HttpStatus.CONFLICT)).when(gameService).addPlayerToGame(eq("1-game"), Mockito.anyString(), Mockito.any());
 
         MockHttpServletRequestBuilder putRequest2 = put("/games/1-game/player/1")
         .contentType(MediaType.APPLICATION_JSON)
         .content(asJsonString(gamePostDTO));
-
-        // then
         MvcResult result2 = mockMvc.perform(putRequest2).andReturn();
-
         assertEquals(HttpStatus.CONFLICT.value(), result2.getResponse().getStatus());
     }
 
 
     @Test
     public void putRequest_changeWord_test() throws Exception {
-        Game game = new Game();
-        game.setGameName("testGameName");
-        game.setNumberOfPlayers(2);
-        game.setNumberOfPlayersRequired(2);
-        game.setNumberOfRounds(10);
-        game.setRoundLength(60);
-        game.setGameStatus("waiting");
-        game.setGameToken("1-game");
-        game.setCurrentGameRound(0);
-
-
-        // when
         MockHttpServletRequestBuilder putRequest = put("/games/1-game/word/hahaha")
             .contentType(MediaType.APPLICATION_JSON);
-            
-        // then
-        MvcResult result = mockMvc.perform(putRequest).andReturn();
-
-        // test the http status of the response
+                    MvcResult result = mockMvc.perform(putRequest).andReturn();
         assertEquals(HttpStatus.NO_CONTENT.value(), result.getResponse().getStatus());
-
-        // test the http method ()
         assertEquals(HttpMethod.PUT.name(), result.getRequest().getMethod());
-
-        // test the content type of the response
         assertEquals(MediaType.APPLICATION_JSON.toString(),result.getRequest().getContentType());
     }
 
     @Test
     public void putRequest_changeWord_fail_test() throws Exception {
-        Game game = new Game();
-        game.setGameName("testGameName");
-        game.setNumberOfPlayers(2);
-        game.setNumberOfPlayersRequired(2);
-        game.setNumberOfRounds(10);
-        game.setRoundLength(60);
-        game.setGameStatus("waiting");
-        game.setGameToken("1-game");
-        game.setCurrentGameRound(0);
-
-        
-        // when
         Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND)).when(gameService).changeWord(eq("2-game"), Mockito.anyString());
-
         MockHttpServletRequestBuilder putRequest = put("/games/2-game/word/hahaha")
             .contentType(MediaType.APPLICATION_JSON);
-            
         MvcResult result = mockMvc.perform(putRequest).andReturn();
-
         assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
-
     }
 
     @Test
     public void getRequest_controlGuessedWord_test() throws Exception {
-        Game game = new Game();
-        game.setGameName("testGameName");
-        game.setNumberOfPlayers(2);
-        game.setNumberOfPlayersRequired(2);
-        game.setNumberOfRounds(10);
-        game.setRoundLength(60);
-        game.setGameStatus("waiting");
-        game.setGameToken("1-game");
-        game.setCurrentGameRound(0);
-
-        // when
         MockHttpServletRequestBuilder getRequest = get("/games/1-game/user/4/word/hahaha")
             .contentType(MediaType.APPLICATION_JSON);
-            
-        // then
         MvcResult result = mockMvc.perform(getRequest).andReturn();
-
-        // test the http status of the response
         assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus());
-
-        // test the http method ()
         assertEquals(HttpMethod.GET.name(), result.getRequest().getMethod());
-
-        // test the content type of the response
         assertEquals(MediaType.APPLICATION_JSON.toString(),result.getRequest().getContentType());
     }
     
     @Test
     public void getRequest_controlGuessedWord_fail_test() throws Exception {
-        Game game = new Game();
-        game.setGameName("testGameName");
-        game.setNumberOfPlayers(2);
-        game.setNumberOfPlayersRequired(2);
-        game.setNumberOfRounds(10);
-        game.setRoundLength(60);
-        game.setGameStatus("waiting");
-        game.setGameToken("1-game");
-        game.setCurrentGameRound(0);
-
-        // when
-
         Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND)).when(gameService).getResultOfGuess(eq("2-game"), Mockito.anyString(), Mockito.anyString());
-
         MockHttpServletRequestBuilder getRequest = get("/games/2-game/user/4/word/hahaha")
             .contentType(MediaType.APPLICATION_JSON);
-            
-        // then
         MvcResult result = mockMvc.perform(getRequest).andReturn();
-
-        // test the http status of the response
         assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
-
     }
 
 
