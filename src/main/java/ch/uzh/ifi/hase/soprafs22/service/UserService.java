@@ -12,12 +12,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-
+import org.springframework.scheduling.annotation.Scheduled;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 /**
  * User Service
@@ -65,6 +66,7 @@ public class UserService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The resource is not found.");
         }
         oldUser.setStatus(UserStatus.OFFLINE);
+        oldUser.setLastActiveTime(new Date());
         userRepository.flush();
         return oldUser;
 
@@ -84,6 +86,7 @@ public class UserService {
             else{
                 // oldUser.setEmail(newEmail);
                 oldUser.setUsername(newUsername);
+                oldUser.setLastActiveTime(new Date());
                 userRepository.flush();
             }
         }
@@ -97,6 +100,7 @@ public class UserService {
             else{
                 // oldUser.setEmail(newEmail);
                 oldUser.setEmail(newEmail);
+                oldUser.setLastActiveTime(new Date());
                 userRepository.flush();
             }
         }
@@ -105,6 +109,7 @@ public class UserService {
         if (newUser.getPassword()!=null && !newUser.getPassword().equals("")){
             String newPassword = newUser.getPassword();
             oldUser.setPassword(newPassword);
+            oldUser.setLastActiveTime(new Date());
             userRepository.flush();
         }
 
@@ -128,6 +133,7 @@ public class UserService {
         newUser.setToken(UUID.randomUUID().toString());
         newUser.setStatus(UserStatus.ONLINE);
         newUser.setRanking_points(0);
+        newUser.setLastActiveTime(new Date());
         // newUser.setLogged_in(true);
 
         // saves the given entity but data is only persisted in the database once
@@ -182,6 +188,7 @@ public class UserService {
                     //throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User has already logged in. Please log out first.");
                 }
                 user.setStatus(UserStatus.ONLINE);
+                user.setLastActiveTime(new Date());
                 return user;
             }
         }
@@ -194,6 +201,40 @@ public class UserService {
 
     }
 
+    public void syncActiveTime(User user) {
+        user.setLastActiveTime(new Date());
+        userRepository.flush();
+    }
+
+    @Scheduled(fixedRate = 10000)
+    public void checkLastActiveTime() {
+        
+        // SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        // String hh = "2022-5-21'T'20:01:01";
+        // Date d1 = new Date();
+        
+        // try {
+        //     Thread.sleep(1000);
+        // } catch (InterruptedException e) {
+        //     System.err.format("IOException: %s%n", e);
+        // }
+        // if (new Date().getTime() - d1.getTime() > 1000) {
+        //     System.out.println("nmsl");
+        // }
+        // System.out.println(new Date().getTime() - d1.getTime()); 
+        List<User> users = getUsers();
+        for(User user: users) {
+            if (user.getIsInLobby() || user.getisInGame()) {
+                user.setLastActiveTime(new Date());
+            } else {
+                if(user.getStatus().equals(UserStatus.ONLINE) && new Date().getTime() - user.getLastActiveTime().getTime() > 10000){
+                    user.setStatus(UserStatus.OFFLINE);
+                    System.out.println("User " + user.getUsername() + " is now offline"); 
+                }
+            }
+        }
+
+    }
   
 
 }
