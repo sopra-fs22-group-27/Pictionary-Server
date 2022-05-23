@@ -13,10 +13,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.util.ArrayList;
-
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GameServiceTest {
@@ -37,20 +34,28 @@ public class GameServiceTest {
     private GameService gameService;
 
     private Game game;
+    private User user;
+    private GameRound currentGameRound;
+    private String userToken; 
+    private String gameToken;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         MockitoAnnotations.openMocks(this);
+        gameToken = "2";
         game = new Game();
         game.setNumberOfPlayersRequired(2);
         game.setGameName("testUsername");
+        game.setGameToken(gameToken);
+        game.setGameStatus("started");
+        game.setGameRoundList(new ArrayList<>());
+        game.setCurrentGameRound(0);
+        game.setIsPublic(false);
+        game.setPassword("");
         Mockito.when(gameRepository.save(Mockito.any())).thenReturn(game);
-    }
 
-    @Test
-    public void createGame_validInputs() {
-        String userToken = "1";
-        User user = new User();
+        userToken = "1";
+        user = new User();
         user.setId(1L);
         user.setPassword("Test Password");
         user.setUsername("testUsername");
@@ -58,47 +63,29 @@ public class GameServiceTest {
         user.setToken(userToken);
         user.setStatus(UserStatus.ONLINE);    
 
-        Game newGame = new Game();
-        newGame.setNumberOfPlayersRequired(2);
-        newGame.setGameName("testUsername");
+        currentGameRound = new GameRound();
+        currentGameRound.setImg("testImg");
+        game.getGameRoundList().add(currentGameRound);
+    }
 
+    @Test
+    public void createGame_validInputs() {
         Mockito.when(userService.getUserByToken(userToken)).thenReturn(user);
-        Mockito.when(gameRepository.save(newGame)).thenReturn(newGame);
-
-        Game game = gameService.createGame(userToken, newGame);
-
-        assertEquals(game.getGameName(), "testUsername");
-        assertEquals(game.getNumberOfPlayersRequired(), 2);
-        assertNotNull(game.getGameToken());
+        Mockito.when(gameRepository.save(game)).thenReturn(game);
+        Game newGame = gameService.createGame(userToken, game);
+        assertEquals(newGame.getGameName(), "testUsername");
+        assertEquals(newGame.getNumberOfPlayersRequired(), 2);
+        assertNotNull(newGame.getGameToken());
     }
 
     @Test
     public void isGameFull_InvalidInputs() {
-        String gameToken = "2";
-        Game game = new Game();
-        game.setNumberOfPlayersRequired(3);
-        game.setGameName("testUsername");
-        game.setGameToken(gameToken);
-        game.setNumberOfPlayers(2);
-        game.setGameStatus("started");
-        game.setGameRoundList(new ArrayList<>());
-        game.setCurrentGameRound(0);
-    
         Mockito.when(gameRepository.findByGameToken(gameToken)).thenReturn(game);
-
         assertFalse(gameService.isGameFull(gameToken));
     }
 
     @Test
     public void getJoinableGames_validInputs() {
-        Game game = new Game();
-        game.setNumberOfPlayersRequired(2);
-        game.setGameName("testUsername");
-        game.setNumberOfPlayers(1);
-        game.setGameStatus("started");
-        game.setGameRoundList(new ArrayList<>());
-        game.setCurrentGameRound(0);
-
         Game game2 = new Game();
         game2.setNumberOfPlayersRequired(2);
         game2.setGameName("testUsername2");
@@ -106,52 +93,27 @@ public class GameServiceTest {
         game2.setGameStatus("started");
         game2.setGameRoundList(new ArrayList<>());
         game2.setCurrentGameRound(0);
-
         Mockito.when(gameRepository.findAll()).thenReturn(new ArrayList<Game>() {{
             add(game);
             add(game2);
         }});
-
         assertEquals(gameService.getJoinableGames().size(), 2);
     }
 
     @Test
     public void getGameByToken_validInputs() {
-        String gameToken = "1";
-        Game game = new Game();
-        game.setNumberOfPlayersRequired(2);
-        game.setGameName("testUsername");
-        game.setGameToken(gameToken);
-        game.setNumberOfPlayers(1);
-        game.setGameStatus("started");
-        game.setGameRoundList(new ArrayList<>());
-        game.setCurrentGameRound(0);
-
         Mockito.when(gameRepository.findByGameToken(gameToken)).thenReturn(game);
-
         assertEquals(gameService.getGameByToken(gameToken).getGameName(), "testUsername");
     }
 
     @Test
     public void getGameByToken_invalidInputs() {
-        String gameToken = "1";
-        Game game = new Game();
-        game.setNumberOfPlayersRequired(2);
-        game.setGameName("testUsername");
-        game.setGameToken(gameToken);
-        game.setNumberOfPlayers(1);
-        game.setGameStatus("started");
-        game.setGameRoundList(new ArrayList<>());
-        game.setCurrentGameRound(0);
-
         Mockito.when(gameRepository.findByGameToken(gameToken)).thenReturn(game);
-
         assertNotEquals(gameService.getGameByToken(gameToken).getGameName(), "testUsername2");
     }
 
     @Test 
     public void getGameByToken_gameNull() {
-        String gameToken = "1";
         Game game = null;
         Mockito.when(gameRepository.findByGameToken(gameToken)).thenReturn(game);
         assertThrows(ResponseStatusException.class, () -> gameService.getGameByToken(gameToken));
@@ -159,22 +121,10 @@ public class GameServiceTest {
 
     @Test 
     public void getImage_validInputs() {
-        String gameToken = "1";
-        Game game = new Game();
-        game.setNumberOfPlayersRequired(2);
-        game.setGameName("testUsername");
-        game.setGameToken(gameToken);
-        game.setNumberOfPlayers(1);
-        game.setGameStatus("started");
-        game.setGameRoundList(new ArrayList<>());
-        game.setCurrentGameRound(0);
-
         GameRound currentGameRound = new GameRound();
         currentGameRound.setImg("testImg");
         game.getGameRoundList().add(currentGameRound);
-
         Mockito.when(gameRepository.findByGameToken(gameToken)).thenReturn(game);
-
         assertEquals(gameService.getImage(gameToken), "testImg");
     }
 
@@ -197,58 +147,8 @@ public class GameServiceTest {
 
     @Test
     public void addPlayerToGame_gameNull() {
-        String gameToken = "1";
-        String userToken = "1";
         Game game = null;
         Mockito.when(gameRepository.findByGameToken(gameToken)).thenReturn(game);
-        assertThrows(ResponseStatusException.class, () -> gameService.addPlayerToGame(gameToken, userToken, game));
-    }
-
-    @Test
-    public void addPlayerToGame_passwordEmpty() {
-        String gameToken = "1";
-        String userToken = "1";
-        Game game = new Game();
-        game.setNumberOfPlayersRequired(2);
-        game.setGameName("testUsername");
-        game.setGameToken(gameToken);
-        game.setNumberOfPlayers(1);
-        game.setGameStatus("started");
-        game.setGameRoundList(new ArrayList<>());
-        game.setCurrentGameRound(0);
-        game.setIsPublic(false);
-        game.setPassword("");
-
-        GameRound currentGameRound = new GameRound();
-        currentGameRound.setImg("testImg");
-        game.getGameRoundList().add(currentGameRound);
-
-        Mockito.when(gameRepository.findByGameToken(gameToken)).thenReturn(game);
-
-        assertThrows(ResponseStatusException.class, () -> gameService.addPlayerToGame(gameToken, userToken, game));
-    }
-     
-    @Test
-    public void addPlayerToGame_noGameName() {
-        String gameToken = "1";
-        String userToken = "1";
-        Game game = new Game();
-        game.setNumberOfPlayersRequired(2);
-        game.setGameName("testUsername");
-        game.setGameToken(gameToken);
-        game.setNumberOfPlayers(1);
-        game.setGameStatus("started");
-        game.setGameRoundList(new ArrayList<>());
-        game.setCurrentGameRound(0);
-        game.setIsPublic(false);
-        game.setPassword("");
-
-        GameRound currentGameRound = new GameRound();
-        currentGameRound.setImg("testImg");
-        game.getGameRoundList().add(currentGameRound);
-
-        Mockito.when(gameRepository.findByGameToken(gameToken)).thenReturn(game);
-
         assertThrows(ResponseStatusException.class, () -> gameService.addPlayerToGame(gameToken, userToken, game));
     }
 
@@ -274,6 +174,4 @@ public class GameServiceTest {
 
     //     assertEquals(gameService.getResultOfGuess(gameToken, userToken, guessedWord), true);
     // }
-
-
 }
