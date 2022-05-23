@@ -6,9 +6,11 @@ import ch.uzh.ifi.hase.soprafs22.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import ch.uzh.ifi.hase.soprafs22.entity.Game;
@@ -140,7 +142,7 @@ public class GameService {
         if(game == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The Game was not found with this GameToken");
         }
-        GameRound currentGameRound = game.getGameRoundList().get(game.getCurrentGameRound() - 1);
+        GameRound currentGameRound = game.getGameRoundList().get(game.getCurrentGameRound());
         if(Objects.equals(currentGameRound.getWord(), guessedWord)){
             User correctGuessUser = userRepository.findByToken(userToken);
             if(gameRoundService.checkIfUserAlreadyGuessed(currentGameRound, correctGuessUser)){
@@ -267,17 +269,17 @@ public class GameService {
         }
     }
 
-    public void givePointsToDrawer(String gameToken){
+    public ResponseEntity<String> givePointsToDrawer(String gameToken){
         Game game = gameRepository.findByGameToken(gameToken);
         if(game == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The Game was not found with this GameToken");
         }
         String list = map.getAttribute("annotations").toString();
-        GameRound currentGameRound = game.getGameRoundList().get(game.getCurrentGameRound() - 1);
+        list = list.toLowerCase(Locale.ROOT);
+        GameRound currentGameRound = game.getGameRoundList().get(game.getCurrentGameRound());
         if(!currentGameRound.getDrawerGotPoints()){
-            String wordUpper = currentGameRound.getWord().substring(0, 1).toUpperCase() + currentGameRound.getWord().substring(1);
-            System.out.println(list.contains(wordUpper));
-            if (list.contains(wordUpper)){
+            String wordLower = currentGameRound.getWord().toLowerCase(Locale.ROOT);
+            if (list.contains(wordLower)){
                 User user = userRepository.findByToken(currentGameRound.getDrawer());
                 if(user == null){
                     throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The User was not found with this UserToken");
@@ -286,7 +288,12 @@ public class GameService {
                 currentGameRound.setDrawerGotPoints(true);
                 gameRepository.save(game);
                 gameRepository.flush();
+                return new ResponseEntity<String>("Damn nice drawing, 20 bonus points for you",HttpStatus.OK);
+            }
+            else{
+                return new ResponseEntity<String>("Wow I guess you're not the best drawer",HttpStatus.OK);
             }
         }
+        return new ResponseEntity<String>("Damn nice drawing, 20 bonus points for you",HttpStatus.OK);
     }
 }
