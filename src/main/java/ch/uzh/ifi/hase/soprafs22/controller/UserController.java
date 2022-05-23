@@ -118,4 +118,11 @@ public class UserController {
         userService.deleteUser(user);
     }
 
+    @PutMapping("synctime/{token}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void syncActiveTime(@PathVariable("token") String token) {
+        User user = userService.getUserByToken(token);
+        userService.syncActiveTime(user);
+    }
+
 }
