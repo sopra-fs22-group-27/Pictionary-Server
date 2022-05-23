@@ -227,7 +227,7 @@ public class UserService {
             if (user.getIsInLobby() || user.getisInGame()) {
                 user.setLastActiveTime(new Date());
             } else {
-                if(user.getStatus().equals(UserStatus.ONLINE) && new Date().getTime() - user.getLastActiveTime().getTime() > 10000){
+                if(user.getStatus().equals(UserStatus.ONLINE) && new Date().getTime() - user.getLastActiveTime().getTime() > 120000){
                     user.setStatus(UserStatus.OFFLINE);
                     System.out.println("User " + user.getUsername() + " is now offline"); 
                 }
