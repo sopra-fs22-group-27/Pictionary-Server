@@ -12,6 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.http.protocol.ResponseContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -20,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -64,8 +66,13 @@ public class VisionController {
 
         map.addAttribute("annotations", imageLabels);
         //map.addAttribute("gameID", gameToken);
-
+        gameService.setMap(map);
         return ResponseEntity.ok(map);
+    }
+
+    @GetMapping("/vision/{gameToken}/drawerPoints")
+    public ResponseEntity<String> givePointsToDrawer(@PathVariable String gameToken){
+        return gameService.givePointsToDrawer(gameToken);
     }
 }
 
