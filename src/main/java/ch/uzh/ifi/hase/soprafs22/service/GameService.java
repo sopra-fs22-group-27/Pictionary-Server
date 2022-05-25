@@ -310,4 +310,3 @@ public class GameService {
         return new ResponseEntity<String>("Damn nice drawing, 20 bonus points for you",HttpStatus.OK);
     }
 }
-}
