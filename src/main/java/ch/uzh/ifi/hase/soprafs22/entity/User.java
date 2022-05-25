@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Date;
 
 /**
  * Internal User Representation
@@ -54,10 +55,12 @@ public class User implements Serializable {
 
     @Column(nullable = false)
     private Boolean isInLobby = false;
-    // private LocalDate creation_date;
+    
+    @Column(nullable = false)
+    private Boolean isInGame = false;
 
-    // @Column(nullable = false)
-    // private Boolean logged_in;
+    @Column()
+    private Date lastActiveTime =  null;
 
 
     public Long getId() {
@@ -144,6 +147,21 @@ public class User implements Serializable {
     }
     public void setIsInLobby(Boolean isInLobby) {
         this.isInLobby = isInLobby;
+    }
+
+    public Boolean getisInGame() {
+        return isInGame;
+    }
+    public void setisInGame(Boolean isInGame) {
+        this.isInGame = isInGame;
+    }
+
+    public Date getLastActiveTime() {
+        return lastActiveTime;
+    }
+
+    public void setLastActiveTime(Date lastActiveTime) {
+        this.lastActiveTime = lastActiveTime;
     }
 }
 

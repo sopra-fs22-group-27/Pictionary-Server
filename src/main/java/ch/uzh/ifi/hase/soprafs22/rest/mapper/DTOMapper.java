@@ -38,6 +38,7 @@ public interface DTOMapper {
     // @Mapping(source = "logged_in", target = "logged_in")
     @Mapping(source = "token", target = "token")
     @Mapping(source = "isInLobby", target = "isInLobby")
+    @Mapping(source = "isInGame", target = "isInGame")
     UserGetDTO convertEntityToUserGetDTO(User user);
 
 

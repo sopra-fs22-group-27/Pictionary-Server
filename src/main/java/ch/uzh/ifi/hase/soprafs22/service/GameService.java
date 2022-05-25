@@ -56,11 +56,14 @@ public class GameService {
     
     public Game createGame (String userToken, Game newGame) {
         User user = userService.getUserByToken(userToken);
+        user.setIsInLobby(true);
+        user.setLastActiveTime(new Date());
         newGame.addUserToIntegerMap(user);
         newGame.setGameToken(UUID.randomUUID().toString());
 
         newGame.setGameRoundList(new ArrayList<GameRound>());
         newGame = gameRepository.save(newGame);
+        userRepository.flush();
         gameRepository.flush();
 
         return newGame;
@@ -102,6 +105,9 @@ public class GameService {
             game.addUserToIntegerMap(user);
             game.setNumberOfPlayers(game.getNumberOfPlayers() + 1);
             gameRepository.save(game);
+            user.setIsInLobby(true);
+            user.setLastActiveTime(new Date());
+            userRepository.flush();
             gameRepository.flush();
             return game;
         }
@@ -171,8 +177,12 @@ public class GameService {
                 ArrayList<String> stringList = new ArrayList<>();
                 Map<User, Integer> userMap = game.getUserToIntegerMap();
                 for (User user : userMap.keySet()) {
+                    user.setIsInLobby(false);
+                    user.setisInGame(true);
+                    user.setLastActiveTime(new Date());
                     stringList.add(user.getToken());
                 }
+                userRepository.flush();
                 String[] stringArray = stringList.toArray(new String[0]);
                 game.setGameRoundList(gameRoundService.createGameRounds(game.getNumberOfRounds(), stringArray));
                 game.setCurrentGameRound(0);
@@ -236,11 +246,14 @@ public class GameService {
             Map.Entry pair = (Map.Entry)i.next();
             int value = (int) pair.getValue();
             User user = (User) pair.getKey();
+            user.setisInGame(false);
+            user.setLastActiveTime(new Date());
             if (value > points_of_winner){
                 winner = user.getUsername();
             }
             i.remove();
         }
+        userRepository.flush();
         if (winner.equals("nobody")){
             System.out.println("Nobody has won");
         }
@@ -296,4 +309,5 @@ public class GameService {
         }
         return new ResponseEntity<String>("Damn nice drawing, 20 bonus points for you",HttpStatus.OK);
     }
+}
 }

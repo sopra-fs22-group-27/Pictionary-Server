@@ -18,6 +18,7 @@ public class UserGetDTO {
     private String creation_date;
     private int ranking_points;
     private Boolean isInLobby = false;
+    private Boolean isInGame = false;
   //  private String creation_date;
     // private Boolean logged_in;
 
@@ -85,5 +86,11 @@ public class UserGetDTO {
     public void setIsInLobby(Boolean isInLobby) {
         this.isInLobby = isInLobby;
     }
-
+    
+    public Boolean getisInGame() {
+      return isInGame;
+    }
+    public void setisInGame(Boolean isInGame) {
+        this.isInGame = isInGame;
+    }
 }
