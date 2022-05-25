@@ -141,7 +141,7 @@ public class GameService {
         if(game == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The Game was not found with this GameToken");
         }
-        GameRound currentGameRound = game.getGameRoundList().get(game.getCurrentGameRound() - 1);
+        GameRound currentGameRound = game.getGameRoundList().get(game.getCurrentGameRound());
         if(Objects.equals(currentGameRound.getWord(), guessedWord)){
             User correctGuessUser = userRepository.findByToken(userToken);
             if(gameRoundService.checkIfUserAlreadyGuessed(currentGameRound, correctGuessUser)){
