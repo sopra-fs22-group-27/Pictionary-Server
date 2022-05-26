@@ -128,6 +128,16 @@ public class GameServiceTest {
         assertEquals(gameService.getImage(gameToken), "testImg");
     }
 
+    @Test
+    public void updateImg_validInputs() {
+        GameRound currentGameRound = new GameRound();
+        currentGameRound.setImg("testImg");
+        game.getGameRoundList().add(currentGameRound);
+        Mockito.when(gameRepository.findByGameToken(gameToken)).thenReturn(game);
+        gameService.updateImg(gameToken, "newImage");
+        assertEquals(gameService.getImage(gameToken), "newImage");
+    }
+
     // @Test 
     // public void addPlayerToGame_validInputs() {
     //     String gameToken = "1";
