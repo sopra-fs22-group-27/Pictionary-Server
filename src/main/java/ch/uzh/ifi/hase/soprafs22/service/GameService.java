@@ -255,7 +255,7 @@ public class GameService {
         }
         userRepository.flush();
         if (winner.equals("nobody")){
-            System.out.println("Nobody has won");
+            //What should we do if nobody wins?
         }
         else{
             User win = userRepository.findByUsername(winner);

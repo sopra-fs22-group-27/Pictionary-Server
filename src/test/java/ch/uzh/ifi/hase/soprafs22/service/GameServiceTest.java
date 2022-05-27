@@ -73,6 +73,13 @@ public class GameServiceTest {
     }
 
     @Test
+    public void createGame_validInputs() {
+        Mockito.when(userService.getUserByToken(userToken)).thenReturn(user);
+        Mockito.when(gameRepository.findByGameToken(gameToken)).thenReturn(game);
+        assertEquals(game, gameService.createGame(userToken, game));
+    }
+
+    @Test
     public void addPlayerToGame_validInputs() {
         Mockito.when(userService.getUserByToken(userToken)).thenReturn(user);
         Mockito.when(gameRepository.save(game)).thenReturn(game);
@@ -103,6 +110,7 @@ public class GameServiceTest {
         Mockito.when(gameRepository.save(game)).thenReturn(game);
         Mockito.when(gameRepository.findByGameToken(gameToken)).thenReturn(game);
         game.addUserToIntegerMap(user);
+        game.setGameStatus("");
         game.setIsPublic(true);
 
         assertThrows(ResponseStatusException.class, () -> gameService.addPlayerToGame(gameToken, userToken, game));
@@ -110,13 +118,13 @@ public class GameServiceTest {
 
     @Test
     public void addPlayerToGame_InvalidInputsGameIsFull() {
-        User user = null;
         Mockito.when(userService.getUserByToken(userToken)).thenReturn(user);
         Mockito.when(gameRepository.save(game)).thenReturn(game);
         Mockito.when(gameRepository.findByGameToken(gameToken)).thenReturn(game);
         User user2 = new User();
         game.addUserToIntegerMap(user2);
         game.setIsPublic(true);
+        game.setGameStatus("");
         game.setNumberOfPlayersRequired(1);
 
         assertThrows(ResponseStatusException.class, () -> gameService.addPlayerToGame(gameToken, userToken, game));
@@ -146,15 +154,32 @@ public class GameServiceTest {
         assertThrows(ResponseStatusException.class, () -> gameService.addPlayerToGame(gameToken, userToken, game));
     }
 
+    @Test
+    public void addPlayerToGame_InvalidInputsPrivatePasswordWrong() {
+        Mockito.when(userService.getUserByToken(userToken)).thenReturn(user);
+        Mockito.when(gameRepository.save(game)).thenReturn(game);
+        Mockito.when(gameRepository.findByGameToken(gameToken)).thenReturn(game);
+        User user2 = new User();
+        game.addUserToIntegerMap(user2);
+        Game game2 = game;
+        game2.setPassword("Other passwer");
+        game.setPassword("testPassword");
+
+        assertThrows(ResponseStatusException.class, () -> gameService.addPlayerToGame(gameToken, userToken, game2));
+    }
+
 
     @Test
     public void addPlayerToGame_InvalidUserDoesNotExist() {
+        User user = null;
         Mockito.when(userService.getUserByToken(userToken)).thenReturn(user);
         Mockito.when(gameRepository.save(game)).thenReturn(game);
         Mockito.when(gameRepository.findByGameToken(gameToken)).thenReturn(game);
         User user2 = new User();
         game.addUserToIntegerMap(user2);
         game.setIsPublic(true);
+        game.setGameStatus("");
+
 
         assertThrows(ResponseStatusException.class, () -> gameService.addPlayerToGame(gameToken, userToken, game));
     }
@@ -173,9 +198,21 @@ public class GameServiceTest {
         User user2 = new User();
         game.addUserToIntegerMap(user2);
         game.setNumberOfPlayers(2);
+        game.setGameRoundList(new ArrayList<>());
         Mockito.when(gameRepository.findByGameToken(gameToken)).thenReturn(game);
         assertEquals(gameService.isGameFull(gameToken), true);
+    }
 
+    @Test
+    public void isGameFull_validInputsButNotFull() {
+        game.setNumberOfPlayersRequired(7);
+        game.addUserToIntegerMap(user);
+        User user2 = new User();
+        game.addUserToIntegerMap(user2);
+        game.setNumberOfPlayers(2);
+        game.setGameRoundList(new ArrayList<>());
+        Mockito.when(gameRepository.findByGameToken(gameToken)).thenReturn(game);
+        assertEquals(gameService.isGameFull(gameToken), false);
     }
 
     @Test
