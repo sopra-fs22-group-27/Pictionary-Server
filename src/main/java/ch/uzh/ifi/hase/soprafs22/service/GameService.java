@@ -290,8 +290,13 @@ public class GameService {
         String list = map.getAttribute("annotations").toString();
         list = list.toLowerCase(Locale.ROOT);
         GameRound currentGameRound = game.getGameRoundList().get(game.getCurrentGameRound());
+
+        String currentRoundWord = currentGameRound.getWord();
+        if(currentRoundWord == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Word has not been set yet for this round");
+        }
         if(!currentGameRound.getDrawerGotPoints()){
-            String wordLower = currentGameRound.getWord().toLowerCase(Locale.ROOT);
+            String wordLower = currentRoundWord.toLowerCase(Locale.ROOT);
             if (list.contains(wordLower)){
                 User user = userRepository.findByToken(currentGameRound.getDrawer());
                 if(user == null){
@@ -304,7 +309,7 @@ public class GameService {
                 return new ResponseEntity<String>("Damn nice drawing, 20 bonus points for you",HttpStatus.OK);
             }
             else{
-                return new ResponseEntity<String>("Wow I guess you're not the best drawer",HttpStatus.OK);
+                return new ResponseEntity<String>("Wow I guess you're not the best drawer, that definitely does not look like a " + currentGameRound.getWord(),HttpStatus.OK);
             }
         }
         return new ResponseEntity<String>("Damn nice drawing, 20 bonus points for you",HttpStatus.OK);
