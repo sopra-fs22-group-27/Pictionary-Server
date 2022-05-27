@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,6 +30,9 @@ public class GameServiceTest {
     
     @Mock
     private GameRoundService gameRoundService;
+
+    @Mock
+    private GameService gameServiceMock;
 
     @InjectMocks
     private GameService gameService;
@@ -76,6 +80,13 @@ public class GameServiceTest {
         assertEquals(newGame.getGameName(), "testUsername");
         assertEquals(newGame.getNumberOfPlayersRequired(), 2);
         assertNotNull(newGame.getGameToken());
+    }
+
+    @Test
+    public void addPlayerToGame_gameNull() {
+        Game game = null;
+        Mockito.when(gameRepository.findByGameToken(gameToken)).thenReturn(game);
+        assertThrows(ResponseStatusException.class, () -> gameService.addPlayerToGame(gameToken, userToken, game));
     }
 
     @Test
@@ -128,50 +139,107 @@ public class GameServiceTest {
         assertEquals(gameService.getImage(gameToken), "testImg");
     }
 
-    // @Test 
-    // public void addPlayerToGame_validInputs() {
-    //     String gameToken = "1";
-    //     String userToken = "1";
-    //     Game game = new Game();
-    //     game.setNumberOfPlayersRequired(2);
-    //     game.setGameName("testUsername");
-    //     game.setGameToken(gameToken);
-    //     game.setNumberOfPlayers(1);
-    //     game.setGameStatus("started");
-    //     game.setGameRoundList(new ArrayList<>());
-    //     game.setCurrentGameRound(0);
-
-    //     assertEquals(gameService.addPlayerToGame(gameToken, userToken, game).getNumberOfPlayers(), 2);
-    // }
-    
-
     @Test
-    public void addPlayerToGame_gameNull() {
-        Game game = null;
+    public void updateImg_validInputs() {
+        GameRound currentGameRound = new GameRound();
+        currentGameRound.setImg("testImg");
+        game.getGameRoundList().add(currentGameRound);
         Mockito.when(gameRepository.findByGameToken(gameToken)).thenReturn(game);
-        assertThrows(ResponseStatusException.class, () -> gameService.addPlayerToGame(gameToken, userToken, game));
+        gameService.updateImg(gameToken, "newImage");
+        assertEquals(gameService.getImage(gameToken), "newImage");
     }
 
-    // @Test 
-    // public void getResultOfGuess_validInputs() {
-    //     String gameToken = "1";
-    //     String userToken = "1";
-    //     String guessedWord = "testWord";
-    //     Game game = new Game();
-    //     game.setNumberOfPlayersRequired(2);
-    //     game.setGameName("testUsername");
-    //     game.setGameToken(gameToken);
-    //     game.setNumberOfPlayers(1);
-    //     game.setGameStatus("started");
-    //     game.setGameRoundList(new ArrayList<>());
-    //     game.setCurrentGameRound(0);
+    @Test
+    public void changeWord_validInputs() {
+        GameRound currentGameRound = new GameRound();
+        currentGameRound.setWord("NotThisWord");
+        game.getGameRoundList().add(currentGameRound);
+        game.setCurrentGameRound(1);
+        Mockito.when(gameRepository.findByGameToken(gameToken)).thenReturn(game);
+        gameService.changeWord(gameToken, "TestWord");
+        assertEquals(currentGameRound.getWord(), "TestWord");
+    }
 
-    //     GameRound currentGameRound = new GameRound();
-    //     currentGameRound.setWord("testWord");
-    //     game.getGameRoundList().add(currentGameRound);
+    @Test
+    public void changeWord_InvalidInputs() {
+        GameRound currentGameRound = new GameRound();
+        game.getGameRoundList().add(currentGameRound);
+        game.setCurrentGameRound(1);
+        Mockito.when(gameRepository.findByGameToken(gameToken)).thenReturn(null);
+        Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND)).when(gameServiceMock).changeWord(gameToken, "newWord");
+    }
 
-    //     Mockito.when(gameRepository.findByGameToken(gameToken)).thenReturn(game);
+    @Test
+    public void getResultOfGuess_validInputs() {
+        GameRound currentGameRound = new GameRound();
+        currentGameRound.setWord("correctWord");
+        game.getGameRoundList().add(currentGameRound);
+        game.setCurrentGameRound(1);
+        Mockito.when(gameRepository.findByGameToken(gameToken)).thenReturn(game);
+        Mockito.when(userRepository.findByToken(userToken)).thenReturn(user);
+        game.addUserToIntegerMap(user);
+        assertEquals(gameService.getResultOfGuess(gameToken, userToken, "correctWord"), true);
+    }
 
-    //     assertEquals(gameService.getResultOfGuess(gameToken, userToken, guessedWord), true);
-    // }
+    @Test
+    public void getResultOfGuess_InvalidInputsGameToen() {
+        Mockito.when(gameRepository.findByGameToken(gameToken)).thenReturn(null);
+        Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND)).when(gameServiceMock).getResultOfGuess(gameToken, userToken, "newWord");
+    }
+
+    @Test
+    public void getResultOfGuess_InvalidInputsUserAlreadyGuessed() {
+        GameRound currentGameRound = new GameRound();
+        currentGameRound.setWord("correctWord");
+        game.getGameRoundList().add(currentGameRound);
+        game.setCurrentGameRound(1);
+        Mockito.when(gameRepository.findByGameToken(gameToken)).thenReturn(game);
+        Mockito.when(userRepository.findByToken(userToken)).thenReturn(user);
+        Mockito.when(gameRoundService.checkIfUserAlreadyGuessed(currentGameRound, user)).thenReturn(true);
+        Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND)).when(gameServiceMock).getResultOfGuess(gameToken, userToken, "newWord");
+    }
+
+    @Test
+    public void getResultOfGuess_InvalidInputsWrongWord() {
+        GameRound currentGameRound = new GameRound();
+        currentGameRound.setWord("correctWord");
+        game.getGameRoundList().add(currentGameRound);
+        game.setCurrentGameRound(1);
+        Mockito.when(gameRepository.findByGameToken(gameToken)).thenReturn(game);
+        Mockito.when(userRepository.findByToken(userToken)).thenReturn(user);
+        assertEquals(gameService.getResultOfGuess(gameToken, userToken, "wrongWord"), false);
+    }
+
+    @Test
+    public void changeGameRound_validInputs() {
+        GameRound currentGameRound = new GameRound();
+        GameRound nextGameRound = new GameRound();
+        game.getGameRoundList().add(currentGameRound);
+        game.getGameRoundList().add(nextGameRound);
+        game.setCurrentGameRound(1);
+        Mockito.when(gameRepository.findByGameToken(gameToken)).thenReturn(game);
+        gameService.changeGameRound(gameToken);
+        assertEquals(game.getCurrentGameRound(), 2);
+    }
+
+    @Test
+    public void changeGameRound_InvalidInputsWrongGameToken() {
+        GameRound currentGameRound = new GameRound();
+        GameRound nextGameRound = new GameRound();
+        game.getGameRoundList().add(currentGameRound);
+        game.getGameRoundList().add(nextGameRound);
+        game.setCurrentGameRound(1);
+        Mockito.when(gameRepository.findByGameToken(gameToken)).thenReturn(null);
+        Mockito.doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND)).when(gameServiceMock).changeGameRound(gameToken);
+    }
+
+    @Test
+    public void changeGameRound_InvalidInputsLastRound() {
+        GameRound currentGameRound = new GameRound();
+        game.getGameRoundList().add(currentGameRound);
+        game.setCurrentGameRound(1);
+        Mockito.when(gameRepository.findByGameToken(gameToken)).thenReturn(null);
+        Mockito.doThrow(new ResponseStatusException(HttpStatus.CONFLICT)).when(gameServiceMock).changeGameRound(gameToken);
+    }
+
 }
