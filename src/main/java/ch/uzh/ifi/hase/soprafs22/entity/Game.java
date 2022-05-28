@@ -98,20 +98,6 @@ public class Game {
        this.userToIntegerMap.put(user, points + currentPoints);
     }
 
-    public User getWinnerFromUserMap(){
-        User maxKey=null;
-        int maxValue=0;
-        for(Map.Entry<User, Integer> user : this.userToIntegerMap.entrySet()) {
-            if(user.getValue() > maxValue) {
-                maxValue = user.getValue();
-                maxKey = user.getKey();
-            }
-        }
-        return maxKey;
-        //using redblack Tree -> now presorted
-        //return this.userToIntegerMap.firstKey();
-    }
-
 
      //Todo: implement scoreboard return function
     public Map<User, Integer> getGameScoreBoard(){
