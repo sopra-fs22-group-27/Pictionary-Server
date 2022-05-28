@@ -70,7 +70,6 @@ public class GameController {
 
     /**
      * Get a game by id
-     * @param id
      * @return GameGetDTO
      */
     @GetMapping(path = "/games/{gameToken}")
