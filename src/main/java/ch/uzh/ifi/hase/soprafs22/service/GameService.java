@@ -287,6 +287,9 @@ public class GameService {
         if(game == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The Game was not found with this GameToken");
         }
+        if (map == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The map is null");
+        }
         String list = map.getAttribute("annotations").toString();
         list = list.toLowerCase(Locale.ROOT);
         GameRound currentGameRound = game.getGameRoundList().get(game.getCurrentGameRound());

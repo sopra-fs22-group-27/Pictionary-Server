@@ -47,6 +47,9 @@ public class VisionController {
     public ResponseEntity<?> extractLabels(@PathVariable String gameToken, ModelMap map){
         Game game = gameService.getGameByToken(gameToken);
         String image = game.getGameRoundList().get(game.getCurrentGameRound()).getImg();
+        if (image==null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The image is null");
+        }
         image = image.replace("data:image/png;base64,", "");
         byte[] decodeImg = Base64.getDecoder().decode(image);
         Resource resource = new ByteArrayResource(decodeImg);
