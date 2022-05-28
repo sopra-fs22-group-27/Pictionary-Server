@@ -122,6 +122,30 @@ public class GameService {
         }
     }
 
+    public void removePlayerFromLobby(String gameToken, String userToken) {
+        Game game = this.gameRepository.findByGameToken(gameToken);
+        if(game == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The Game was not found with this GameToken");
+        }
+        User user = userService.getUserByToken(userToken);
+        Map<User, Integer> userMap = game.getUserToIntegerMap();
+        if (game.getGameStatus().equals("started") || game.getGameStatus().equals("finished")) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "The game has already started or is finished");
+        } else if (userMap.size() == 0) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "The lobby is already empty");
+        } else if (game.getGameName() == null || user == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The game/lobby or user does not exist");
+        } else {
+            game.removeUserToIntegerMap(user);
+            game.setNumberOfPlayers(game.getNumberOfPlayers() - 1);
+            gameRepository.save(game);
+            user.setIsInLobby(false);
+            user.setLastActiveTime(new Date());
+            userRepository.flush();
+            gameRepository.flush();
+        }
+    }
+
     public void updateImg(String gameToken, String img){
         Game game = gameRepository.findByGameToken(gameToken);
         GameRound currentGameRound = game.getGameRoundList().get(game.getCurrentGameRound());
@@ -221,7 +245,7 @@ public class GameService {
         Game game = getGameByToken(gameToken);
         return game.getScoreBoardMap();
 
-         /**if(currentGameRound.getWinner()==null){ //Only the first one get the points
+        /**if(currentGameRound.getWinner()==null){ //Only the first one get the points
          currentGameRound.setWinner(userToken);
          User winner = userRepository.findByToken(userToken);
          int newRanking_points = winner.getRanking_points()+10;
