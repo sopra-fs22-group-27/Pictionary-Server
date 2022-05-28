@@ -84,6 +84,12 @@ public class GameController {
     public void deleteGame(@PathVariable("gameToken") String gameToken) {
         gameService.deleteGameByToken(gameToken);
     }
+    
+    //remove player from current lobby if he/she is not the lobby creator
+    @PutMapping(path = "/games/{gameToken}/leave/{userToken}")
+    public void removePlayerFromLobby(@PathVariable("gameToken") String gameToken, @PathVariable("userToken") String userToken) {
+        gameService.removePlayerFromLobby(gameToken, userToken);
+    }
 
     /**
      * Add player to a game by id

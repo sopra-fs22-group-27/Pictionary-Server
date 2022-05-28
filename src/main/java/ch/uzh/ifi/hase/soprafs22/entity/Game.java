@@ -66,6 +66,13 @@ public class Game {
         return treeMap;
     }
 
+    public void removeUserToIntegerMap(User user) {
+        if(this.userToIntegerMap != null){
+            this.userToIntegerMap.remove(user);
+        }
+        
+    }
+
     public void addUserToIntegerMap(User user) {
         if(this.userToIntegerMap == null){
             this.userToIntegerMap = new HashMap<User, Integer>();
