@@ -149,10 +149,10 @@ public class User implements Serializable {
         this.isInLobby = isInLobby;
     }
 
-    public Boolean getisInGame() {
+    public Boolean getIsInGame() {
         return isInGame;
     }
-    public void setisInGame(Boolean isInGame) {
+    public void setIsInGame(Boolean isInGame) {
         this.isInGame = isInGame;
     }
 

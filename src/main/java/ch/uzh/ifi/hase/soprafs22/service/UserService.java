@@ -224,12 +224,24 @@ public class UserService {
         // System.out.println(new Date().getTime() - d1.getTime()); 
         List<User> users = getUsers();
         for(User user: users) {
-            if (user.getIsInLobby() || user.getisInGame()) {
-                user.setLastActiveTime(new Date());
-            } else {
+            // log user who is in lobby out after 10+1/2 mins
+            if (user.getIsInLobby()) {
+                if (user.getStatus().equals(UserStatus.ONLINE) && new Date().getTime() - user.getLastActiveTime().getTime() > 630000) {
+                    user.setStatus(UserStatus.OFFLINE);
+                    System.out.println("Case 1: User " + user.getUsername() + " is now offline"); 
+                }
+            } 
+            // log user who is in game out after 30 mins
+            else if (user.getIsInGame()) {
+                if (user.getStatus().equals(UserStatus.ONLINE) && new Date().getTime() - user.getLastActiveTime().getTime() > 1800000) {
+                    user.setStatus(UserStatus.OFFLINE);
+                    System.out.println("Case 2: User " + user.getUsername() + " is now offline"); 
+                }}
+            // log user who is in other page after 2 mins
+            else {
                 if(user.getStatus().equals(UserStatus.ONLINE) && new Date().getTime() - user.getLastActiveTime().getTime() > 120000){
                     user.setStatus(UserStatus.OFFLINE);
-                    System.out.println("User " + user.getUsername() + " is now offline"); 
+                    System.out.println("Case 3: User " + user.getUsername() + " is now offline"); 
                 }
             }
         }

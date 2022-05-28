@@ -178,7 +178,7 @@ public class GameService {
                 Map<User, Integer> userMap = game.getUserToIntegerMap();
                 for (User user : userMap.keySet()) {
                     user.setIsInLobby(false);
-                    user.setisInGame(true);
+                    user.setIsInGame(true);
                     user.setLastActiveTime(new Date());
                     stringList.add(user.getToken());
                 }
@@ -246,7 +246,7 @@ public class GameService {
             Map.Entry pair = (Map.Entry)i.next();
             int value = (int) pair.getValue();
             User user = (User) pair.getKey();
-            user.setisInGame(false);
+            user.setIsInGame(false);
             user.setLastActiveTime(new Date());
             if (value > points_of_winner){
                 winner = user.getUsername();
