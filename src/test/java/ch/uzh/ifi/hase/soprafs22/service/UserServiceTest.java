@@ -11,6 +11,9 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserServiceTest {
@@ -64,6 +67,39 @@ public class UserServiceTest {
   }
 
   @Test
+  public void getUserById_validInputs() {
+      Mockito.when(userRepository.findUserById(Mockito.any())).thenReturn(testUser);
+      assertEquals(testUser, userService.getUserById(testUser.getId()));
+  }
+
+  @Test
+  public void getUserByToken_validInputs() {
+      Mockito.when(userRepository.findByToken(Mockito.any())).thenReturn(testUser);
+      assertEquals(testUser, userService.getUserByToken(testUser.getToken()));
+  }
+
+    @Test
+    public void getUserByToken_InvalidInputs() {
+      User user = null;
+      Mockito.when(userRepository.findByToken(testUser.getToken())).thenReturn(user);
+      assertThrows(ResponseStatusException.class, () -> userService.getUserByToken(testUser.getToken()));
+    }
+
+  @Test
+  public void updateUserStatus_validInputs() {
+      Mockito.when(userRepository.findByToken(Mockito.any())).thenReturn(testUser);
+      assertEquals(testUser, userService.updateUserStatus(testUser.getToken()));
+      assertEquals(UserStatus.OFFLINE, testUser.getStatus());
+  }
+
+    @Test
+    public void updateUserStatus_InvalidInputsToken() {
+      User user = null;
+      Mockito.when(userRepository.findByToken(testUser.getToken())).thenReturn(user);
+      assertThrows(ResponseStatusException.class, () -> userService.updateUserStatus(testUser.getToken()));
+    }
+
+  @Test
   public void createUser_validInputs_success() {
     User createdUser = userService.createUser(testUser);
     Mockito.verify(userRepository, Mockito.times(1)).save(Mockito.any());
@@ -87,6 +123,12 @@ public class UserServiceTest {
     userService.createUser(testUser);
     Mockito.when(userRepository.findByEmail(Mockito.any())).thenReturn(testUser);
     assertThrows(ResponseStatusException.class, () -> userService.createUser(testUser));
+  }
+
+  @Test
+  public void createUser_InvalidInputEmptyPassword() {
+      testUser.setPassword("");
+      assertThrows(ResponseStatusException.class, () -> userService.createUser(testUser));
   }
 
   @Test
@@ -117,4 +159,95 @@ public class UserServiceTest {
       assertEquals("testUsername", testUser.getUsername());
       assertThrows(ResponseStatusException.class, () -> userService.updateUser(testUser3.getToken(), testUser));
   }
+
+    @Test
+    public void updateUser_InvalidInputUserNull() {
+        User user = null;
+        Mockito.when(userRepository.findByToken(testUser.getToken())).thenReturn(user);
+        assertThrows(ResponseStatusException.class, () -> userService.updateUser(testUser.getToken(), testUser));
+    }
+
+    @Test
+    public void updateUser_InvalidInputExistingEmail() {
+        userService.createUser(testUser);
+        userService.createUser(testUser3);
+        testUser2.setEmail("test3@gmail.com");
+        Mockito.when(userRepository.findByEmail("test3@gmail.com")).thenReturn(testUser3);
+        Mockito.when(userRepository.findByToken(testUser.getToken())).thenReturn(testUser);
+        assertThrows(ResponseStatusException.class, () -> userService.updateUser(testUser.getToken(), testUser2));
+    }
+
+    @Test
+    public void checkUserLogin_validInput () {
+      userService.createUser(testUser);
+      userService.createUser(testUser2);
+      testUser.setStatus(UserStatus.OFFLINE);
+      List<User> users = new ArrayList<User>();
+      users.add(testUser);
+      users.add(testUser2);
+      Mockito.when(userRepository.findAll()).thenReturn(users);
+
+      assertEquals(testUser, userService.checkUserLogin(testUser));
+    }
+
+    @Test
+    public void checkUserLogin_validInputOnline () {
+        userService.createUser(testUser);
+        userService.createUser(testUser2);
+        testUser.setStatus(UserStatus.ONLINE);
+        List<User> users = new ArrayList<User>();
+        users.add(testUser);
+        users.add(testUser2);
+        Mockito.when(userRepository.findAll()).thenReturn(users);
+
+        assertEquals(testUser, userService.checkUserLogin(testUser));
+    }
+
+    @Test
+    public void checkUserLogin_InvalidInputEmptyList() {
+        userService.createUser(testUser);
+        userService.createUser(testUser2);
+        testUser.setStatus(UserStatus.OFFLINE);
+        List<User> users = new ArrayList<User>();
+        Mockito.when(userRepository.findAll()).thenReturn(users);
+        assertThrows(ResponseStatusException.class, () -> userService.checkUserLogin(testUser));
+    }
+
+    @Test
+    public void checkUserLogin_InvalidInputWrongPassword() {
+      User userToLogin = new User();
+      userService.createUser(testUser);
+      userService.createUser(testUser2);
+
+      userToLogin.setPassword("wrongPassword");
+      userToLogin.setId(1L);
+      userToLogin.setUsername("testUsername");
+      userToLogin.setCreation_date("01/01/2022");
+      userToLogin.setToken("1");
+      userToLogin.setEmail("test@gmail.com");
+      userToLogin.setRanking_points(0);
+      userToLogin.setIsInLobby(false);
+      userToLogin.setStatus(UserStatus.ONLINE);
+
+      testUser.setStatus(UserStatus.OFFLINE);
+      List<User> users = new ArrayList<User>();
+      users.add(testUser);
+      users.add(testUser2);
+      Mockito.when(userRepository.findAll()).thenReturn(users);
+
+      assertThrows(ResponseStatusException.class, () -> userService.checkUserLogin(userToLogin));
+    }
+
+    @Test
+    public void deleteUser() {
+      userService.deleteUser(testUser);
+      Mockito.verify(userRepository, Mockito.times(1)).delete(Mockito.any());
+      Mockito.verify(userRepository, Mockito.times(1)).flush();
+    }
+
+    @Test
+    public void syncActiveTime() {
+        userService.syncActiveTime(testUser);
+        Mockito.verify(userRepository, Mockito.times(1)).flush();
+    }
 }
