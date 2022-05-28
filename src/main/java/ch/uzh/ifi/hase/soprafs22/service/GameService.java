@@ -26,6 +26,15 @@ public class GameService {
     private final UserRepository userRepository;
     private ModelMap map;
 
+    public final String badDrawingString1 = "Wow I guess you're not the best drawer, that definitely does not look like a ";
+    public final String badDrawingString2 = "Can you please draw nicer, I can't tell that this is a ";
+    public final String badDrawingString3 = "Are you sure you want to be playing this game? That totally isn't a ";
+    public final String badDrawingString4 = "I think someone has to go back to the drawing board, literally... would you call this a ";
+
+    public final String[] badDrawingStringArray = new String[]{badDrawingString1, badDrawingString2, badDrawingString3, badDrawingString4};
+
+
+
     @Autowired
     public GameService(@Qualifier("gameRepository") GameRepository gameRepository , UserService userService, GameRoundService gameRoundService, @Qualifier("userRepository") UserRepository userRepository ) {
         this.gameRepository = gameRepository;
@@ -33,7 +42,7 @@ public class GameService {
         this.gameRoundService = gameRoundService;
         this.userRepository = userRepository;
     }
-    
+
     public List<Game> getGames() {
         return this.gameRepository.findAll();
     }
@@ -53,7 +62,7 @@ public class GameService {
         }
         return game;
     }
-    
+
     public Game createGame (String userToken, Game newGame) {
         User user = userService.getUserByToken(userToken);
         user.setIsInLobby(true);
@@ -110,30 +119,6 @@ public class GameService {
             userRepository.flush();
             gameRepository.flush();
             return game;
-        }
-    }
-
-    public void removePlayerFromLobby(String gameToken, String userToken) {
-        Game game = this.gameRepository.findByGameToken(gameToken);
-        if(game == null){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The Game was not found with this GameToken");
-        }
-        User user = userService.getUserByToken(userToken);
-        Map<User, Integer> userMap = game.getUserToIntegerMap();
-        if (game.getGameStatus().equals("started") || game.getGameStatus().equals("finished")) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "The game has already started or is finished");
-        } else if (userMap.size() == 0) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "The lobby is already empty");
-        } else if (game.getGameName() == null || user == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The game/lobby or user does not exist");
-        } else {
-            game.removeUserToIntegerMap(user);
-            game.setNumberOfPlayers(game.getNumberOfPlayers() - 1);
-            gameRepository.save(game);
-            user.setIsInLobby(false);
-            user.setLastActiveTime(new Date());
-            userRepository.flush();
-            gameRepository.flush();
         }
     }
 
@@ -336,7 +321,7 @@ public class GameService {
                 return new ResponseEntity<String>("Damn nice drawing, 20 bonus points for you",HttpStatus.OK);
             }
             else{
-                return new ResponseEntity<String>("Wow I guess you're not the best drawer, that definitely does not look like a " + currentGameRound.getWord(),HttpStatus.OK);
+                return new ResponseEntity<String>(badDrawingStringArray[new Random().nextInt(badDrawingStringArray.length)] + currentGameRound.getWord(),HttpStatus.OK);
             }
         }
         return new ResponseEntity<String>("Damn nice drawing, 20 bonus points for you",HttpStatus.OK);
