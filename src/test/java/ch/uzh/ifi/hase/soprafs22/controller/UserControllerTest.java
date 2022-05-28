@@ -88,7 +88,7 @@ public class UserControllerTest {
   }
 
   @Test
-  public void createUser_validInput_userCreated() throws Exception {
+  public void findUserByToken_validInput_userCreated() throws Exception {
     LocalDate today = LocalDate.now();
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     String formattedCreation_date = formatter.format(today);
@@ -178,6 +178,62 @@ public class UserControllerTest {
         MvcResult result = mockMvc.perform(putRequest).andReturn();
         assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
     }
+
+    @Test
+    public void postRequest_createUser_test() throws Exception {
+        given(userService.createUser(Mockito.any())).willReturn(user);
+
+        MockHttpServletRequestBuilder postRequest = post("/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(userPostDTO));
+
+        MvcResult result = mockMvc.perform(postRequest).andReturn();
+        assertEquals(HttpStatus.CREATED.value(), result.getResponse().getStatus());
+        assertEquals(HttpMethod.POST.name(), result.getRequest().getMethod());
+        assertEquals(MediaType.APPLICATION_JSON.toString(), result.getRequest().getContentType());
+    }
+
+    @Test
+    public void postRequest_checkUserLogin_test() throws Exception{
+        given(userService.checkUserLogin(Mockito.any())).willReturn(user);
+
+        MockHttpServletRequestBuilder postRequest = post("/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(userPostDTO));
+
+        MvcResult result = mockMvc.perform(postRequest).andReturn();
+        assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus());
+        assertEquals(HttpMethod.POST.name(), result.getRequest().getMethod());
+        assertEquals(MediaType.APPLICATION_JSON.toString(), result.getRequest().getContentType());
+    }
+
+    @Test
+    public void deleteRequest_deleteUser_test() throws Exception{
+        given(userService.getUserByToken(Mockito.anyString())).willReturn(user);
+
+        MockHttpServletRequestBuilder deleteRequest = delete("/users/1")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult result = mockMvc.perform(deleteRequest).andReturn();
+        assertEquals(HttpStatus.NO_CONTENT.value(), result.getResponse().getStatus());
+        assertEquals(HttpMethod.DELETE.name(), result.getRequest().getMethod());
+        assertEquals(MediaType.APPLICATION_JSON.toString(), result.getRequest().getContentType());
+    }
+
+    @Test
+    public void putRequest_syncActiveTime_test() throws Exception{
+        given(userService.getUserByToken(Mockito.anyString())).willReturn(user);
+
+        MockHttpServletRequestBuilder putRequest = put("/synctime/1")
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult result = mockMvc.perform(putRequest).andReturn();
+        assertEquals(HttpStatus.NO_CONTENT.value(), result.getResponse().getStatus());
+        assertEquals(HttpMethod.PUT.name(), result.getRequest().getMethod());
+        assertEquals(MediaType.APPLICATION_JSON.toString(), result.getRequest().getContentType());
+    }
+
+
 
 
   /**
