@@ -131,6 +131,25 @@ public class GameServiceTest {
     }
 
     @Test
+    public void removePlayerFromLobby_InvalidInputs() {
+        Game game = null;
+        Mockito.when(gameRepository.findByGameToken(gameToken)).thenReturn(game);
+        assertThrows(ResponseStatusException.class, () -> gameService.removePlayerFromLobby(gameToken, userToken));
+    }
+    @Test
+    public void removePlayerFromLobby_validInputs() {
+        game.addUserToIntegerMap(user);
+        game.setNumberOfPlayers(1);
+        game.setGameStatus("");
+        Mockito.when(gameRepository.findByGameToken(gameToken)).thenReturn(game);
+        Mockito.when(userService.getUserByToken(userToken)).thenReturn(user);
+
+        gameService.removePlayerFromLobby(gameToken, userToken);
+
+        assertEquals(game.getNumberOfPlayers(), 0);
+    }
+
+    @Test
     public void addPlayerToGame_validInputsPrivate() {
         Mockito.when(userService.getUserByToken(userToken)).thenReturn(user);
         Mockito.when(gameRepository.save(game)).thenReturn(game);
