@@ -2,10 +2,12 @@ package ch.uzh.ifi.hase.soprafs22.controller;
 
 
 import ch.uzh.ifi.hase.soprafs22.entity.Game;
+import ch.uzh.ifi.hase.soprafs22.entity.GameRound;
 import ch.uzh.ifi.hase.soprafs22.entity.User;
 import ch.uzh.ifi.hase.soprafs22.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs22.rest.dto.GamePostDTO;
 import ch.uzh.ifi.hase.soprafs22.rest.dto.GamePutDTO;
+import ch.uzh.ifi.hase.soprafs22.rest.dto.GameRoundGetDTO;
 import ch.uzh.ifi.hase.soprafs22.service.GameService;
 import ch.uzh.ifi.hase.soprafs22.service.GameRoundService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -63,6 +65,8 @@ public class GameControllerTest {
     private GamePostDTO gamePostDTO;
     private Game game;
     private User user;
+    private GameRoundGetDTO gameRoundGetDTO;
+    private GameRound gameRound;
 
     @BeforeEach
     void setUp() {
@@ -94,6 +98,16 @@ public class GameControllerTest {
         user.setEmail("test@email.com");
         user.setToken("1");
         user.setStatus(UserStatus.ONLINE);
+
+        gameRoundGetDTO = new GameRoundGetDTO();
+        gameRoundGetDTO.setDrawerToken("1");
+        gameRoundGetDTO.setWinner("1");
+        gameRoundGetDTO.setWord("testWord");
+        gameRoundGetDTO.setRoundStartingTime(1653810840412L);
+
+        gameRound = new GameRound();
+        gameRound.setWord("testWord");
+        gameRound.setDrawer("1");
     }
 
 
@@ -328,6 +342,107 @@ public class GameControllerTest {
             .contentType(MediaType.APPLICATION_JSON);
         MvcResult result = mockMvc.perform(getRequest).andReturn();
         assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
+    }
+
+    @Test
+    public void getRequest_getImage_test() throws Exception {
+        MockHttpServletRequestBuilder getRequest = get("/games/1-game")
+                .contentType(MediaType.APPLICATION_JSON);
+        MvcResult result = mockMvc.perform(getRequest).andReturn();
+        assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus());
+        assertEquals(HttpMethod.GET.name(), result.getRequest().getMethod());
+        assertEquals(MediaType.APPLICATION_JSON.toString(),result.getRequest().getContentType());
+    }
+
+    @Test
+    public void deleteRequest_deleteGame_test() throws Exception {
+        MockHttpServletRequestBuilder deleteRequest = delete("/games/1-game")
+                .contentType(MediaType.APPLICATION_JSON);
+        MvcResult result = mockMvc.perform(deleteRequest).andReturn();
+        assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus());
+        assertEquals(HttpMethod.DELETE.name(), result.getRequest().getMethod());
+        assertEquals(MediaType.APPLICATION_JSON.toString(),result.getRequest().getContentType());
+    }
+
+    @Test
+    public void putRequest_removePlayerFromLobby_test() throws Exception {
+        MockHttpServletRequestBuilder putRequest = put("/games/1-game/leave/1")
+                .contentType(MediaType.APPLICATION_JSON);
+        MvcResult result = mockMvc.perform(putRequest).andReturn();
+        assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus());
+        assertEquals(HttpMethod.PUT.name(), result.getRequest().getMethod());
+        assertEquals(MediaType.APPLICATION_JSON.toString(),result.getRequest().getContentType());
+    }
+
+    @Test
+    public void getRequest_removePlayerFromLobby_test() throws Exception {
+        MockHttpServletRequestBuilder getRequest = get("/games/1-game/full")
+                .contentType(MediaType.APPLICATION_JSON);
+        MvcResult result = mockMvc.perform(getRequest).andReturn();
+        assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus());
+        assertEquals(HttpMethod.GET.name(), result.getRequest().getMethod());
+        assertEquals(MediaType.APPLICATION_JSON.toString(),result.getRequest().getContentType());
+    }
+
+    @Test
+    public void getRequest_getGameRound_test() throws Exception {
+        given(gameRoundService.getGameRound(game.getGameToken())).willReturn(gameRound);
+        MockHttpServletRequestBuilder getRequest = get("/gameRound/1-game")
+                .contentType(MediaType.APPLICATION_JSON);
+        MvcResult result = mockMvc.perform(getRequest).andReturn();
+        assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus());
+        assertEquals(HttpMethod.GET.name(), result.getRequest().getMethod());
+        assertEquals(MediaType.APPLICATION_JSON.toString(),result.getRequest().getContentType());
+    }
+
+    @Test
+    public void putRequest_changeGameRound_test() throws Exception {
+        MockHttpServletRequestBuilder putRequest = put("/nextRound/1-game")
+                .contentType(MediaType.APPLICATION_JSON);
+        MvcResult result = mockMvc.perform(putRequest).andReturn();
+        assertEquals(HttpStatus.NO_CONTENT.value(), result.getResponse().getStatus());
+        assertEquals(HttpMethod.PUT.name(), result.getRequest().getMethod());
+        assertEquals(MediaType.APPLICATION_JSON.toString(),result.getRequest().getContentType());
+    }
+
+    @Test
+    public void getRequest_getJoinableGames_test() throws Exception {
+        MockHttpServletRequestBuilder getRequest = get("/joinable-games")
+                .contentType(MediaType.APPLICATION_JSON);
+        MvcResult result = mockMvc.perform(getRequest).andReturn();
+        assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus());
+        assertEquals(HttpMethod.GET.name(), result.getRequest().getMethod());
+        assertEquals(MediaType.APPLICATION_JSON.toString(),result.getRequest().getContentType());
+    }
+
+    @Test
+    public void putRequest_finishGame_test() throws Exception {
+        MockHttpServletRequestBuilder getRequest = put("/games/1-game/updateStatus")
+                .contentType(MediaType.APPLICATION_JSON);
+        MvcResult result = mockMvc.perform(getRequest).andReturn();
+        assertEquals(HttpStatus.NO_CONTENT.value(), result.getResponse().getStatus());
+        assertEquals(HttpMethod.PUT.name(), result.getRequest().getMethod());
+        assertEquals(MediaType.APPLICATION_JSON.toString(),result.getRequest().getContentType());
+    }
+
+    @Test
+    public void putRequest_givePoints_test() throws Exception {
+        MockHttpServletRequestBuilder putRequest = put("/games/1-game/points?points=2")
+                .contentType(MediaType.APPLICATION_JSON);
+        MvcResult result = mockMvc.perform(putRequest).andReturn();
+        assertEquals(HttpStatus.NO_CONTENT.value(), result.getResponse().getStatus());
+        assertEquals(HttpMethod.PUT.name(), result.getRequest().getMethod());
+        assertEquals(MediaType.APPLICATION_JSON.toString(),result.getRequest().getContentType());
+    }
+
+    @Test
+    public void putRequest_givePoints_fail() throws Exception {
+        MockHttpServletRequestBuilder putRequest = put("/games/1-game/points")
+                .contentType(MediaType.APPLICATION_JSON);
+        MvcResult result = mockMvc.perform(putRequest).andReturn();
+        assertEquals(HttpStatus.CONFLICT.value(), result.getResponse().getStatus());
+        assertEquals(HttpMethod.PUT.name(), result.getRequest().getMethod());
+        assertEquals(MediaType.APPLICATION_JSON.toString(),result.getRequest().getContentType());
     }
 
 
