@@ -346,7 +346,7 @@ public class GameControllerTest {
 
     @Test
     public void getRequest_getImage_test() throws Exception {
-        MockHttpServletRequestBuilder getRequest = get("/games/1-game")
+        MockHttpServletRequestBuilder getRequest = get("/games/drawing")
                 .contentType(MediaType.APPLICATION_JSON);
         MvcResult result = mockMvc.perform(getRequest).andReturn();
         assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus());
@@ -408,6 +408,16 @@ public class GameControllerTest {
     @Test
     public void getRequest_getJoinableGames_test() throws Exception {
         MockHttpServletRequestBuilder getRequest = get("/joinable-games")
+                .contentType(MediaType.APPLICATION_JSON);
+        MvcResult result = mockMvc.perform(getRequest).andReturn();
+        assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus());
+        assertEquals(HttpMethod.GET.name(), result.getRequest().getMethod());
+        assertEquals(MediaType.APPLICATION_JSON.toString(),result.getRequest().getContentType());
+    }
+
+    @Test
+    public void getRequest_getScoreboard_test() throws Exception {
+        MockHttpServletRequestBuilder getRequest = get("/games/1-game/scoreboard")
                 .contentType(MediaType.APPLICATION_JSON);
         MvcResult result = mockMvc.perform(getRequest).andReturn();
         assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus());
