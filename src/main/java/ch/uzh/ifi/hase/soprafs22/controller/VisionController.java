@@ -37,7 +37,7 @@ public class VisionController {
 
     /**
      * This method checks the current image and sends to the Vision API for label
-     * detection.
+     * detection. No test because using cloud vision templates from google vision api.
      *
      * @param gameToken game identification
      * @param map the model map to use
